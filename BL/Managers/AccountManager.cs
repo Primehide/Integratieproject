@@ -7,7 +7,7 @@ using DAL;
 
 namespace BL
 {
-    public class AccountManager
+    public class AccountManager : IAccountManager
     {
         private IAccountRepository accountRepository;
 

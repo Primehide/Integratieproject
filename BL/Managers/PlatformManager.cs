@@ -7,7 +7,7 @@ using DAL;
 
 namespace BL
 {
-    public class PlatformManager
+    public class PlatformManager : IPlatformManager
     {
         private IPlatformRepository platformRepository;
 
