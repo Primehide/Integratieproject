@@ -47,8 +47,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EFContext.cs" />
-    <Compile Include="EFDbConfiguration.cs" />
+    <Compile Include="Repositories\AccountRepository.cs" />
+    <Compile Include="EF\EFContext.cs" />
+    <Compile Include="EF\EFDbConfiguration.cs" />
+    <Compile Include="Repositories\EntiteitRepository.cs" />
+    <Compile Include="Interfaces\IAccountRepository.cs" />
+    <Compile Include="Interfaces\IEntiteitRepository.cs" />
+    <Compile Include="Interfaces\IPlatformRepository.cs" />
+    <Compile Include="Interfaces\IPostRepository.cs" />
+    <Compile Include="Repositories\PlatformRepository.cs" />
+    <Compile Include="Repositories\PostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
