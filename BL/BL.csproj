@@ -47,6 +47,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Managers\EntiteitManager.cs" />
+    <Compile Include="Interfaces\IAccountManager.cs" />
+    <Compile Include="Interfaces\IEntiteitManager.cs" />
+    <Compile Include="Interfaces\IPlatformManager.cs" />
+    <Compile Include="Interfaces\IPostManager.cs" />
+    <Compile Include="Managers\AccountManager.cs" />
+    <Compile Include="Managers\PlatformManager.cs" />
+    <Compile Include="Managers\PostManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,5 +71,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
