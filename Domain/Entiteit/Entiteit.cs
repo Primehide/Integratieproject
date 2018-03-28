@@ -11,5 +11,6 @@ namespace Domain.Entiteit
         public int EntiteitId { get; set; }
         public string naam { get; set; }
         public List<Trend> Trends { get; set; }
+        public List<Domain.Post.Post> Posts { get; set; }
     }
 }
