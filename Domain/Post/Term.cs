@@ -10,5 +10,7 @@ namespace Domain.Post
     {
         public int TermId { get; set; }
         public string Naam { get; set; }
+        public List<Post> Posts { get; set; }
+
     }
 }
