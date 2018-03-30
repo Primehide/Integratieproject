@@ -16,7 +16,7 @@ namespace BL
         {
             entiteitRepository = new EntiteitRepository();
         }
-
+        #region
         public void AddPerson(Persoon p)
         {
             entiteitRepository.CreatePerson(p);
@@ -25,6 +25,11 @@ namespace BL
         public Persoon ChangePerson(Persoon ChangedPerson)
         {
             return entiteitRepository.UpdatePerson(ChangedPerson);
+        }
+
+        public List<Persoon> GetAllPeople()
+        {
+            return entiteitRepository.ReadlAllPeople();
         }
 
         public Persoon GetPerson(int id)
@@ -36,5 +41,6 @@ namespace BL
         {
             entiteitRepository.DeletePerson(id);
         }
+        #endregion
     }
 }

@@ -16,7 +16,8 @@ namespace WebUI.Controllers
         // GET: Entiteit
         public ActionResult Index()
         {
-            return View();
+
+            return View(eM.GetAllPeople());
         }
 
 
@@ -49,12 +50,12 @@ namespace WebUI.Controllers
 
         // GET: Persoon
 
-        public ActionResult DisplayPerson()
-        {
-            return View();
-        }
+        //public ActionResult DisplayPerson(int PersonId)
+        //{
+        //    return View(g);
+        //}
 
-        [HttpPost]
+        //[HttpPost]
         public ActionResult DisplayPerson(int PersonId)
         {
             Persoon ToDisplay = eM.GetPerson(PersonId);
@@ -63,24 +64,24 @@ namespace WebUI.Controllers
 
         // PUT: Persoon
 
-        public ActionResult UpdatePerson()
+        public ActionResult UpdatePerson(int PersonId)
         {
-            return View();
+            return View(eM.GetPerson(PersonId));
         }
 
         [HttpPost]
         public ActionResult UpdatePerson(Persoon EditedPerson)
         {
             eM.ChangePerson(EditedPerson);
-            return View("DisplayPerson",EditedPerson);
+            return View("DisplayPerson", EditedPerson);
         }
 
-        [HttpPost]
-        public ActionResult DeletePerson(int id)
+        public ActionResult DeletePerson(int PersonId)
         {
-            eM.RemovePerson(id);
-            return View();
+            eM.RemovePerson(PersonId);
+            return View("Index",eM.GetAllPeople());
         }
+
 
     }
 }

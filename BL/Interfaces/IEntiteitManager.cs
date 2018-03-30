@@ -13,5 +13,6 @@ namespace BL
         Persoon GetPerson(int id);
         Persoon ChangePerson(Persoon ChangedPerson);
         void RemovePerson(int id);
+        List<Persoon> GetAllPeople();
     }
 }

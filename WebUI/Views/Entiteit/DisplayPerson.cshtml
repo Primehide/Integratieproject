@@ -10,11 +10,13 @@
     <h4>Persoon</h4>
     <hr />
     <dl class="dl-horizontal">
-        @using (Html.BeginForm("DisplayPerson", "Entiteit"))
-        {
-            <input type="text" name="PersonId" value="" />
-            <input type="submit" value="Display" />
-        }
+        <dt>
+            @Html.DisplayNameFor(model => model.EntiteitId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EntiteitId)
+        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.FirstName)
@@ -32,8 +34,9 @@
             @Html.DisplayFor(model => model.LastName)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Organisations)
+        </dt>
     </dl>
 </div>
-<p>
-    <input type="button" value="Create" onclick="location.href='@Url.Action("DisplayPerson", "Entiteit")'" />
-</p>
+

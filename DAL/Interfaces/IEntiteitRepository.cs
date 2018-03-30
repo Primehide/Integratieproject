@@ -13,5 +13,6 @@ namespace DAL
         Persoon ReadPerson(int id);
         Persoon UpdatePerson(Persoon UpdatedPerson);
         void DeletePerson(int id);
+        List<Persoon> ReadlAllPeople();
     }
 }
