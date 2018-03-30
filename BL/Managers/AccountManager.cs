@@ -21,13 +21,13 @@ namespace BL
         public AccountManager(UnitOfWorkManager uofMgr)
         {
             uowManager = uofMgr;
-            accountRepository = new AccountRepository();
         }
 
         public void addUser(Account account)
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo(true);
             accountRepository.addUser(account);
+            uowManager.Save();
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

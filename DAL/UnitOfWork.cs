@@ -14,7 +14,7 @@ namespace DAL
         {
             get
             {
-                if (ctx == null) ctx = new EFContext(true);
+                if (ctx == null) ctx = new EFContext();
                 return ctx;
             }
         }

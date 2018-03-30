@@ -19,6 +19,7 @@ namespace DAL
         public AccountRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
 
         public void addUser(Account account)

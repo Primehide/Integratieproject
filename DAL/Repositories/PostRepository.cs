@@ -18,6 +18,7 @@ namespace DAL
         public PostRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
     }
 }

@@ -20,7 +20,6 @@ namespace BL
         public PostManager(UnitOfWorkManager uofMgr)
         {
             uowManager = uofMgr;
-            postRepository = new PostRepository();
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

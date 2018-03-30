@@ -13,14 +13,14 @@ namespace DAL
 {
     internal class EFContext : DbContext
     {
-        private readonly bool delaySave;
+        private bool delaySave;
 
-        public EFContext(bool unitOfWorkPresent = false)
-            :base("DebugConn")
+        public EFContext()
+            : base("DebugConn")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<EFContext, EFDbConfiguration>("DebugConn"));
-            delaySave = unitOfWorkPresent;
         }
+
 
         //ENTITEITEN//
         public DbSet<Entiteit> Entiteiten { get; set; }
@@ -44,6 +44,11 @@ namespace DAL
         //PLATFORM//
         public DbSet<Deelplatform> DeelPlatformen { get; set; }
         public DbSet<Pagina> Paginas { get; set; }
+
+        public void SetUoWBool(bool UoW)
+        {
+            delaySave = UoW;
+        }
 
         public override int SaveChanges()
         {

@@ -18,6 +18,7 @@ namespace DAL
         public PlatformRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
     }
 }

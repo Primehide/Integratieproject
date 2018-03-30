@@ -56,6 +56,7 @@
     <Compile Include="Managers\PlatformManager.cs" />
     <Compile Include="Managers\PostManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Managers\UnitOfWorkManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj">

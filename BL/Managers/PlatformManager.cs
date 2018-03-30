@@ -20,7 +20,6 @@ namespace BL
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
             uowManager = uofMgr;
-            platformRepository = new PlatformRepository();
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

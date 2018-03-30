@@ -20,7 +20,6 @@ namespace BL
         public EntiteitManager(UnitOfWorkManager uofMgr)
         {
             uowManager = uofMgr;
-            entiteitRepository = new EntiteitRepository();
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

@@ -18,6 +18,7 @@ namespace DAL
         public EntiteitRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
     }
 }
