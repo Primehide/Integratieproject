@@ -13,6 +13,7 @@ using WebUI.Models;
 namespace WebUI.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
