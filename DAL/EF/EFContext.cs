@@ -13,10 +13,13 @@ namespace DAL
 {
     internal class EFContext : DbContext
     {
-        public EFContext()
+        private readonly bool delaySave;
+
+        public EFContext(bool unitOfWorkPresent = false)
             :base("DebugConn")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<EFContext, EFDbConfiguration>("DebugConn"));
+            delaySave = unitOfWorkPresent;
         }
 
         //ENTITEITEN//
@@ -41,5 +44,20 @@ namespace DAL
         //PLATFORM//
         public DbSet<Deelplatform> DeelPlatformen { get; set; }
         public DbSet<Pagina> Paginas { get; set; }
+
+        public override int SaveChanges()
+        {
+            if (delaySave) return -1;
+            return base.SaveChanges();
+        }
+
+        internal int CommitChanges()
+        {
+            if (delaySave)
+            {
+                return base.SaveChanges();
+            }
+            throw new InvalidOperationException("No UnitOfWork present, use SaveChanges instead");
+        }
     }
 }

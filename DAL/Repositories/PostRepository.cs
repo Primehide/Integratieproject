@@ -14,5 +14,10 @@ namespace DAL
         {
             ctx = new EFContext();
         }
+
+        public PostRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+        }
     }
 }
