@@ -54,15 +54,15 @@ namespace WebUI
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "649587395374720",
+               appSecret: "3d06a55333019ccc93cd1c41c2803978");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "347863212605-3nqdgoa8lb8o3u635mhtrn1qfvakebq9.apps.googleusercontent.com",
+                ClientSecret = "ie7cI7TBgnVFQqx2nlppAbMo"
+            });
         }
     }
 }

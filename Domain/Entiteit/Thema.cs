@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entiteit
 {
-    public class Thema
+    public class Thema : Entiteit
     {
         public List<Sleutelwoord> SleutenWoorden { get; set; }
     }

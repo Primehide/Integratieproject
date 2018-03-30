@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Account;
 
 namespace BL
 {
@@ -14,6 +15,11 @@ namespace BL
         public AccountManager()
         {
             accountRepository = new AccountRepository();
+        }
+
+        public void addUser(Account account)
+        {
+            accountRepository.addUser(account);
         }
     }
 }
