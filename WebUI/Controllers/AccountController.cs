@@ -166,6 +166,7 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+                CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -386,6 +387,7 @@ namespace WebUI.Controllers
                 }
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
+                CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -507,6 +509,22 @@ namespace WebUI.Controllers
                "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
             return callbackUrl;
+        }
+
+        //gaat identity user linken aan een account uit ons domein.
+        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
+        {
+            BL.AccountManager accountManager = new BL.AccountManager();
+            Domain.Account.Account domainAccount = new Domain.Account.Account()
+            {
+                IdentityId = identityId,
+                Email = email,
+                Voornaam = voornaam,
+                Achternaam = achternaam,
+                GeboorteDatum = geboorteDatum,
+                Dashboard = new Domain.Account.Dashboard()
+            };
+            accountManager.addUser(domainAccount);
         }
         #endregion
     }

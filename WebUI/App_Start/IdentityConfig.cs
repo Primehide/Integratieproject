@@ -65,7 +65,7 @@ namespace WebUI
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = false
+                RequireUniqueEmail = false //makes it possible to link multipe external logins
             };
 
             // Configure validation logic for passwords
