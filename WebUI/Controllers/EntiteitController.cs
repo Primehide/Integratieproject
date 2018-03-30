@@ -13,5 +13,25 @@ namespace WebUI.Controllers
         {
             return View();
         }
+
+        // POST: Persoon
+        public ActionResult AddPersoon(string Voornaam, string Achternaam, int OrganisatiePositie)
+        {
+
+        }
+
+        // GET: Persoon
+        public ActionResult DisplayPersoon(int PersoonId)
+        {
+
+        }
+
+        // PUT: Persoon
+        public ActionResult UpdatePersoon(int PersoonId)
+        {
+
+        }
+
+
     }
 }
