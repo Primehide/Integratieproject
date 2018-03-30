@@ -13,7 +13,7 @@ namespace DAL
 {
     internal class EFContext : DbContext
     {
-        public EFContext()
+        public EFContext() : base("DebugConn")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<EFContext, EFDbConfiguration>("DebugConn"));
         }

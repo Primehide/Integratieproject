@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +9,10 @@ namespace Domain.Entiteit
 {
     public class Persoon : Entiteit
     {
-        public string PersoonId { get; set; }
-        public string Voornaam { get; set; }
-        public string Achternaam { get; set; }
-        public List<Organisatie> Organisaties { get; set; }
+        [Key]
+        public int PersonId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public List<Organisatie> Organisations { get; set; }
     }
 }

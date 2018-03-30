@@ -1,0 +1,39 @@
+﻿@model Domain.Entiteit.Persoon
+
+@{
+    ViewBag.Title = "DisplayPerson";
+}
+
+<h2>DisplayPerson</h2>
+
+<div>
+    <h4>Persoon</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @using (Html.BeginForm("DisplayPerson", "Entiteit"))
+        {
+            <input type="text" name="PersonId" value="" />
+            <input type="submit" value="Display" />
+        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    <input type="button" value="Create" onclick="location.href='@Url.Action("DisplayPerson", "Entiteit")'" />
+</p>

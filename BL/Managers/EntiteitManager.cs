@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Entiteit;
 
 namespace BL
 {
@@ -14,6 +15,26 @@ namespace BL
         public EntiteitManager()
         {
             entiteitRepository = new EntiteitRepository();
+        }
+
+        public void AddPerson(Persoon p)
+        {
+            entiteitRepository.CreatePerson(p);
+        }
+
+        public Persoon ChangePerson(Persoon ChangedPerson)
+        {
+            return entiteitRepository.UpdatePerson(ChangedPerson);
+        }
+
+        public Persoon GetPerson(int id)
+        {
+            return entiteitRepository.ReadPerson(id);
+        }
+
+        public void RemovePerson(int id)
+        {
+            entiteitRepository.DeletePerson(id);
         }
     }
 }

@@ -1,0 +1,11 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<a>@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit", routeValues: null, htmlAttributes: new { id = "registerLink" })</a>
+<a>@Html.ActionLink("Lees Persoon in", "DisplayPerson", "Entiteit", routeValues: null, htmlAttributes: new { id = "registerLink" })</a>
+<a>@Html.ActionLink("Verander de shit van een Persoon", "UpdatePerson", "Entiteit", routeValues: null, htmlAttributes: new { id = "registerLink" })</a>
+<a>@Html.ActionLink("Verwijder Persoon", "DeletePerson", "Entiteit", routeValues: null, htmlAttributes: new { id = "registerLink" })</a>
