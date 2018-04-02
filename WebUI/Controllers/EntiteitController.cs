@@ -13,17 +13,17 @@ namespace WebUI.Controllers
     {
         private EntiteitManager eM = new EntiteitManager();
 
-        // GET: Entiteit
+        // Index Page for all Entities.
         public ActionResult Index()
         {
-
-            return View(eM.GetAllPeople());
+            List<Entiteit> AllEntities = new List<Entiteit>();
+            AllEntities.AddRange(eM.GetAllPeople());
+            AllEntities.AddRange(eM.GetAllOrganisaties());
+            return View(AllEntities);
         }
 
-
-
-        // POST: Persoon
-
+        // This region is for adding a person to the database and persisting.
+        #region
         public ActionResult AddPerson()
         {
             return View();
@@ -45,43 +45,71 @@ namespace WebUI.Controllers
             eM.AddPerson(AddedPerson);
             return View("DisplayPerson", AddedPerson); 
         }
+        #endregion
 
-
-
-        // GET: Persoon
-
-        //public ActionResult DisplayPerson(int PersonId)
-        //{
-        //    return View(g);
-        //}
-
-        //[HttpPost]
-        public ActionResult DisplayPerson(int PersonId)
+        // This region is for displaying a certain person, given that a certain entityId is given.
+        #region
+        public ActionResult DisplayPerson(int EntityId)
         {
-            Persoon ToDisplay = eM.GetPerson(PersonId);
+            Persoon ToDisplay = eM.GetPerson(EntityId);
             return View(ToDisplay);
         }
+        #endregion
+        // This region will handle the updating of a certain person. After the update you will be redirected to the Display page of the updated person;
+        #region
+                public ActionResult UpdatePerson(int PersonId)
+                {
+                    return View(eM.GetPerson(PersonId));
+                }
 
-        // PUT: Persoon
-
-        public ActionResult UpdatePerson(int PersonId)
-        {
-            return View(eM.GetPerson(PersonId));
-        }
-
-        [HttpPost]
-        public ActionResult UpdatePerson(Persoon EditedPerson)
-        {
-            eM.ChangePerson(EditedPerson);
-            return View("DisplayPerson", EditedPerson);
-        }
-
+                [HttpPost]
+                public ActionResult UpdatePerson(Persoon EditedPerson)
+                {
+                    eM.ChangePerson(EditedPerson);
+                    return View("DisplayPerson", EditedPerson);
+                }
+                #endregion
+        // This region will handle the deletion of a certain person
+        #region
         public ActionResult DeletePerson(int PersonId)
         {
             eM.RemovePerson(PersonId);
-            return View("Index",eM.GetAllPeople());
+            return Index();
+        }
+        #endregion
+
+        // This region will add a newly created Organisatie object to the database and persist
+        #region
+        public ActionResult AddOrganisation() 
+        {
+            return View();
         }
 
+        [HttpPost]
+        public ActionResult AddOrganisation(Organisatie newOrganisation)
+        {
+            eM.AddOrganisatie(newOrganisation);
+            return View("DisplayOrganisation", newOrganisation);
+        }
+        #endregion
 
+
+        // This region is for displaying a certain Organisatie object, given that a certain entityId is given.
+        #region
+        public ActionResult DisplayOrganisation(int EntityId)
+        {
+            Organisatie ToDisplay = eM.GetOrganisatie(EntityId);
+            return View(ToDisplay);
+        }
+        #endregion
+
+        // This region will handle the deletion of a certain person
+        #region
+        public ActionResult DeleteOrganisation(int EntityId)
+        {
+            eM.RemoveOrganisatie(EntityId);
+            return Index();
+        }
+        #endregion
     }
 }

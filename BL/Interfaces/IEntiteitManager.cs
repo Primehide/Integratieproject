@@ -14,5 +14,12 @@ namespace BL
         Persoon ChangePerson(Persoon ChangedPerson);
         void RemovePerson(int id);
         List<Persoon> GetAllPeople();
+
+        void AddOrganisatie(Organisatie o);
+        Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie);
+        List<Organisatie> GetAllOrganisaties();
+        Organisatie GetOrganisatie(int id);
+        void RemoveOrganisatie(int id);
+
     }
 }

@@ -29,7 +29,7 @@ namespace BL
 
         public List<Persoon> GetAllPeople()
         {
-            return entiteitRepository.ReadlAllPeople();
+            return entiteitRepository.ReadlAllPeople().ToList();
         }
 
         public Persoon GetPerson(int id)
@@ -40,6 +40,35 @@ namespace BL
         public void RemovePerson(int id)
         {
             entiteitRepository.DeletePerson(id);
+        }
+        #endregion
+
+
+        #region
+        
+        public void AddOrganisatie(Organisatie o)
+        {
+            entiteitRepository.CreateOrganisatie(o);
+        }
+
+        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie)
+        {
+           return entiteitRepository.UpdateOrganisatie(ChangedOrganisatie);
+        }
+
+        public List<Organisatie> GetAllOrganisaties()
+        {
+            return entiteitRepository.ReadAllOrganisaties().ToList();
+        }
+
+        public Organisatie GetOrganisatie(int id)
+        {
+            return entiteitRepository.ReadOrganisatie(id);
+        }
+
+        public void RemoveOrganisatie(int id)
+        {
+            entiteitRepository.DeleteOrganisatie(id);
         }
         #endregion
     }

@@ -15,6 +15,8 @@ namespace DAL
         {
             ctx = new EFContext();
         }
+
+
         #region
         public void CreatePerson(Persoon p)
         {
@@ -27,9 +29,9 @@ namespace DAL
         {
             ctx.Personen.Remove(ReadPerson(id));
             ctx.SaveChanges();
-            }
+        }
 
-        public List<Persoon> ReadlAllPeople()
+        public IEnumerable<Persoon> ReadlAllPeople()
         {
             return ctx.Personen.ToList();
         }
@@ -47,7 +49,47 @@ namespace DAL
             ctx.SaveChanges();
             return toUpdated;
         }
-#endregion
+        #endregion
 
+        #region
+        public void CreateOrganisatie(Organisatie o)
+        {
+            ctx.Organisaties.Add(o);
+            ctx.SaveChanges();
+        }
+
+
+        public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
+        {
+            Organisatie toUpdate = ctx.Organisaties.First(x => x.EntiteitId == UpdatedOrganisatie.EntiteitId);
+            toUpdate.Naam = UpdatedOrganisatie.Naam;
+            //toUpdate.Leden = UpdatedOrganisatie.Leden;
+            toUpdate.Gemeente = UpdatedOrganisatie.Gemeente;
+            toUpdate.Posts = UpdatedOrganisatie.Posts;
+            toUpdate.Trends = UpdatedOrganisatie.Trends;
+            toUpdate.AantalLeden = UpdatedOrganisatie.Leden.Count();
+            ctx.SaveChanges();
+            return toUpdate;
+
+        }
+
+
+        public Organisatie ReadOrganisatie(int id)
+        {
+            return ctx.Organisaties.Where(obj => obj.EntiteitId == id).First();
+        }
+
+
+        public IEnumerable<Organisatie> ReadAllOrganisaties()
+        {
+            return ctx.Organisaties.ToList();
+        }
+
+        public void DeleteOrganisatie(int id)
+        {
+            ctx.Organisaties.Remove(ReadOrganisatie(id));
+            ctx.SaveChanges();
+        }
+        #endregion
     }
 }
