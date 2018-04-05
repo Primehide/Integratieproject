@@ -13,7 +13,7 @@ namespace DAL
         Persoon ReadPerson(int id);
         Persoon UpdatePerson(Persoon UpdatedPerson);
         void DeletePerson(int id);
-        IEnumerable<Persoon> ReadlAllPeople();
+        IEnumerable<Persoon> ReadAllPeople();
 
         void CreateOrganisatie(Organisatie o);
         Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie);

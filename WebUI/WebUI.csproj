@@ -317,6 +317,13 @@
     <Content Include="Views\Entiteit\DisplayPerson.cshtml" />
     <Content Include="Views\Entiteit\UpdatePerson.cshtml" />
     <Content Include="Views\Entiteit\DeletePerson.cshtml" />
+    <Content Include="Views\Entiteit\AddOrganisation.cshtml" />
+    <Content Include="Views\Entiteit\DisplayOrganisation.cshtml" />
+    <Content Include="Views\Entiteit\DeleteOrganisation.cshtml" />
+    <Content Include="Views\Entiteit\UpdateOrganisation.cshtml" />
+    <Content Include="Views\Entiteit\Test.cshtml" />
+    <Content Include="Views\Entiteit\View.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Organisations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

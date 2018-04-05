@@ -1,44 +1,80 @@
-﻿@model IEnumerable<Domain.Entiteit.Persoon>
+﻿@model WebUI.Models.OverviewVM
 @{
     ViewBag.Title = "Index";
 }
 
 <h2>Index</h2>
 
-    @foreach (var item in Model)
-    {
+<h3>ORGANISATIES</h3>
+<table class="table">
+    <tr>
         <th>
-            <td>
-                @Html.DisplayFor(i => item.EntiteitId)
-            </td>
-            <td>
-                @Html.DisplayFor(i => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(i => item.LastName)
-            </td>
+            Id
         </th>
+        <th>
+            Naam
+        </th>
+        <th>
+            Gemeente
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.People)
+    {
         <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EntiteitId)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntiteitId)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
 
-                    <td>@Html.ActionLink("Display", "DisplayPerson", new { PersonId = item.EntiteitId })</td>
-                    <td>@Html.ActionLink("Update", "UpdatePerson", new { PersonId = item.EntiteitId })</td>
-                    <td>@Html.ActionLink("Delete", "DeletePerson", new { PersonId = item.EntiteitId })</td>
-
-        </tr>
+            <td>
+                @Html.ActionLink("Display", "DisplayPerson", new { PersonId = item.EntiteitId })
+            @Html.ActionLink("Update", "UpdatePerson", new { PersonId = item.EntiteitId })
+            @Html.ActionLink("Delete", "DeletePerson", new { PersonId = item.EntiteitId })
+        </td>
+    </tr>
     }
+    </table>
+    <h3>ORGANISATIES</h3>
+    <table class="table">
+        <tr>
+            <th>
+                Naam
+            </th>
+            <th>
+                Gemeente
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Organisations)
+        {
 
-<tr>
-    <td>@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit")</td>
-   
-</tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gemeente)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Display", "DisplayOrganisation", new { EntityId = item.EntiteitId })
+                @Html.ActionLink("Update", "UpdateOrganisation", new { EntityId = item.EntiteitId })
+                @Html.ActionLink("Delete", "DeleteOrganisation", new { EntityId = item.EntiteitId })
+            </td>
+        </tr>
+
+        }
+    </table>
+    <tr>
+        <td>@Html.ActionLink("Maak nieuw Organisatie", "AddOrganisation", "Entiteit")</td>
+        <td>@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit")</td>
+    </tr>

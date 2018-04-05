@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,14 +32,14 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public IEnumerable<Persoon> ReadlAllPeople()
+        public IEnumerable<Persoon> ReadAllPeople()
         {
-            return ctx.Personen.ToList();
+            return ctx.Personen.Include(p => p.Organisations).ToList();
         }
 
         public Persoon ReadPerson(int id)
         {
-            return ctx.Personen.First(x => x.EntiteitId == id);
+            return ctx.Personen.Include(p => p.Organisations).First();
         }
 
         public Persoon UpdatePerson(Persoon UpdatedPerson)
@@ -46,6 +47,7 @@ namespace DAL
             Persoon toUpdated = ctx.Personen.First(x => x.EntiteitId == UpdatedPerson.PersonId);
             toUpdated.FirstName = UpdatedPerson.FirstName;
             toUpdated.LastName = UpdatedPerson.LastName;
+            toUpdated.Organisations = UpdatedPerson.Organisations;
             ctx.SaveChanges();
             return toUpdated;
         }
@@ -61,7 +63,7 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            Organisatie toUpdate = ctx.Organisaties.First(x => x.EntiteitId == UpdatedOrganisatie.EntiteitId);
+            Organisatie toUpdate = ctx.Organisaties.First(x => x.EntiteitId == UpdatedOrganisatie.OrganisatieId);
             toUpdate.Naam = UpdatedOrganisatie.Naam;
             //toUpdate.Leden = UpdatedOrganisatie.Leden;
             toUpdate.Gemeente = UpdatedOrganisatie.Gemeente;
@@ -76,13 +78,13 @@ namespace DAL
 
         public Organisatie ReadOrganisatie(int id)
         {
-            return ctx.Organisaties.Where(obj => obj.EntiteitId == id).First();
+            return ctx.Organisaties.Where(obj => obj.EntiteitId == id).Include(o => o.Leden).First();
         }
 
 
         public IEnumerable<Organisatie> ReadAllOrganisaties()
         {
-            return ctx.Organisaties.ToList();
+            return ctx.Organisaties.Include(o => o.Leden).ToList();
         }
 
         public void DeleteOrganisatie(int id)

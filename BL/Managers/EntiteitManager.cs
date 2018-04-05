@@ -29,7 +29,7 @@ namespace BL
 
         public List<Persoon> GetAllPeople()
         {
-            return entiteitRepository.ReadlAllPeople().ToList();
+            return entiteitRepository.ReadAllPeople().ToList();
         }
 
         public Persoon GetPerson(int id)
