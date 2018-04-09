@@ -14,5 +14,11 @@ namespace DAL
         {
             ctx = new EFContext();
         }
+
+        public EntiteitRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
+        }
     }
 }
