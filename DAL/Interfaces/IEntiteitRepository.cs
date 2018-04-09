@@ -8,5 +8,6 @@ namespace DAL
 {
     public interface IEntiteitRepository
     {
+        void AddEntiteit(Domain.Entiteit.Entiteit entiteit);
     }
 }

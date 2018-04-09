@@ -15,5 +15,27 @@ namespace BL
         {
             entiteitRepository = new EntiteitRepository();
         }
+
+        public void CreateTestData()
+        {
+            Domain.Entiteit.Organisatie NVA = new Domain.Entiteit.Organisatie()
+            {
+                Leden = new List<Domain.Entiteit.Persoon>(),
+                Naam = "N-VA"
+            };
+
+            Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
+            {
+                Naam = "Ben Weyts",
+                Organisaties = new List<Domain.Entiteit.Organisatie>()
+            };
+
+            //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
+            BenWeyts.Organisaties.Add(NVA);
+
+
+            entiteitRepository.AddEntiteit(NVA);
+            entiteitRepository.AddEntiteit(BenWeyts);
+        }
     }
 }

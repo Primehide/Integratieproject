@@ -14,5 +14,11 @@ namespace DAL
         {
             ctx = new EFContext();
         }
+
+        public void AddEntiteit(Domain.Entiteit.Entiteit entiteit)
+        {
+            ctx.Entiteiten.Add(entiteit);
+            ctx.SaveChanges();
+        }
     }
 }

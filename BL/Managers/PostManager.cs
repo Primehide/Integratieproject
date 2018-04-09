@@ -41,23 +41,6 @@ namespace BL
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Entiteit> TestEntiteiten = new List<Domain.Entiteit.Entiteit>();
-            Domain.Entiteit.Organisatie NVA = new Domain.Entiteit.Organisatie()
-            {
-                Leden = new List<Domain.Entiteit.Persoon>(),
-                Naam = "N-VA"
-            };
-
-            Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
-            {
-                Naam = "Ben Weyts",
-                Organisaties = new List<Domain.Entiteit.Organisatie>()
-            };
-
-            BenWeyts.Organisaties.Add(NVA);
-            NVA.Leden.Add(BenWeyts);
-
-            TestEntiteiten.Add(NVA);
-            TestEntiteiten.Add(BenWeyts);
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
             foreach (var Entiteit in TestEntiteiten)

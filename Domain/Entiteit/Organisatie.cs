@@ -9,7 +9,6 @@ namespace Domain.Entiteit
     public class Organisatie : Entiteit
     {
         public string gemeente { get; set; }
-        public string OrganisatieNaam { get; set; }
         public List<Persoon> Leden { get; set; }
     }
 }

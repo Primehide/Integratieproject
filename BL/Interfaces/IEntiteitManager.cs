@@ -8,5 +8,6 @@ namespace BL
 {
     public interface IEntiteitManager
     {
+        void CreateTestData();
     }
 }

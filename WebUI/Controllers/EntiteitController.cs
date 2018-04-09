@@ -13,5 +13,11 @@ namespace WebUI.Controllers
         {
             return View();
         }
+
+        public void CreateTestData()
+        {
+            BL.EntiteitManager entiteitManager = new BL.EntiteitManager();
+            entiteitManager.CreateTestData();
+        }
     }
 }
