@@ -9,16 +9,43 @@ using DAL;
 using Newtonsoft.Json;
 using Domain.TextGain;
 using Domain.Post;
+using Domain.Entiteit;
 
 namespace BL
 {
     public class PostManager : IPostManager
     {
         private IPostRepository postRepository;
+        private UnitOfWorkManager uowManager;
 
         public PostManager()
         {
-            postRepository = new PostRepository();
+
+        }
+
+        public PostManager(UnitOfWorkManager uofMgr)
+        {
+            uowManager = uofMgr;
+        }
+
+        public void initNonExistingRepo(bool withUnitOfWork = false)
+        {
+            // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
+            // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
+
+            if (withUnitOfWork)
+            {
+                if (uowManager == null)
+                {
+                    uowManager = new UnitOfWorkManager();
+                    postRepository = new PostRepository(uowManager.UnitOfWork);
+                }
+            }
+            // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
+            else
+            {
+                postRepository = (postRepository == null) ? new PostRepository() : postRepository;
+            }
         }
 
         public void AddPost(Post post)
@@ -33,14 +60,14 @@ namespace BL
 
         public async Task SyncDataAsync()
         {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today;
             DateTime gisteren = DateTime.Today.AddDays(-1);
-            //een lijst van requests die we gaan versturen naar textgain
-            List<PostRequest> requests = new List<PostRequest>();
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Entiteit> TestEntiteiten = new List<Domain.Entiteit.Entiteit>();
+            List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
             foreach (var Entiteit in TestEntiteiten)
@@ -51,32 +78,29 @@ namespace BL
                     since = new DateTime(2018,04,01),
                     until = new DateTime(2018,04,09)
                 };
-                requests.Add(postRequest);
-            }
 
-            //elke request versturen naar textgain
-            foreach (var request in requests)
-            {
-                //lijst van posts die we kunnen terugkrijgen als response van textgain
                 List<TextGainResponse> posts = new List<TextGainResponse>();
 
                 using (HttpClient http = new HttpClient())
                 {
                     string uri = "http://kdg.textgain.com/query";
                     http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
-                    var myContent = JsonConvert.SerializeObject(request);
+                    var myContent = JsonConvert.SerializeObject(postRequest);
                     var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
                     var byteContent = new ByteArrayContent(buffer);
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
                     posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
-                    //ConvertAndSaveToDb(posts);
+                    ConvertAndSaveToDb(posts,Entiteit.EntiteitId);
                 }
             }
         }
 
-        private void ConvertAndSaveToDb(List<TextGainResponse> response, Domain.Entiteit.Entiteit entiteit)
+        private void ConvertAndSaveToDb(List<TextGainResponse> response, int entiteitId)
         {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            Entiteit entiteit = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
             List<Post> PostsToAdd = new List<Post>();
             foreach (var post in response)
             {
@@ -156,10 +180,13 @@ namespace BL
                 newPost.retweet = post.retweet;
                 newPost.source = post.source;
 
+                entiteit.Posts.Add(newPost);
                 PostsToAdd.Add(newPost);
             }
 
-            postRepository.AddPosts(PostsToAdd);
+            //linkt de juist entiteit en voegt nieuwe posts toe.
+            entiteitManager.updateEntiteit(entiteit);
+            uowManager.Save();
         }
     }
 }

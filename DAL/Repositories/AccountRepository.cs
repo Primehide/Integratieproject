@@ -16,6 +16,12 @@ namespace DAL
             ctx = new EFContext();
         }
 
+        public AccountRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
+        }
+
         public void addUser(Account account)
         {
             ctx.Accounts.Add(account);

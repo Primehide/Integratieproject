@@ -37,5 +37,11 @@ namespace DAL
         {
             return ctx.Posts.ToList();
         }
+
+        public PostRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
+        }
     }
 }
