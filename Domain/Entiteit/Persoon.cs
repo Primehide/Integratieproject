@@ -8,8 +8,7 @@ namespace Domain.Entiteit
 {
     public class Persoon : Entiteit
     {
-        public string Voornaam { get; set; }
-        public string Achternaam { get; set; }
+        public string PersoonNaam { get; set; }
         public List<Organisatie> Organisaties { get; set; }
     }
 }
