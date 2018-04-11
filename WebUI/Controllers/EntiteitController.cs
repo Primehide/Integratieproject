@@ -52,21 +52,24 @@ namespace WebUI.Controllers
                 {
                     Text = o.Naam,
                     Value = o.EntiteitId.ToString(),
-                    Selected = o.IsSelected
+              
                 };
                 ListBoxItems.Add(Organisation);
             }
 
             PersoonVM StartCreation = new PersoonVM()
             {
-                Organisations = ListBoxItems
+                OrganisationChecks = new SelectedOrganisationVM
+                {
+                    Organisations = ListBoxItems
+                }
             };
 
             return View(StartCreation);
         }
 
         [HttpPost]
-        public ActionResult AddPerson(PersoonVM pvm)
+        public ActionResult AddPerson(PersoonVM pvm, IEnumerable<string> SelectedOrganisations)
         {
 
             if (!ModelState.IsValid)
@@ -80,7 +83,7 @@ namespace WebUI.Controllers
                 Organisations = new List<Organisatie>(),
                 FirstName = pvm.Fn
             };
-            foreach (string oId in pvm.SelectedOrganisations)
+            foreach (string oId in SelectedOrganisations)
             {
                 AddedPerson.Organisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
             }
@@ -99,23 +102,58 @@ namespace WebUI.Controllers
         #endregion
         // This region will handle the updating of a certain person. After the update you will be redirected to the Display page of the updated person;
         #region
-                public ActionResult UpdatePerson(int PersonId)
+        public ActionResult UpdatePerson(int EntityId)
+        {
+
+        List<SelectListItem> ListBoxItems = new List<SelectListItem>();
+
+        List<Organisatie> AllOrganisations = eM.GetAllOrganisaties();
+            foreach (Organisatie o in AllOrganisations)
+            {
+                    SelectListItem Organisation = new SelectListItem()
+                    {
+                        Text = o.Naam,
+                        Value = o.EntiteitId.ToString(),
+
+                    };
+                    ListBoxItems.Add(Organisation);
+            }
+
+            UpdatePersonVM UPVM = new UpdatePersonVM
+            {
+                RequestedPerson = eM.GetPerson(EntityId),
+                OrganisationChecks = new SelectedOrganisationVM
                 {
-                    return View(eM.GetPerson(PersonId));
+                    Organisations = ListBoxItems
                 }
+            };
+
+
+            return View(UPVM);
+        }
 
                 [HttpPost]
-                public ActionResult UpdatePerson(Persoon EditedPerson)
+                public ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
                 {
-                    eM.ChangePerson(EditedPerson);
-                    return View("DisplayPerson", EditedPerson);
+                        if (SelectedOrganisations != null)
+                        {
+                            List<Organisatie> NewlyAppointedOrganisations = new List<Organisatie>();
+                            foreach (string oId in SelectedOrganisations)
+                            {
+                                NewlyAppointedOrganisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
+                            }
+
+                            EditedPerson.RequestedPerson.Organisations = NewlyAppointedOrganisations;
+                        }
+                    eM.ChangePerson(EditedPerson.RequestedPerson);
+                    return View("DisplayPerson", EditedPerson.RequestedPerson);
                 }
                 #endregion
         // This region will handle the deletion of a certain person
         #region
-        public ActionResult DeletePerson(int PersonId)
+        public ActionResult DeletePerson(int EntityId)
         {
-            eM.RemovePerson(PersonId);
+            eM.RemovePerson(EntityId);
             return Index();
         }
         #endregion
@@ -124,11 +162,33 @@ namespace WebUI.Controllers
         #region
         public ActionResult AddOrganisation() 
         {
-            return View();
+            List<SelectListItem> ListBoxItems = new List<SelectListItem>();
+
+            List<Persoon> AllPeople = eM.GetAllPeople();
+            foreach (Persoon p in AllPeople)
+            {
+                SelectListItem Person = new SelectListItem()
+                {
+                    Text = p.FirstName + " " + p.LastName,
+                    Value = p.EntiteitId.ToString(),
+
+                };
+                ListBoxItems.Add(Person);
+            }
+
+            OrganisatieVM StartCreation = new OrganisatieVM()
+            {
+                PeopleChecks = new SelectedPeopleVM
+                {
+                    People = ListBoxItems
+                }
+            };
+
+            return View(StartCreation);
         }
 
         [HttpPost]
-        public ActionResult AddOrganisation(OrganisatieVM newOrganisation)
+        public ActionResult AddOrganisation(OrganisatieVM newOrganisation, IEnumerable<string> SelectedPeople)
         {
             if (!ModelState.IsValid)
             {
@@ -137,10 +197,16 @@ namespace WebUI.Controllers
             Organisatie AddedOrganisation = new Organisatie
             {
                 Naam = newOrganisation.Name,
+                Leden = new List<Persoon>(),
                 Gemeente = newOrganisation.Town
             };
 
+            foreach (string pId in SelectedPeople)
+            {
+                AddedOrganisation.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
+            }
             eM.AddOrganisatie(AddedOrganisation);
+
             return View("DisplayOrganisation", AddedOrganisation);
         }
         #endregion
@@ -158,14 +224,47 @@ namespace WebUI.Controllers
         #region
         public ActionResult UpdateOrganisation(int EntityId)
         {
-            return View(eM.GetOrganisatie(EntityId));
+            List<SelectListItem> ListBoxItems = new List<SelectListItem>();
+
+            List<Persoon> AllPeople = eM.GetAllPeople();
+            foreach (Persoon p in AllPeople)
+            {
+                SelectListItem Person = new SelectListItem()
+                {
+                    Text = p.FirstName + " " + p.LastName,
+                    Value = p.EntiteitId.ToString(),
+
+                };
+                ListBoxItems.Add(Person);
+            }
+
+            UpdateOrganisatieVM UOVM = new UpdateOrganisatieVM
+            {
+                RequestedOrganisatie = eM.GetOrganisatie(EntityId),
+                PeopleChecks = new SelectedPeopleVM
+                {
+                    People = ListBoxItems
+                }
+            };
+
+            return View(UOVM);
         }
 
         [HttpPost]
-        public ActionResult UpdateOrganisation(Organisatie editedOrganisation)
+        public ActionResult UpdateOrganisation(UpdateOrganisatieVM editedOrganisation,IEnumerable<string> SelectedPeople)
         {
-            eM.ChangeOrganisatie(editedOrganisation);
-            return View("DisplayOrganisation", editedOrganisation);
+            if (SelectedPeople != null)
+            {
+                List<Persoon> NewlyAppointedPeople = new List<Persoon>();
+                foreach (string pId in SelectedPeople)
+                {
+                    NewlyAppointedPeople.Add(eM.GetPerson(Int32.Parse(pId)));
+                }
+
+                    editedOrganisation.RequestedOrganisatie.Leden = NewlyAppointedPeople;
+            }
+            eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie);
+            return View("DisplayOrganisation", editedOrganisation.RequestedOrganisatie);
         }
         #endregion
         // This region will handle the deletion of a certain person
@@ -173,6 +272,7 @@ namespace WebUI.Controllers
         public ActionResult DeleteOrganisation(int EntityId)
         {
             eM.RemoveOrganisatie(EntityId);
+
             OverviewVM overview = new OverviewVM
             {
                 People = eM.GetAllPeople(),

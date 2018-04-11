@@ -39,12 +39,12 @@ namespace DAL
 
         public Persoon ReadPerson(int id)
         {
-            return ctx.Personen.Include(p => p.Organisations).First();
+            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).First();
         }
 
         public Persoon UpdatePerson(Persoon UpdatedPerson)
         {
-            Persoon toUpdated = ctx.Personen.First(x => x.EntiteitId == UpdatedPerson.PersonId);
+            Persoon toUpdated = ctx.Personen.Where(x => x.EntiteitId == UpdatedPerson.EntiteitId).FirstOrDefault();
             toUpdated.FirstName = UpdatedPerson.FirstName;
             toUpdated.LastName = UpdatedPerson.LastName;
             toUpdated.Organisations = UpdatedPerson.Organisations;
@@ -63,9 +63,9 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            Organisatie toUpdate = ctx.Organisaties.First(x => x.EntiteitId == UpdatedOrganisatie.OrganisatieId);
+            Organisatie toUpdate = ctx.Organisaties.Where(x => x.EntiteitId == UpdatedOrganisatie.EntiteitId).FirstOrDefault();
             toUpdate.Naam = UpdatedOrganisatie.Naam;
-            //toUpdate.Leden = UpdatedOrganisatie.Leden;
+            toUpdate.Leden = UpdatedOrganisatie.Leden;
             toUpdate.Gemeente = UpdatedOrganisatie.Gemeente;
             toUpdate.Posts = UpdatedOrganisatie.Posts;
             toUpdate.Trends = UpdatedOrganisatie.Trends;
