@@ -33,12 +33,15 @@
         <dd>
             @Html.DisplayFor(model => model.Gemeente)
         </dd>
-        @foreach (var persoon in Model.Leden)
-        {
-            <dd>
-                @Html.DisplayFor(m => m.Leden, "People")
-            </dd>
-        }
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Leden)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(m => m.Leden, "People")
+        </dd>
+
     </dl>
 </div>
 <p>

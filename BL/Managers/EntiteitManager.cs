@@ -53,7 +53,7 @@ namespace BL
 
         public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie)
         {
-           return entiteitRepository.UpdateOrganisatie(ChangedOrganisatie);
+            return entiteitRepository.UpdateOrganisatie(ChangedOrganisatie);
         }
 
         public List<Organisatie> GetAllOrganisaties()
@@ -69,6 +69,16 @@ namespace BL
         public void RemoveOrganisatie(int id)
         {
             entiteitRepository.DeleteOrganisatie(id);
+        }
+
+        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, IEnumerable<string> selectedPeople)
+        {
+            return entiteitRepository.UpdateOrganisatie(ChangedOrganisatie,selectedPeople);
+        }
+
+        public void ChangePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations)
+        {
+             entiteitRepository.UpdatePerson(changedPerson, selectedOrganisations);
         }
         #endregion
     }

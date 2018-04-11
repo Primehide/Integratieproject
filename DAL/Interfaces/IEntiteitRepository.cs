@@ -20,5 +20,7 @@ namespace DAL
         IEnumerable<Organisatie> ReadAllOrganisaties();
         Organisatie ReadOrganisatie(int id);
         void DeleteOrganisatie(int id);
+        Organisatie UpdateOrganisatie(Organisatie changedOrganisatie, IEnumerable<string> selectedPeople);
+        void UpdatePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations);
     }
 }

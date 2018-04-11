@@ -83,9 +83,15 @@ namespace WebUI.Controllers
                 Organisations = new List<Organisatie>(),
                 FirstName = pvm.Fn
             };
-            foreach (string oId in SelectedOrganisations)
+            if (SelectedOrganisations != null)
             {
-                AddedPerson.Organisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
+                foreach (string oId in SelectedOrganisations)
+                {
+                    //Organisatie WorkingOrganisation = eM.GetOrganisatie(Int32.Parse(oId));
+                    //WorkingOrganisation.Leden.Add(AddedPerson);
+                    //WorkingOrganisation.AantalLeden = WorkingOrganisation.Leden.Count();
+                    AddedPerson.Organisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
+                }
             }
             eM.AddPerson(AddedPerson);
             return View("DisplayPerson", AddedPerson);
@@ -100,6 +106,7 @@ namespace WebUI.Controllers
             return View(ToDisplay);
         }
         #endregion
+
         // This region will handle the updating of a certain person. After the update you will be redirected to the Display page of the updated person;
         #region
         public ActionResult UpdatePerson(int EntityId)
@@ -132,29 +139,31 @@ namespace WebUI.Controllers
             return View(UPVM);
         }
 
-                [HttpPost]
-                public ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
-                {
-                        if (SelectedOrganisations != null)
-                        {
-                            List<Organisatie> NewlyAppointedOrganisations = new List<Organisatie>();
-                            foreach (string oId in SelectedOrganisations)
-                            {
-                                NewlyAppointedOrganisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
-                            }
+        [HttpPost]
+        public ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
+        {
 
-                            EditedPerson.RequestedPerson.Organisations = NewlyAppointedOrganisations;
-                        }
-                    eM.ChangePerson(EditedPerson.RequestedPerson);
-                    return View("DisplayPerson", EditedPerson.RequestedPerson);
-                }
-                #endregion
+            if (SelectedOrganisations != null)
+            {
+
+                eM.ChangePerson(EditedPerson.RequestedPerson, SelectedOrganisations);
+
+                        
+            } else
+            {
+                eM.ChangePerson(EditedPerson.RequestedPerson);
+            }
+
+         return RedirectToAction("Index");
+        }
+         #endregion
+
         // This region will handle the deletion of a certain person
         #region
         public ActionResult DeletePerson(int EntityId)
         {
             eM.RemovePerson(EntityId);
-            return Index();
+            return RedirectToAction("Index");
         }
         #endregion
 
@@ -200,17 +209,18 @@ namespace WebUI.Controllers
                 Leden = new List<Persoon>(),
                 Gemeente = newOrganisation.Town
             };
-
-            foreach (string pId in SelectedPeople)
+            if (SelectedPeople != null)
             {
-                AddedOrganisation.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
+                foreach (string pId in SelectedPeople)
+                {
+                    AddedOrganisation.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
+                }
             }
             eM.AddOrganisatie(AddedOrganisation);
 
             return View("DisplayOrganisation", AddedOrganisation);
         }
         #endregion
-
 
         // This region is for displaying a certain Organisatie object, given that a certain entityId is given.
         #region
@@ -220,7 +230,9 @@ namespace WebUI.Controllers
             return View(ToDisplay);
         }
         #endregion
-        // This region will handle the updating of a certain organisation. After the update you will be redirected to the Display page of the updated organisation;
+
+        // This region will handle the updating of a certain Organisation. After the update you will be redirected to the Display page of the updated organisation;
+        // TODO : Application of UOW to prevent double creation of an Organisatie Object
         #region
         public ActionResult UpdateOrganisation(int EntityId)
         {
@@ -255,30 +267,24 @@ namespace WebUI.Controllers
         {
             if (SelectedPeople != null)
             {
-                List<Persoon> NewlyAppointedPeople = new List<Persoon>();
-                foreach (string pId in SelectedPeople)
-                {
-                    NewlyAppointedPeople.Add(eM.GetPerson(Int32.Parse(pId)));
-                }
+                eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie, SelectedPeople);
 
-                    editedOrganisation.RequestedOrganisatie.Leden = NewlyAppointedPeople;
+            } else
+            {
+                eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie);
             }
-            eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie);
-            return View("DisplayOrganisation", editedOrganisation.RequestedOrganisatie);
+
+            return RedirectToAction("Index");
         }
         #endregion
-        // This region will handle the deletion of a certain person
+
+        // This region will handle the deletion of a certain Organisation
         #region
         public ActionResult DeleteOrganisation(int EntityId)
         {
             eM.RemoveOrganisatie(EntityId);
 
-            OverviewVM overview = new OverviewVM
-            {
-                People = eM.GetAllPeople(),
-                Organisations = eM.GetAllOrganisaties()
-            };
-            return View("Index",overview);
+            return RedirectToAction("Index");
         }
         #endregion
     }
