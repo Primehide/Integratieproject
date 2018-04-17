@@ -1,0 +1,56 @@
+﻿@model WebUI.Models.UpdateOrganisatieVM
+
+@{
+    ViewBag.Title = "UpdateOrganisation";
+}
+
+<h2>UpdateOrganisation</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Persoon</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.EditorFor(model => model.RequestedOrganisatie.EntiteitId, new { htmlAttributes = new { type = "hidden" } })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequestedOrganisatie.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RequestedOrganisatie.Naam, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Naam, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RequestedOrganisatie.Gemeente, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RequestedOrganisatie.Gemeente, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Gemeente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @foreach (var item in Model.PeopleChecks.People)
+        {
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"
+                           name="SelectedPeople"
+                           value="@item.Value" /> @item.Text
+                    </label>
+                </div>
+        }
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
