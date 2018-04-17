@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Domain.TextGain;
 using Domain.Post;
 using Domain.Entiteit;
+using System.Globalization;
 
 namespace BL
 {
@@ -70,13 +71,14 @@ namespace BL
             List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
+            
             foreach (var Entiteit in TestEntiteiten)
             {
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Entiteit.Naam,
-                    since = new DateTime(2018,04,01),
-                    until = new DateTime(2018,04,09)
+                    since = new DateTime(2018, 04, 01),
+                    until = new DateTime(2018, 04, 09)
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();
@@ -91,7 +93,11 @@ namespace BL
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
                     posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
-                    ConvertAndSaveToDb(posts,Entiteit.EntiteitId);
+                    if (posts.Count != 0)
+                    {
+                        ConvertAndSaveToDb(posts, Entiteit.EntiteitId);
+                    }
+                    
                 }
             }
         }
@@ -171,8 +177,8 @@ namespace BL
                 //sentiment in textgain geeft altijd 2 elementen terug, eerste is polariteit, tweede subjectiviteit
                 if(post.sentiment.Count != 0)
                 {
-                    double polariteit = double.Parse(post.sentiment.ElementAt(0));
-                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1));
+                    double polariteit = double.Parse(post.sentiment.ElementAt(0),CultureInfo.InvariantCulture);
+                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1),CultureInfo.InvariantCulture);
                     newPost.Sentiment.polariteit = polariteit;
                     newPost.Sentiment.subjectiviteit = subjectiviteit;
                 }
@@ -185,6 +191,7 @@ namespace BL
             }
 
             //linkt de juist entiteit en voegt nieuwe posts toe.
+            //postRepository.AddPosts(PostsToAdd);
             entiteitManager.updateEntiteit(entiteit);
             uowManager.Save();
         }

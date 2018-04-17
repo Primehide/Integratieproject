@@ -10,6 +10,7 @@ namespace Domain.Post
 {
     public class Post
     {
+        [Key]
         public int PostId { get; set; }
         public Profile Profile { get; set; }
         public List<HashTag> HashTags { get; set; }
