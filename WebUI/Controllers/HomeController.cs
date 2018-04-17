@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace WebUI.Controllers
 {
+    [RequireHttps]
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -25,6 +26,11 @@ namespace WebUI.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult DashboardStart()
+        {
+            return View("~/Views/Shared/Dashboard/DashboardStarterKit.cshtml");
         }
     }
 }

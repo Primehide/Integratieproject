@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EF\EfContextFactory.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
     <Compile Include="EF\EFContext.cs" />
     <Compile Include="EF\EFDbConfiguration.cs" />
@@ -59,6 +60,7 @@
     <Compile Include="Repositories\PlatformRepository.cs" />
     <Compile Include="Repositories\PostRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">

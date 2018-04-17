@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
+using Domain.Entiteit;
+using System.Data.Entity;
 
 namespace DAL
 {
@@ -18,6 +20,7 @@ namespace DAL
         {
             ctx = new EFContext();
         }
+
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
         {
@@ -141,5 +144,29 @@ namespace DAL
             throw new NotImplementedException();
         }
         #endregion
+
+        public void AddEntiteit(Domain.Entiteit.Entiteit entiteit)
+        {
+            ctx.Entiteiten.Add(entiteit);
+            ctx.SaveChanges();
+        }
+
+        public List<Entiteit> getAlleEntiteiten()
+        {
+            return ctx.Entiteiten.Include(x => x.Posts).ToList();
+        }
+
+        public void updateEntiteit(Entiteit entiteit)
+        {
+            ctx.Entry(entiteit).State = EntityState.Modified;
+            ctx.SaveChanges();
+        }
+
+        public EntiteitRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
+        }
+
     }
 }

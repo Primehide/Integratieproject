@@ -16,13 +16,14 @@ namespace BL
         void RemovePerson(int id);
         List<Persoon> GetAllPeople();
         byte[] GetPersonImageFromDataBase(int id);
-
         void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile);
         Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie);
         List<Organisatie> GetAllOrganisaties();
         Organisatie GetOrganisatie(int id);
         void RemoveOrganisatie(int id);
         byte[] GetOrganisationImageFromDataBase(int id);
-
+        void CreateTestData();
+        List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
+        void updateEntiteit(Entiteit entiteit);
     }
 }

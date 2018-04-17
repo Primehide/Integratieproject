@@ -10,6 +10,6 @@ namespace Domain.Post
     {
         public int SentimentId { get; set; }
         public double polariteit { get; set; }
-        public double objectiviteit { get; set; }
+        public double subjectiviteit { get; set; }
     }
 }
