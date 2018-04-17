@@ -27,5 +27,16 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
+
+        public List<Alert> getAlleAlerts()
+        {
+            return ctx.Alerts.ToList();
+        }
+
+        public void UpdateAlert(Alert alert)
+        {
+            ctx.Entry(alert).State = System.Data.Entity.EntityState.Modified;
+            ctx.SaveChanges();
+        }
     }
 }
