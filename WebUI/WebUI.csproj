@@ -267,10 +267,22 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Shared\Info.cshtml" />
+<<<<<<< Updated upstream
+=======
+    <Content Include="Views\Shared\Dashboard\_DashboardHead.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_DashboardHeader.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_DashboardLeftBar.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_DashboardFooter.cshtml" />
+    <Content Include="Views\Shared\Dashboard\DashboardStarterKit.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_DashboardScripts.cshtml" />
+    <Content Include="Views\Entiteit\CreateThema.cshtml" />
+    <Content Include="Views\Entiteit\DeleteThema.cshtml" />
+    <Content Include="Views\Entiteit\IndexThema.cshtml" />
+    <Content Include="Views\Entiteit\EditThema.cshtml" />
+>>>>>>> Stashed changes
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Entiteit\" />
     <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
   </ItemGroup>
