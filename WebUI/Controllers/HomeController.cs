@@ -27,5 +27,10 @@ namespace WebUI.Controllers
 
             return View();
         }
+
+        public ActionResult DashboardStart()
+        {
+            return View("~/Views/Shared/Dashboard/DashboardStarterKit.cshtml");
+        }
     }
 }
