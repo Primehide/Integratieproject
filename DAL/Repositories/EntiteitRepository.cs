@@ -5,6 +5,8 @@ using System.Linq;
 using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+using System.IO;
 
 namespace DAL
 {
@@ -17,10 +19,32 @@ namespace DAL
             ctx = new EFContext();
         }
 
+        public byte[] ConvertToBytes(HttpPostedFileBase image)
+
+        {
+
+            byte[] imageBytes = null;
+
+            BinaryReader reader = new BinaryReader(image.InputStream);
+
+            imageBytes = reader.ReadBytes((int)image.ContentLength);
+
+            return imageBytes;
+
+        }
 
         #region
-        public void CreatePerson(Persoon p)
+
+        public void CreatePersonWithoutPhoto(Persoon p)
         {
+            ctx.Personen.Add(p);
+            ctx.SaveChanges();
+
+        }
+
+        public void CreatePersonWithPhoto(Persoon p, HttpPostedFileBase ImageFile)
+        {
+            p.Image = ConvertToBytes(ImageFile);
             ctx.Personen.Add(p);
             ctx.SaveChanges();
 
@@ -48,14 +72,38 @@ namespace DAL
 
             toUpdated.FirstName = UpdatedPerson.FirstName;
             toUpdated.LastName = UpdatedPerson.LastName;
+            foreach (Organisatie o in toUpdated.Organisations)
+            {
+                UpdateOrganisatie(o);
+            }
             ctx.SaveChanges();
             return toUpdated;
+        }
+
+        public byte[] GetPersonImageFromDataBase(int Id)
+
+        {
+
+            var q = from temp in ctx.Personen where temp.EntiteitId == Id select temp.Image;
+
+            byte[] cover = q.First();
+
+            return cover;
+
         }
         #endregion
 
         #region
-        public void CreateOrganisatie(Organisatie o)
+
+        public void CreateOrganisatieWithoutPhoto(Organisatie o)
         {
+            ctx.Organisaties.Add(o);
+            ctx.SaveChanges();
+        }
+
+        public void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase ImageFile)
+        {
+            o.Image = ConvertToBytes(ImageFile);
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();
         }
@@ -100,17 +148,19 @@ namespace DAL
             //Bestaande referenties verwijderen
             if (toUpdate.Leden != null)
             {
-                toUpdate.Leden = new List<Persoon>();
+
                 foreach (Persoon p in toUpdate.Leden)
                 {
                     p.Organisations.Remove(toUpdate);
                 }
+                toUpdate.Leden = new List<Persoon>();
             }
+
             //Nieuwe referenties toevoegen
             foreach (string pId in SelectedPeople)
             {
                 Persoon person = ReadPerson(Int32.Parse(pId));
-                person.Organisations.Add(UpdatedOrganisatie);
+                //person.Organisations.Add(UpdatedOrganisatie);
                 toUpdate.Leden.Add(person);
             }
 
@@ -144,6 +194,15 @@ namespace DAL
             toUpdated.LastName = UpdatedPerson.LastName;
 
             ctx.SaveChanges();
+        }
+
+        public byte[] GetOrganisationImageFromDataBase(int Id)
+        {
+            var q = from temp in ctx.Organisaties where temp.EntiteitId == Id select temp.Image;
+
+            byte[] cover = q.First();
+
+            return cover;
         }
         #endregion
     }

@@ -13,6 +13,7 @@ namespace WebUI.Models
     {
         public string Fn { get; set; }
         public string Ln { get; set; }
+        public byte[] Image { get; set; }
         public SelectedOrganisationVM OrganisationChecks { get; set; }
     }
 
@@ -34,6 +35,7 @@ namespace WebUI.Models
     {
         public string Name { get; set; }
         public string Town { get; set; }
+        public byte[] Image { get; set; }
         public SelectedPeopleVM PeopleChecks { get; set; }
     }
 

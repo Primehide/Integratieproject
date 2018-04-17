@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using Domain.Entiteit;
+using System.Web;
 
 namespace BL
 {
@@ -17,9 +18,15 @@ namespace BL
             entiteitRepository = new EntiteitRepository();
         }
         #region
-        public void AddPerson(Persoon p)
+        public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {
-            entiteitRepository.CreatePerson(p);
+            if (ImageFile != null)
+            {
+                entiteitRepository.CreatePersonWithPhoto(p, ImageFile);
+            } else
+            {
+                entiteitRepository.CreatePersonWithoutPhoto(p);
+            }
         }
 
         public Persoon ChangePerson(Persoon ChangedPerson)
@@ -46,9 +53,15 @@ namespace BL
 
         #region
         
-        public void AddOrganisatie(Organisatie o)
+        public void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile)
         {
-            entiteitRepository.CreateOrganisatie(o);
+            if (ImageFile != null)
+            {
+                entiteitRepository.CreateOrganisatieWithPhoto(o, ImageFile);
+            } else
+            {
+                entiteitRepository.CreateOrganisatieWithoutPhoto(o);
+            }
         }
 
         public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie)
@@ -79,6 +92,16 @@ namespace BL
         public void ChangePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations)
         {
              entiteitRepository.UpdatePerson(changedPerson, selectedOrganisations);
+        }
+
+        public byte[] GetPersonImageFromDataBase(int id)
+        {
+            return entiteitRepository.GetPersonImageFromDataBase(id);
+        }
+
+        public byte[] GetOrganisationImageFromDataBase(int id)
+        {
+            return entiteitRepository.GetOrganisationImageFromDataBase(id);
         }
         #endregion
     }

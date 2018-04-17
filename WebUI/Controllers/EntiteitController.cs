@@ -77,12 +77,15 @@ namespace WebUI.Controllers
                 return View();
             }
 
+
+
             Persoon AddedPerson = new Persoon
             {
                 LastName = pvm.Ln,
                 Organisations = new List<Organisatie>(),
                 FirstName = pvm.Fn
             };
+
             if (SelectedOrganisations != null)
             {
                 foreach (string oId in SelectedOrganisations)
@@ -93,8 +96,18 @@ namespace WebUI.Controllers
                     AddedPerson.Organisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
                 }
             }
-            eM.AddPerson(AddedPerson);
-            return View("DisplayPerson", AddedPerson);
+
+            HttpPostedFileBase file = null;
+
+            foreach (HttpPostedFileBase hpfb in Request.Files)
+            {
+                file = hpfb;
+            }
+
+            eM.AddPerson(AddedPerson,file);
+
+            return RedirectToAction("Index");
+
         }
         #endregion
 
@@ -167,6 +180,34 @@ namespace WebUI.Controllers
         }
         #endregion
 
+        public ActionResult RetrieveImage(int id)
+        {
+            byte[] cover = null;
+            Entiteit e = eM.GetPerson(id);
+            if (e == null)
+            {
+                e = eM.GetOrganisatie(id);
+            }
+
+            if (e.GetType() == typeof(Persoon))
+            {
+                cover = eM.GetPersonImageFromDataBase(id);
+            }
+            else if (e.GetType() == typeof(Organisatie))
+            {
+                cover = eM.GetOrganisationImageFromDataBase(id);
+            }
+
+            if (cover != null)
+            {
+                return File(cover, "image/jpg");
+            }
+            else
+            { 
+                return null;
+            }
+        }
+
         // This region will add a newly created Organisatie object to the database and persist
         #region
         public ActionResult AddOrganisation() 
@@ -216,7 +257,9 @@ namespace WebUI.Controllers
                     AddedOrganisation.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
                 }
             }
-            eM.AddOrganisatie(AddedOrganisation);
+            HttpPostedFileBase file = Request.Files["ImageData"];
+
+            eM.AddOrganisatie(AddedOrganisation, file);
 
             return View("DisplayOrganisation", AddedOrganisation);
         }

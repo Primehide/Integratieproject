@@ -30,6 +30,8 @@
             </div>
         </div>
 
+        <input type="file" name="ImageData" id="ImageData" onchange="fileCheck(this);" />
+
         @foreach (var item in Model.PeopleChecks.People)
         {
             <div class="checkbox">
