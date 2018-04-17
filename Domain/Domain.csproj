@@ -67,14 +67,18 @@
     <Compile Include="Post\Grafiek.cs" />
     <Compile Include="Post\HashTag.cs" />
     <Compile Include="Post\Mention.cs" />
-    <Compile Include="Post\Naam.cs" />
+    <Compile Include="Post\Person.cs" />
     <Compile Include="Post\Post.cs" />
+    <Compile Include="Post\Profile.cs" />
     <Compile Include="Post\Sentiment.cs" />
     <Compile Include="Post\Term.cs" />
     <Compile Include="Post\URL.cs" />
     <Compile Include="Post\Verhaal.cs" />
     <Compile Include="Post\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextGain\PostRequest.cs" />
+    <Compile Include="TextGain\Profile.cs" />
+    <Compile Include="TextGain\TextGainResponse.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

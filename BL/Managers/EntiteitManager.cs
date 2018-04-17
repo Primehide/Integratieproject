@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Entiteit;
 
 namespace BL
 {
@@ -40,6 +41,49 @@ namespace BL
             {
                 entiteitRepository = (entiteitRepository == null) ? new EntiteitRepository() : entiteitRepository;
             }
+        }
+
+        public void CreateTestData()
+        {
+            initNonExistingRepo(false);
+            Domain.Entiteit.Organisatie NVA = new Domain.Entiteit.Organisatie()
+            {
+                Leden = new List<Domain.Entiteit.Persoon>(),
+                Naam = "N-VA"
+            };
+
+            Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
+            {
+                Naam = "Ben Weyts",
+                Organisaties = new List<Domain.Entiteit.Organisatie>()
+            };
+
+            Domain.Entiteit.Persoon Bartje = new Domain.Entiteit.Persoon()
+            {
+                Naam = "Bart De Wever",
+                Organisaties = new List<Domain.Entiteit.Organisatie>()
+            };
+
+            //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
+            BenWeyts.Organisaties.Add(NVA);
+            Bartje.Organisaties.Add(NVA);
+
+
+            entiteitRepository.AddEntiteit(NVA);
+            entiteitRepository.AddEntiteit(BenWeyts);
+            entiteitRepository.AddEntiteit(Bartje);
+        }
+
+        public List<Entiteit> getAlleEntiteiten()
+        {
+            initNonExistingRepo(false);
+            return entiteitRepository.getAlleEntiteiten();
+        }
+
+        public void updateEntiteit(Entiteit entiteit)
+        {
+            initNonExistingRepo(false);
+            entiteitRepository.updateEntiteit(entiteit);
         }
     }
 }
