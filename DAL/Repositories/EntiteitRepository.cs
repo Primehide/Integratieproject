@@ -20,15 +20,10 @@ namespace DAL
         }
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
-
         {
-
             byte[] imageBytes = null;
-
             BinaryReader reader = new BinaryReader(image.InputStream);
-
             imageBytes = reader.ReadBytes((int)image.ContentLength);
-
             return imageBytes;
 
         }
@@ -68,16 +63,9 @@ namespace DAL
 
         public Persoon UpdatePerson(Persoon UpdatedPerson)
         {
-            Persoon toUpdated = ctx.Personen.Include(org => org.Organisations).Where(x => x.EntiteitId == UpdatedPerson.EntiteitId).FirstOrDefault();
-
-            toUpdated.FirstName = UpdatedPerson.FirstName;
-            toUpdated.LastName = UpdatedPerson.LastName;
-            foreach (Organisatie o in toUpdated.Organisations)
-            {
-                UpdateOrganisatie(o);
-            }
+            ctx.Entry(UpdatedPerson).State = EntityState.Modified;
             ctx.SaveChanges();
-            return toUpdated;
+            return UpdatedPerson;
         }
 
         public byte[] GetPersonImageFromDataBase(int Id)
@@ -111,14 +99,9 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            Organisatie toUpdate = ctx.Organisaties.Where(x => x.EntiteitId == UpdatedOrganisatie.EntiteitId).FirstOrDefault();
-            toUpdate.Naam = UpdatedOrganisatie.Naam;
-            toUpdate.Gemeente = UpdatedOrganisatie.Gemeente;
-            toUpdate.Posts = UpdatedOrganisatie.Posts;
-            toUpdate.Trends = UpdatedOrganisatie.Trends;
+            ctx.Entry(UpdatedOrganisatie).State = EntityState.Modified;
             ctx.SaveChanges();
-            return toUpdate;
-
+            return UpdatedOrganisatie;
         }
 
 
@@ -139,63 +122,6 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie, IEnumerable<string> SelectedPeople)
-        {
-            Organisatie toUpdate = ctx.Organisaties.Include(l => l.Leden).Where(x => x.EntiteitId == UpdatedOrganisatie.EntiteitId).FirstOrDefault();
-
-
-            List<Persoon> NewlyAppointedPeople = new List<Persoon>();
-            //Bestaande referenties verwijderen
-            if (toUpdate.Leden != null)
-            {
-
-                foreach (Persoon p in toUpdate.Leden)
-                {
-                    p.Organisations.Remove(toUpdate);
-                }
-                toUpdate.Leden = new List<Persoon>();
-            }
-
-            //Nieuwe referenties toevoegen
-            foreach (string pId in SelectedPeople)
-            {
-                Persoon person = ReadPerson(Int32.Parse(pId));
-                //person.Organisations.Add(UpdatedOrganisatie);
-                toUpdate.Leden.Add(person);
-            }
-
-            toUpdate.Naam = UpdatedOrganisatie.Naam;
-            toUpdate.Gemeente = UpdatedOrganisatie.Gemeente;
-            toUpdate.Posts = UpdatedOrganisatie.Posts;
-            toUpdate.Trends = UpdatedOrganisatie.Trends;
-
-            toUpdate.AantalLeden = toUpdate.Leden.Count();
-
-            ctx.Entry(toUpdate).State = EntityState.Modified;
-
-            ctx.SaveChanges();
-            return toUpdate;
-        }
-
-        public void UpdatePerson(Persoon UpdatedPerson, IEnumerable<string> selectedOrganisations)
-        {
-            Persoon toUpdated = ctx.Personen.Include(org => org.Organisations).Where(x => x.EntiteitId == UpdatedPerson.EntiteitId).FirstOrDefault();
-
-            //Remove all references
-            toUpdated.Organisations = new List<Organisatie>();
-
-            //Add new References
-            foreach (string oId in selectedOrganisations)
-            {
-                toUpdated.Organisations.Add(ReadOrganisatie(Int32.Parse(oId)));
-            }
-
-            toUpdated.FirstName = UpdatedPerson.FirstName;
-            toUpdated.LastName = UpdatedPerson.LastName;
-
-            ctx.SaveChanges();
-        }
-
         public byte[] GetOrganisationImageFromDataBase(int Id)
         {
             var q = from temp in ctx.Organisaties where temp.EntiteitId == Id select temp.Image;
@@ -203,6 +129,16 @@ namespace DAL
             byte[] cover = q.First();
 
             return cover;
+        }
+
+        public Organisatie UpdateOrganisatie(Organisatie changedOrganisatie, IEnumerable<string> selectedPeople)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdatePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
