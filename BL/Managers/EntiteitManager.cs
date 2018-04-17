@@ -15,5 +15,6 @@ namespace BL
         {
             entiteitRepository = new EntiteitRepository();
         }
+       
     }
 }
