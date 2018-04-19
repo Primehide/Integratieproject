@@ -24,5 +24,8 @@ namespace BL
         void RemoveOrganisatie(int id);
         byte[] GetOrganisationImageFromDataBase(int id);
 
+        void CreateTestData();
+        List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
+        void updateEntiteit(Entiteit entiteit);
     }
 }

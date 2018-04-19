@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entiteit
 {
-    public class Thema
+    public class Thema : Entiteit
     {
         [Key]
         public int ThemaId { get; set; }

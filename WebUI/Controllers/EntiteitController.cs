@@ -330,5 +330,12 @@ namespace WebUI.Controllers
             return RedirectToAction("Index");
         }
         #endregion
+
+        public void CreateTestData()
+        {
+            BL.EntiteitManager entiteitManager = new BL.EntiteitManager();
+            entiteitManager.CreateTestData();
+        }
+
     }
 }

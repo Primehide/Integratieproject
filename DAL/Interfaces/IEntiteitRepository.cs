@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using System.Web;
+
 
 namespace DAL
 {
@@ -27,5 +29,10 @@ namespace DAL
         void DeleteOrganisatie(int id);
         Organisatie UpdateOrganisatie(Organisatie changedOrganisatie, IEnumerable<string> selectedPeople);
         byte[] GetOrganisationImageFromDataBase(int Id);
+
+        void AddEntiteit(Entiteit entiteit);
+        List<Entiteit> getAlleEntiteiten();
+        void updateEntiteit(Entiteit entiteit);
+
     }
 }

@@ -8,5 +8,6 @@ namespace DAL
 {
     public interface IAccountRepository
     {
+        void addUser(Domain.Account.Account account);
     }
 }

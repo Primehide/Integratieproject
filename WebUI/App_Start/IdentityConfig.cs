@@ -1,25 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using WebUI.Models;
 
 namespace WebUI
 {
     public class EmailService : IIdentityMessageService
     {
-        public Task SendAsync(IdentityMessage message)
+        public async Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            await configSendGridasync(message);
+        }
+
+        private async Task configSendGridasync(IdentityMessage message)
+        {
+            var apiKey = WebConfigurationManager.AppSettings["SendGridApiKey"];
+            var client = new SendGridClient(apiKey);
+            var myMessage = new SendGridMessage();
+            myMessage.AddTo(message.Destination);
+            myMessage.From = new SendGrid.Helpers.Mail.EmailAddress(WebConfigurationManager.AppSettings["mailAccount"], "Optimize Prime");
+            myMessage.Subject = message.Subject;
+            myMessage.PlainTextContent = message.Body;
+            myMessage.HtmlContent = message.Body;
+            var response = await client.SendEmailAsync(myMessage);
         }
     }
 
@@ -47,7 +65,7 @@ namespace WebUI
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
-                RequireUniqueEmail = true
+                RequireUniqueEmail = false //makes it possible to link multipe external logins
             };
 
             // Configure validation logic for passwords
