@@ -9,8 +9,6 @@ namespace Domain.Entiteit
 {
     public class Thema : Entiteit
     {
-        [Key]
-        public int ThemaId { get; set; }
         public List<Sleutelwoord> SleutenWoorden { get; set; }
     }
 }

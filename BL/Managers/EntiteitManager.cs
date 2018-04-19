@@ -89,6 +89,7 @@ namespace BL
         #region
         public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {
+            initNonExistingRepo(false);
             if (ImageFile != null)
             {
                 entiteitRepository.CreatePersonWithPhoto(p, ImageFile);
@@ -100,6 +101,7 @@ namespace BL
 
         public Persoon ChangePerson(Persoon ChangedPerson)
         {
+            initNonExistingRepo(false);
             Persoon toUpdated = GetPerson(ChangedPerson.EntiteitId);
 
             toUpdated.FirstName = ChangedPerson.FirstName;
@@ -113,16 +115,19 @@ namespace BL
 
         public List<Persoon> GetAllPeople()
         {
+            initNonExistingRepo(false);
             return entiteitRepository.ReadAllPeople().ToList();
         }
 
         public Persoon GetPerson(int id)
         {
+            initNonExistingRepo(false);
             return entiteitRepository.ReadPerson(id);
         }
 
         public void RemovePerson(int id)
         {
+            initNonExistingRepo(false);
             entiteitRepository.DeletePerson(id);
         }
         #endregion
@@ -132,6 +137,7 @@ namespace BL
         
         public void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile)
         {
+            initNonExistingRepo(false);
             if (ImageFile != null)
             {
                 entiteitRepository.CreateOrganisatieWithPhoto(o, ImageFile);
@@ -143,6 +149,7 @@ namespace BL
 
         public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie)
         {
+            initNonExistingRepo(false);
             Organisatie toUpdate = GetOrganisatie(ChangedOrganisatie.EntiteitId);
             toUpdate.Naam = ChangedOrganisatie.Naam;
             toUpdate.Gemeente = ChangedOrganisatie.Gemeente;
@@ -154,21 +161,25 @@ namespace BL
 
         public List<Organisatie> GetAllOrganisaties()
         {
+            initNonExistingRepo(false);
             return entiteitRepository.ReadAllOrganisaties().ToList();
         }
 
         public Organisatie GetOrganisatie(int id)
         {
+            initNonExistingRepo(false);
             return entiteitRepository.ReadOrganisatie(id);
         }
 
         public void RemoveOrganisatie(int id)
         {
+            initNonExistingRepo(false);
             entiteitRepository.DeleteOrganisatie(id);
         }
 
         public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, IEnumerable<string> selectedPeople)
         {
+            initNonExistingRepo(false);
             Organisatie toUpdate = GetOrganisatie(ChangedOrganisatie.EntiteitId);
 
 
@@ -204,6 +215,7 @@ namespace BL
 
         public void ChangePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations)
         {
+            initNonExistingRepo(false);
             Persoon toUpdated = GetPerson(changedPerson.EntiteitId);
 
             //Remove all references
@@ -223,11 +235,13 @@ namespace BL
 
         public byte[] GetPersonImageFromDataBase(int id)
         {
+            initNonExistingRepo(false);
             return entiteitRepository.GetPersonImageFromDataBase(id);
         }
 
         public byte[] GetOrganisationImageFromDataBase(int id)
         {
+            initNonExistingRepo(false);
             return entiteitRepository.GetOrganisationImageFromDataBase(id);
         }
         #endregion
