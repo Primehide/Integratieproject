@@ -13,6 +13,7 @@ namespace BL
         void CreateTestData();
         List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
-        bool berekenTrends(int minVoorwaarde, Entiteit entiteit, TrendType type, Domain.Enum.Voorwaarde voorwaarde);
+        bool berekenTrends(double minVoorwaarde, Entiteit entiteit, TrendType type, Domain.Enum.Voorwaarde voorwaarde);
+        void ResetTrends();
     }
 }

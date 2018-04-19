@@ -37,6 +37,8 @@ namespace BL
             EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
             List<Alert> Alerts = getAlleAlerts();
             Entiteit e;
+            //1 keer alle trends resetten om vandaag te kunnen kijken of er een trend aanwezig is
+            entiteitMgr.ResetTrends();
             foreach (var alert in Alerts)
             {
                 e = alert.Entiteit;
