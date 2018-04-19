@@ -1,0 +1,51 @@
+﻿@model Domain.Entiteit.Persoon
+
+@{
+    ViewBag.Title = "DisplayPerson";
+}
+
+<h2>DisplayPerson</h2>
+
+<div>
+    <h4>Persoon</h4>
+    <hr />
+    <dl class="dl-horizontal">
+
+        <dd>
+
+            <img src="/Content/RetrieveImage/@Model.EntiteitId" alt="" height=100 width=200 />
+
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EntiteitId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EntiteitId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Organisations)
+        </dt>
+
+        @Html.DisplayFor(m => m.Organisations,"Organisations")
+    </dl>
+</div>
+
