@@ -2,9 +2,7 @@
 @{
     ViewBag.Title = "Register";
 }
-
 <h2>@ViewBag.Title.</h2>
-
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -29,13 +27,32 @@
             @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
         </div>
     </div>
+
+    <div class="form-group">
+        @Html.Label("lblAchternaam", "Achternaam", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBox("achternaam", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("lblVoornaam", "Voornaam", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBox("voornaam", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("lblGeboortedatum", "Geboortedatum", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <input id="date" type="date" value="date" name="date" class="form-control">
+        </div>
+    </div>
+
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-default" value="Register" />
         </div>
     </div>
 }
-
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

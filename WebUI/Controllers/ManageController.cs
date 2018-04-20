@@ -3,6 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BL;
+using Domain.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -332,8 +334,57 @@ namespace WebUI.Controllers
 
             base.Dispose(disposing);
         }
+  
+        //GET: /Manage/ManageAccount
+        public ActionResult ManageAccount()
+        {
+            Account acc = new Account();
+            AccountManager acm = new AccountManager();
+            acc = acm.getAccount(User.Identity.GetUserId());
+            ViewBag.Firstname = acc.Voornaam;
+            ViewBag.Lastname = acc.Achternaam;
+            ViewBag.Birthdate = acc.GeboorteDatum.ToString("yyyy-MM-dd"); ;
+            ViewBag.Email = acc.Email;
+          
+            return View();
+        }
 
-#region Helpers
+        //POST /Manage/ManageAccount
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ManageAccount(Account account, string date)
+        {
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            DateTime parsedDate = DateTime.Parse(date);
+            AccountManager acm = new AccountManager();
+            account.IdentityId = (User.Identity.GetUserId());
+            account.Dashboard = new Domain.Account.Dashboard();
+            account.GeboorteDatum = parsedDate.Date;
+           if (User.Identity.GetUserName() != account.Email)
+            {
+                user.EmailConfirmed = false;
+                user.Email = account.Email;
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+               
+                UserManager.Update(user);
+                var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
+               
+                var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                   new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "confirmation",
+                   "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                AuthenticationManager.SignOut();
+
+            }
+
+            acm.updateUser(account);
+            ManageAccount();
+            return View();
+
+        }
+
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 

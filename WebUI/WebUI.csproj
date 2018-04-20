@@ -4191,6 +4191,7 @@
     <Content Include="Views\Shared\Dashboard\_DashboardFooter.cshtml" />
     <Content Include="Views\Shared\Dashboard\DashboardStarterKit.cshtml" />
     <Content Include="Views\Shared\Dashboard\_DashboardScripts.cshtml" />
+    <Content Include="Views\Manage\ManageAccount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
