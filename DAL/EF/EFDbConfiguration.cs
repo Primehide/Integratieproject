@@ -14,5 +14,6 @@ namespace DAL
             AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;
         }
+        
     }
 }

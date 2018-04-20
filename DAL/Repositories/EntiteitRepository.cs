@@ -177,23 +177,28 @@ namespace DAL
 
         public void DeleteThema(int entiteitsId)
         {
-            //Thema thema = ctx.Themas.Find(entiteitsId);
-
-            var thema = ctx.Themas.Include(b => b.SleutenWoorden).FirstOrDefault(b => b.EntiteitId == entiteitsId);
-            var woorden = ctx.SleutelWoorden.All(b => b.SleutelwoordId == entiteitsId);
+            Thema thema = ReadThema(entiteitsId);
+            //IList<Sleutelwoord> sleutelwoorden = thema.SleutenWoorden;
+            foreach(Sleutelwoord sw in thema.SleutenWoorden.ToList())
+            {
+                ctx.SleutelWoorden.Remove(sw);
+            }
+            thema.SleutenWoorden = null;
+            ctx.SaveChanges();
+            // var thema = ctx.Themas.SingleOrDefault(b => b.EntiteitId == entiteitsId);
             ctx.Themas.Remove(thema);
             ctx.SaveChanges();
         }
 
         public Thema ReadThema(int entiteitsId)
         {
-            Thema thema = ctx.Themas.Find(entiteitsId);
+            Thema thema = ctx.Themas.Include(x => x.SleutenWoorden).SingleOrDefault(x => x.EntiteitId == entiteitsId);
             return thema;
         }
 
         public IEnumerable<Thema> ReadThemas()
         {
-            return ctx.Themas.ToList();
+            return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
         }
 
         public EntiteitRepository(UnitOfWork uow)
