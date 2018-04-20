@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace WebUI.Models
@@ -79,6 +80,17 @@ namespace WebUI.Models
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        public string voornaam { get; set; }
+
+        [Required]
+        public string achternaam { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{yyyy-MM-dd}")]
+        public DateTime geboortedatum { get; set; }
     }
 
     public class ResetPasswordViewModel
