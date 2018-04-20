@@ -4277,6 +4277,11 @@
     <Content Include="Views\Shared\DisplayTemplates\Sleutelwoord.cshtml" />
     <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
+    <Content Include="Views\Account\LoginNew.cshtml" />
+    <Content Include="Views\Account\RegisterNew.cshtml" />
+    <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
+    <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4321,7 +4326,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54057</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
