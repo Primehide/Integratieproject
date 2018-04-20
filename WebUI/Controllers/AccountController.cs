@@ -173,7 +173,6 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            //DateTime birthdate = model.geboortedatum;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
