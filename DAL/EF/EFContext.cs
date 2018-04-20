@@ -13,6 +13,7 @@ namespace DAL
 {
     internal class EFContext : DbContext
     {
+
         private bool delaySave;
 
         public EFContext()
