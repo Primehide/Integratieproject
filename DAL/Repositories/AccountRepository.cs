@@ -36,7 +36,7 @@ namespace DAL
             updated.Voornaam = account.Voornaam;
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
-            //    updated.Email = account.Email;
+            updated.Email = account.Email;
 
 
 

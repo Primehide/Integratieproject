@@ -361,19 +361,29 @@ namespace WebUI.Controllers
             account.IdentityId = (User.Identity.GetUserId());
             account.Dashboard = new Domain.Account.Dashboard();
             account.GeboorteDatum = parsedDate.Date;
+
+            // if email changed:
            if (User.Identity.GetUserName() != account.Email)
             {
                 user.EmailConfirmed = false;
                 user.Email = account.Email;
+                user.UserName = account.Email;
+
+                //security stamp vernieuwen
+                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                
-                UserManager.Update(user);
-                var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
                
+                UserManager.Update(user);
+            
+               //send mail 
                 var callbackUrl = Url.Action("ConfirmEmail", "Account",
                    new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "confirmation",
                    "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                //sign out
+                var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
                 AuthenticationManager.SignOut();
 
             }
