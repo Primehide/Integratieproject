@@ -1,0 +1,80 @@
+﻿@model WebUI.Models.OverviewVM
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<h3>PERSONEN</h3>
+<table class="table">
+    <tr>
+        <th>
+            Id
+        </th>
+        <th>
+            Naam
+        </th>
+        <th>
+            Gemeente
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model.People)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.EntiteitId)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+
+            <td>
+                @Html.ActionLink("Display", "DisplayPerson", new { EntityId = item.EntiteitId })
+            @Html.ActionLink("Update", "UpdatePerson", new { EntityId = item.EntiteitId })
+            @Html.ActionLink("Delete", "DeletePerson", new { EntityId = item.EntiteitId })
+        </td>
+    </tr>
+    }
+    </table>
+    <h3>ORGANISATIES</h3>
+    <table class="table">
+        <tr>
+            <th>
+                Naam
+            </th>
+            <th>
+                Gemeente
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model.Organisations)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Naam)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gemeente)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Display", "DisplayOrganisation", new { EntityId = item.EntiteitId })
+                @Html.ActionLink("Update", "UpdateOrganisation", new { EntityId = item.EntiteitId })
+                @Html.ActionLink("Delete", "DeleteOrganisation", new { EntityId = item.EntiteitId })
+            </td>
+        </tr>
+
+        }
+    </table>
+    <tr>
+        <td>@Html.ActionLink("Maak nieuw Organisatie", "AddOrganisation", "Entiteit")</td>
+        <td>@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit")</td>
+    </tr>
