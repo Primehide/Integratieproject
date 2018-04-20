@@ -167,7 +167,8 @@ namespace DAL
 
         public void UpdateThema(Thema thema)
         {
-            var result = ctx.Themas.SingleOrDefault(b => b.EntiteitId == thema.EntiteitId);
+            var result = ReadThema(thema.EntiteitId);
+         
             if (result != null)
             {
                 result.Naam = thema.Naam;
@@ -196,9 +197,22 @@ namespace DAL
             return thema;
         }
 
+        public Sleutelwoord readSleutelwoord(int sleutelId)
+        {
+            Sleutelwoord sleutelwoord = ctx.SleutelWoorden.SingleOrDefault(x => x.SleutelwoordId == sleutelId);
+            return sleutelwoord;
+        }
+
         public IEnumerable<Thema> ReadThemas()
         {
             return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
+        }
+
+        public void DeleteSleutelwoord(int sleutelId)
+        {
+            Sleutelwoord sleutelwoord = readSleutelwoord(sleutelId);
+            ctx.SleutelWoorden.Remove(sleutelwoord);
+            ctx.SaveChanges();
         }
 
         public EntiteitRepository(UnitOfWork uow)

@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "ManageAccount";
+}
+
+<h2>ManageAccount</h2>
+
+@model Domain.Account.Account
+@using Microsoft.AspNet.Identity
+
+@{
+    /**/
+
+    ViewBag.Title = "Account beheren";
+}
+<h2>@ViewBag.Title.</h2>
+@using (Html.BeginForm("ManageAccount", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <h4>Change Email form</h4>
+    <hr />
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.Label("lblMail", "Email adres:", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @Value = (String)ViewBag.Email, @class = "form-control" })
+
+
+
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("lblNaam", "Achternaam", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Achternaam, new { @Value = (String)ViewBag.Lastname, @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.Label("lblVoornaam", "Voornaam", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Voornaam, new { @Value = (String)ViewBag.Firstname, @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("lblGeboortedatum", "Geboortedatum", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <div class="editorfordate">
+                <input id="date" type="date" name="date" class="form-control" value="@ViewBag.Birthdate">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Wijzig account gegevens" class="btn btn-default" />
+        </div>
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

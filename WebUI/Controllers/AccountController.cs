@@ -62,16 +62,22 @@ namespace WebUI.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult LoginNew(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction("LoginNew",model);
             }
 
             // Require the user to have a confirmed email before they can log on.
@@ -100,7 +106,7 @@ namespace WebUI.Controllers
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
+                    return View("LoginNew", model);
             }
         }
 
@@ -160,17 +166,22 @@ namespace WebUI.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string voornaam, string achternaam, string date)
         {
+
+
+
+            DateTime birthdate = DateTime.ParseExact(date, "yyyy-MM-dd",
+                                       System.Globalization.CultureInfo.InvariantCulture);
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
+                CreateDomainUser(user.Id, user.Email, voornaam, achternaam, birthdate);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
 

@@ -31,7 +31,10 @@ namespace BL
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
         void UpdateThema(Thema thema);
         void DeleteThema(int entiteitsId);
+        void DeleteSleutelwoord(int sleutelId);
         IEnumerable<Thema> GetThemas();
         Thema GetThema(int entiteitsId);
+        Sleutelwoord GetSleutelwoord(int sleutelId);
+
     }
 }

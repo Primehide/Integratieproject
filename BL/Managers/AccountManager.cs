@@ -1,26 +1,28 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DAL;
+
 using Domain.Account;
 
 namespace BL
 {
     public class AccountManager : IAccountManager
     {
+        private readonly IAccountRepository repo;
+
         private IAccountRepository accountRepository;
         private UnitOfWorkManager uowManager;
 
         public AccountManager()
         {
-
+            repo = new AccountRepository();
         }
 
         public AccountManager(UnitOfWorkManager uofMgr)
         {
             uowManager = uofMgr;
+
         }
 
         public void addUser(Account account)
@@ -28,6 +30,23 @@ namespace BL
             initNonExistingRepo(true);
             accountRepository.addUser(account);
             uowManager.Save();
+        }
+        public void updateUser(Account account)
+        {
+         
+            initNonExistingRepo(true);
+            Account oldaccount = new Account();
+
+            oldaccount = accountRepository.ReadAccount(account.IdentityId);
+            account.AccountId = oldaccount.AccountId;
+         
+
+            accountRepository.updateUser(account);
+            uowManager.Save();
+        }
+        public Account getAccount(string ID)
+        {
+            return repo.ReadAccount(ID);
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

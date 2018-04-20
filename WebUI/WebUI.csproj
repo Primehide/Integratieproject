@@ -21,9 +21,12 @@
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44365</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -4257,6 +4260,7 @@
     <Content Include="Views\Shared\Dashboard\_DashboardFooter.cshtml" />
     <Content Include="Views\Shared\Dashboard\DashboardStarterKit.cshtml" />
     <Content Include="Views\Shared\Dashboard\_DashboardScripts.cshtml" />
+    <Content Include="Views\Manage\ManageAccount.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
@@ -4266,15 +4270,20 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-	<Content Include="Views\Entiteit\IndexThema.cshtml" />
+    <Content Include="Views\Entiteit\IndexThema.cshtml" />
     <Content Include="Views\Entiteit\CreateThema.cshtml" />
     <Content Include="Views\Entiteit\DeleteThema.cshtml" />
     <Content Include="Views\Entiteit\EditThema.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Sleutelwoord.cshtml" />
+    <Content Include="Views\Account\LoginNew.cshtml" />
+    <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
-	<Folder Include="Views\EditorTemplates\" />
-	<Folder Include="App_Data\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
