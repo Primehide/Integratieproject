@@ -1,0 +1,17 @@
+﻿@model IEnumerable<Domain.Entiteit.Persoon>
+@{
+    ViewBag.Title = "Organisations";
+}
+
+@foreach (Domain.Entiteit.Persoon p in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(i => p.FirstName)
+        </td>
+
+        <td>
+            @Html.DisplayFor(i => p.LastName)
+        </td>
+    </tr>
+}
