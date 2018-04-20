@@ -10,7 +10,7 @@ namespace BL
 {
     public class EntiteitManager : IEntiteitManager
     {
-        private IEntiteitRepository entiteitRepository;
+        private IEntiteitRepository entiteitRepository = new EntiteitRepository();
         private UnitOfWorkManager uowManager;
 
         public EntiteitManager()
@@ -84,6 +84,37 @@ namespace BL
         {
             initNonExistingRepo(false);
             entiteitRepository.updateEntiteit(entiteit);
+        }
+
+        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        {
+            Thema thema = new Thema()
+            {
+                Naam = naam,
+                SleutenWoorden = sleutelwoorden
+            };
+            entiteitRepository.CreateThema(thema);
+        }
+
+
+        public void UpdateThema(Thema thema)
+        {
+            entiteitRepository.UpdateThema(thema);
+        }
+
+        public void DeleteThema(int entiteitsId)
+        {
+            entiteitRepository.DeleteThema(entiteitsId);
+        }
+
+        public IEnumerable<Thema> GetThemas()
+        {
+            return entiteitRepository.ReadThemas();
+        }
+
+        public Thema GetThema(int entiteitsId)
+        {
+            return entiteitRepository.ReadThema(entiteitsId);
         }
     }
 }

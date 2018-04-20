@@ -4191,10 +4191,15 @@
     <Content Include="Views\Shared\Dashboard\_DashboardFooter.cshtml" />
     <Content Include="Views\Shared\Dashboard\DashboardStarterKit.cshtml" />
     <Content Include="Views\Shared\Dashboard\_DashboardScripts.cshtml" />
+    <Content Include="Views\Entiteit\IndexThema.cshtml" />
+    <Content Include="Views\Entiteit\CreateThema.cshtml" />
+    <Content Include="Views\Entiteit\DeleteThema.cshtml" />
+    <Content Include="Views\Entiteit\EditThema.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Entiteit\" />
+    <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
   </ItemGroup>
@@ -4236,7 +4241,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54057</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
