@@ -1,0 +1,24 @@
+﻿
+@{
+
+
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+
+@using (Html.BeginForm())
+{
+    <input type="text" name="searchQuery" />
+    <input type="submit" class="btn btn-default" />
+
+
+}
+@Html.CheckBox("People", true)Personen
+
+
+@Html.CheckBox("Organisaties", true)
+        partijen
+@Html.CheckBox("Posts", true)
+        posts
