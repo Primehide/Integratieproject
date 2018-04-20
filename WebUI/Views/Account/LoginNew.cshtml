@@ -79,19 +79,19 @@
                                 <button class="btn btn-block btn-lg btn-info btn-rounded" type="submit">Log In</button>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center center-block">
-                                <section id="socialLoginForm">
-                                    @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-                                </section>
-                            </div>
-                        </div><br />
-                        <div class="form-group m-b-0">
-                            <div class="col-sm-12 text-center">
-                                Don't have an account? <a href="/account/RegisterNew" class="text-info m-l-5"><b>Sign Up</b></a>
-                            </div>
-                        </div><br />
                     }
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center center-block">
+                            <section id="socialLoginForm">
+                                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                            </section>
+                        </div>
+                    </div><br />
+                    <div class="form-group m-b-0">
+                        <div class="col-sm-12 text-center">
+                            Don't have an account? <a href="/account/RegisterNew" class="text-info m-l-5"><b>Sign Up</b></a>
+                        </div>
+                    </div><br />
                 </div>
             </div>
         </div>

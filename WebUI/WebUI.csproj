@@ -4277,6 +4277,8 @@
     <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
     <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Account\RegisterNew.cshtml" />
+    <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
+    <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
