@@ -276,6 +276,18 @@ namespace BL
             initNonExistingRepo(false);
             return entiteitRepository.GetOrganisationImageFromDataBase(id);
         }
+
+        public void DeleteSleutelwoord(int sleutelId)
+        {
+            entiteitRepository.DeleteSleutelwoord(sleutelId);
+        }
+
+        public Sleutelwoord GetSleutelwoord(int sleutelId)
+        {
+            return entiteitRepository.readSleutelwoord(sleutelId);
+        }
         #endregion
+
+     
     }
 }

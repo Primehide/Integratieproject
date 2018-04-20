@@ -377,10 +377,23 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditThema(Thema thema, int id)
+        public ActionResult EditThema(Thema thema, int id, List<Sleutelwoord> sleutelwoorden)
         {
-            
             thema.EntiteitId = id;
+
+            var mijnThema = eM.GetThema(id);
+            string woorden = sleutelwoorden[0].woord;
+            if (woorden != null)
+            {
+                string[] split = woorden.Split(',');
+                List<Sleutelwoord> mijnList = mijnThema.SleutenWoorden;
+                foreach (string woord in split)
+                {
+                    Sleutelwoord sleutelwoord = new Sleutelwoord(woord);
+                    mijnList.Add(sleutelwoord);
+                }
+                thema.SleutenWoorden = mijnList;
+            }
             eM.UpdateThema(thema);
                 return RedirectToAction("IndexThema");                 
         }
@@ -403,6 +416,18 @@ namespace WebUI.Controllers
             
                // return View();
             
+        }
+
+        public ActionResult DeleteThemaSleutelwoord(int id)
+        {
+            return View(eM.GetSleutelwoord(id));
+        }
+        [HttpPost]
+        public ActionResult DeleteThemaSleutelwoord(int id, FormCollection collection)
+        {
+            eM.DeleteSleutelwoord(id);
+            return RedirectToAction("IndexThema");
+       // return View();
         }
     }
 }
