@@ -161,23 +161,23 @@ namespace WebUI.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult RegisterNew()
+        {
+            return View();
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model, string voornaam, string achternaam, string date)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
-
-
-
-            DateTime birthdate = DateTime.ParseExact(date, "yyyy-MM-dd",
-                                       System.Globalization.CultureInfo.InvariantCulture);
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, voornaam, achternaam, birthdate);
+                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -198,7 +198,7 @@ namespace WebUI.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View("RegisterNew",model);
         }
 
         //

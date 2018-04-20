@@ -337,5 +337,72 @@ namespace WebUI.Controllers
             entiteitManager.CreateTestData();
         }
 
+        public ActionResult IndexThema()
+        {
+            IEnumerable<Thema> themas = eM.GetThemas();
+            return View(themas);
+        }
+
+        // GET: Thema/Create
+        public ActionResult CreateThema()
+        {
+            return View();
+        }
+        // POST: Thema/Create
+        [HttpPost]
+        public ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden)
+        {
+           // sleutelwoorden.RemoveAll(item => item.woord == null);
+            string woorden = sleutelwoorden[0].woord;
+            string[] split = woorden.Split(',');
+            List<Sleutelwoord> mijnList = new List<Sleutelwoord>();
+            foreach (string woord in split)
+            {
+                Sleutelwoord sleutelwoord = new Sleutelwoord(woord);
+                mijnList.Add(sleutelwoord);
+            }
+            if (ModelState.IsValid)
+            {
+                eM.AddThema(thema.Naam,mijnList);
+                return RedirectToAction("IndexThema");
+            }
+            return View();
+        }
+
+
+        // GET: Thema/Edit/
+        public ActionResult EditThema(int id)
+        {
+            return View(eM.GetThema(id));
+        }
+
+        [HttpPost]
+        public ActionResult EditThema(Thema thema, int id)
+        {
+            
+            thema.EntiteitId = id;
+            eM.UpdateThema(thema);
+                return RedirectToAction("IndexThema");                 
+        }
+
+
+        public ActionResult DeleteThema(int id)
+        {
+            return View(eM.GetThema(id));
+        }
+
+        [HttpPost]
+        public ActionResult DeleteThema(int id, FormCollection collection)
+        {
+
+
+            eM.DeleteThema(id);
+                return RedirectToAction("IndexThema");
+            
+            
+            
+               // return View();
+            
+        }
     }
 }

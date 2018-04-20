@@ -34,5 +34,10 @@ namespace DAL
         List<Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
 
+        void CreateThema(Thema thema);
+        void UpdateThema(Thema thema);
+        void DeleteThema(int entiteitsId);
+        Thema ReadThema(int entiteitsId);
+        IEnumerable<Thema> ReadThemas();
     }
 }

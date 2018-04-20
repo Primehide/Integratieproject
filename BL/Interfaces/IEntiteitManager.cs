@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
+
 namespace BL
 {
     public interface IEntiteitManager
@@ -27,5 +28,10 @@ namespace BL
         void CreateTestData();
         List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
+        void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
+        void UpdateThema(Thema thema);
+        void DeleteThema(int entiteitsId);
+        IEnumerable<Thema> GetThemas();
+        Thema GetThema(int entiteitsId);
     }
 }

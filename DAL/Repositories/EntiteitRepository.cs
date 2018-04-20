@@ -1,21 +1,20 @@
 ﻿using Domain.Entiteit;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Data.Entity;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
 using Domain.Entiteit;
-using System.Data.Entity;
 
 namespace DAL
 {
     public class EntiteitRepository : IEntiteitRepository
     {
         private EFContext ctx;
-
+        private DbModelBuilder modelBuilder;
         public EntiteitRepository()
         {
             ctx = new EFContext();
@@ -160,10 +159,54 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+        public void CreateThema(Thema thema)
+        {
+            ctx.Themas.Add(thema);
+            ctx.SaveChanges();
+        }
+
+        public void UpdateThema(Thema thema)
+        {
+            var result = ctx.Themas.SingleOrDefault(b => b.EntiteitId == thema.EntiteitId);
+            if (result != null)
+            {
+                result.Naam = thema.Naam;
+                ctx.SaveChanges();
+            }
+        }
+
+        public void DeleteThema(int entiteitsId)
+        {
+            Thema thema = ReadThema(entiteitsId);
+            //IList<Sleutelwoord> sleutelwoorden = thema.SleutenWoorden;
+            foreach(Sleutelwoord sw in thema.SleutenWoorden.ToList())
+            {
+                ctx.SleutelWoorden.Remove(sw);
+            }
+            thema.SleutenWoorden = null;
+            ctx.SaveChanges();
+            // var thema = ctx.Themas.SingleOrDefault(b => b.EntiteitId == entiteitsId);
+            ctx.Themas.Remove(thema);
+            ctx.SaveChanges();
+        }
+
+        public Thema ReadThema(int entiteitsId)
+        {
+            Thema thema = ctx.Themas.Include(x => x.SleutenWoorden).SingleOrDefault(x => x.EntiteitId == entiteitsId);
+            return thema;
+        }
+
+        public IEnumerable<Thema> ReadThemas()
+        {
+            return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
+        }
+
         public EntiteitRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
             ctx.SetUoWBool(true);
         }
+
+       
     }
 }
