@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Domain.Entiteit.Sleutelwoord>
+
+<dl class="dl-horizontal">
+    @foreach (var sleutelwoord in Model)
+    {
+        <dd>@Html.DisplayFor(m => sleutelwoord.woord)</dd>
+        <td>
+            @Html.ActionLink("Delete", "DeleteThemaSleutelwoord", new { id = sleutelwoord.SleutelwoordId })
+        </td>
+    }
+</dl>

@@ -8,11 +8,13 @@ using Domain.Entiteit;
 using Domain.Post;
 using Domain.Account;
 using Domain.Platform;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace DAL
 {
     internal class EFContext : DbContext
     {
+
         private bool delaySave;
 
         public EFContext()
@@ -63,6 +65,15 @@ namespace DAL
                 return base.SaveChanges();
             }
             throw new InvalidOperationException("No UnitOfWork present, use SaveChanges instead");
+        }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //TODO: In fluent API er voor zorgen dat sleutelwoorden mee worden verwijderd (on cascade)
+
+           
+            base.OnModelCreating(modelBuilder);
+
         }
     }
 }
