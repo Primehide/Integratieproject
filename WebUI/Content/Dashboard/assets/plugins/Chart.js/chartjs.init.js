@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    
+    /*
     var ctx1 = document.getElementById("chart1").getContext("2d");
     var data1 = {
         labels: ["January", "February", "March", "April", "May", "June", "July"],
@@ -69,23 +69,23 @@ $( document ).ready(function() {
     
     var ctx2 = document.getElementById("chart2").getContext("2d");
     var data2 = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        labels: ["Bart De Wever", "Maggie De Block"],
         datasets: [
             {
-                label: "My First dataset",
+                label: "Tweets vandaag",
                 fillColor: "#009efb",
                 strokeColor: "#009efb",
                 highlightFill: "#009efb",
                 highlightStroke: "#009efb",
-                data: [10, 30, 80, 61, 26, 75, 40]
+                data: [10, 30]
             },
             {
-                label: "My Second dataset",
+                label: "Tweets vandaag",
                 fillColor: "#55ce63",
                 strokeColor: "#55ce63",
                 highlightFill: "#55ce63",
                 highlightStroke: "#55ce63",
-                data: [28, 48, 40, 19, 86, 27, 90]
+                data: [15, 48]
             }
         ]
     };
@@ -101,8 +101,8 @@ $( document ).ready(function() {
         barStrokeWidth : 0,
 		tooltipCornerRadius: 2,
         barDatasetSpacing : 3,
-        legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-        responsive: true
+        legendTemplate : "",
+        responsive: true,
     });
     
     var ctx3 = document.getElementById("chart3").getContext("2d");
@@ -158,20 +158,14 @@ $( document ).ready(function() {
             value: 300,
             color:"#2f3d4a",
             highlight: "#2f3d4a",
-            label: "Megna"
+            label: "Mannen"
         },
         {
             value: 50,
             color: "#009efb",
             highlight: "#009efb",
-            label: "Blue"
+            label: "Vrouwen"
         },
-        {
-            value: 100,
-            color: "#55ce63",
-            highlight: "#55ce63",
-            label: "Orange"
-        }
     ];
     
     var myDoughnutChart = new Chart(ctx4).Doughnut(data4,{
@@ -284,5 +278,5 @@ $( document ).ready(function() {
         legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
         responsive: true
     });
-    
+    */
 });

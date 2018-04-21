@@ -305,6 +305,9 @@
     <Content Include="Content\Dashboard\assets\images\users\6.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\7.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\8.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_bart.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_kris.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_maggie.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d1.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d2.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d3.jpg" />
@@ -4288,7 +4291,6 @@
     <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
-    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

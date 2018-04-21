@@ -1,5 +1,5 @@
 ﻿<script src="~/Content/Dashboard/assets/plugins/jquery/jquery.min.js"></script>
-<script src="~/Content/Dashboard/assets/plugins/jquery/jquery.min.js"></script>
+<script src="~/Content/Dashboard/assets/plugins/bootstrap/js/popper.min.js"></script>
 <script src="~/Content/Dashboard/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
 <script src="~/Content/Dashboard/js/perfect-scrollbar.jquery.min.js"></script>
 <script src="~/Content/Dashboard/js/waves.js"></script>
@@ -7,4 +7,75 @@
 <script src="~/Content/Dashboard/assets/plugins/sticky-kit-master/dist/sticky-kit.min.js"></script>
 <script src="~/Content/Dashboard/assets/plugins/sparkline/jquery.sparkline.min.js"></script>
 <script src="~/Content/Dashboard/js/custom.min.js"></script>
+<script src="~/Content/Dashboard/assets/plugins/Chart.js/chartjs.init.js"></script>
+<script src="~/Content/Dashboard/assets/plugins/Chart.js/Chart.min.js"></script>
 <script src="~/Content/Dashboard/assets/plugins/styleswitcher/jQuery.style.switcher.js"></script>
+
+<script>
+    var ctx2 = document.getElementById("chart2").getContext("2d");
+    var data2 = {
+        labels: ["Bart De Wever", "Maggie De Block"],
+        datasets: [
+            {
+                label: "Tweets vandaag",
+                fillColor: "#009efb",
+                strokeColor: "#009efb",
+                highlightFill: "#009efb",
+                highlightStroke: "#009efb",
+                data: [10, 30]
+            },
+            {
+                label: "Tweets vandaag",
+                fillColor: "#55ce63",
+                strokeColor: "#55ce63",
+                highlightFill: "#55ce63",
+                highlightStroke: "#55ce63",
+                data: [15, 48]
+            }
+        ]
+    };
+
+    var chart2 = new Chart(ctx2).Bar(data2, {
+        scaleBeginAtZero: true,
+        scaleShowGridLines: true,
+        scaleGridLineColor: "rgba(0,0,0,.005)",
+        scaleGridLineWidth: 0,
+        scaleShowHorizontalLines: true,
+        scaleShowVerticalLines: true,
+        barShowStroke: true,
+        barStrokeWidth: 0,
+        tooltipCornerRadius: 2,
+        barDatasetSpacing: 3,
+        legendTemplate: "",
+        responsive: true,
+    });
+
+    var ctx4 = document.getElementById("chart4").getContext("2d");
+    var data4 = [
+        {
+            value: 300,
+            color: "#2f3d4a",
+            highlight: "#2f3d4a",
+            label: "Mannen"
+        },
+        {
+            value: 50,
+            color: "#009efb",
+            highlight: "#009efb",
+            label: "Vrouwen"
+        },
+    ];
+
+    var myDoughnutChart = new Chart(ctx4).Doughnut(data4, {
+        segmentShowStroke: true,
+        segmentStrokeColor: "#fff",
+        segmentStrokeWidth: 0,
+        animationSteps: 100,
+        tooltipCornerRadius: 2,
+        animationEasing: "easeOutBounce",
+        animateRotate: true,
+        animateScale: false,
+        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
+        responsive: true
+    });
+</script>

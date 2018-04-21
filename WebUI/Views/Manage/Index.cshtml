@@ -15,13 +15,11 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Starter kit</h3>
+                        <h3 class="text-themecolor">Jou Grafieken</h3>
                     </div>
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                            <li class="breadcrumb-item">pages</li>
-                            <li class="breadcrumb-item active">Starter kit</li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
                         </ol>
                     </div>
                     <div>
@@ -36,10 +34,108 @@
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-lg-6">
                         <div class="card">
                             <div class="card-body">
-                                This is some text within a card block.
+                                <h4 class="card-title">Vergelijking tweets gisteren vs vandaag</h4>
+                                <div>
+                                    <canvas id="chart2" height="158" width="317" style="width: 317px; height: 158px;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Vergelijking mannen vs vrouwen twitter</h4>
+                                <div>
+                                    <canvas id="chart4" height="158" width="317" style="width: 317px; height: 158px;"> </canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Meest actieve personen</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_bart.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Bart De Wever</h3>
+                                <h6 class="text-muted">N-VA</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">1099</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_maggie.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Maggie De Block</h3>
+                                <h6 class="text-muted">Open-Vld</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">876</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_kris.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Kris Peeters</h3>
+                                <h6 class="text-muted">CD&V</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">767</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
                             </div>
                         </div>
                     </div>
