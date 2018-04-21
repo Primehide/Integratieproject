@@ -13,6 +13,6 @@ namespace BL
         void addUser(Account account);
         void genereerAlerts();
         List<Alert> getAlleAlerts();
-        void UpdateAlert(Alert alert)
+        void UpdateAlert(Alert alert);
     }
 }

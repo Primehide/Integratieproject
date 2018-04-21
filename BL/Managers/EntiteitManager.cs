@@ -5,12 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using Domain.Entiteit;
-<<<<<<< HEAD
 using Domain.Enum;
 using Domain.Post;
-=======
 using System.Web;
->>>>>>> master
 
 namespace BL
 {
@@ -92,10 +89,10 @@ namespace BL
             entiteitRepository.updateEntiteit(entiteit);
         }
 
-<<<<<<< HEAD
+
         //deze methode roepen we aan om alle trends terug leeg te maken
         //dit zal na elke data sync moeten gebeuren want we kijken dagelijks of er nieuwe trends zijn en we willen geen gegevens van de vorige dag
-        private void ResetTrends()
+        public void ResetTrends()
         {
             initNonExistingRepo();
             List<Entiteit> AlleEntiteiten = entiteitRepository.getAlleEntiteiten();
@@ -259,7 +256,7 @@ namespace BL
             //als we hier komen is er geen trend aanwezig.
             return false;
         }
-=======
+
         public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
         {
             Thema thema = new Thema()
@@ -460,8 +457,5 @@ namespace BL
             return entiteitRepository.readSleutelwoord(sleutelId);
         }
         #endregion
-
-     
->>>>>>> master
     }
 }

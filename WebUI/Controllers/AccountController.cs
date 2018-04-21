@@ -457,7 +457,9 @@ namespace WebUI.Controllers
 
         public ActionResult GenereerAlerts()
         {
-            
+            BL.AccountManager accountManager = new BL.AccountManager();
+            accountManager.genereerAlerts();
+            return new HttpStatusCodeResult(200);
         }
 
         #region Helpers
