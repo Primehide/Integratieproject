@@ -77,8 +77,10 @@ namespace BL
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Entiteit.Naam,
-                    since = new DateTime(2018, 04, 01),
-                    until = new DateTime(2018, 04, 09)
+                    //since = new DateTime(2018, 04, 01),
+                    //until = new DateTime(2018, 04, 09)
+                    since = vandaag,
+                    until = gisteren
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();

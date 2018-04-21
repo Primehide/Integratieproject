@@ -10,7 +10,12 @@ namespace DAL
     public interface IAccountRepository
     {
         void addUser(Domain.Account.Account account);
+<<<<<<< HEAD
+        List<Alert> getAlleAlerts();
+        void UpdateAlert(Alert alert);
+=======
         void updateUser(Domain.Account.Account account);
         Account ReadAccount(string ID);
+>>>>>>> master
     }
 }
