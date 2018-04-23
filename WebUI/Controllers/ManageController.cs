@@ -101,6 +101,17 @@ namespace WebUI.Controllers
             return RedirectToAction("ManageLogins", new { Message = message });
         }
 
+        public ActionResult AddGrafiek()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult Sandbox()
+        {
+            return View();
+        }
+
         //
         // GET: /Manage/AddPhoneNumber
         public ActionResult AddPhoneNumber()

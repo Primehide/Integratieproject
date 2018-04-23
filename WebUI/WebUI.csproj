@@ -4285,6 +4285,8 @@
     <Content Include="Views\Account\RegisterNew.cshtml" />
     <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
     <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
+    <Content Include="Views\Manage\AddGrafiek.cshtml" />
+    <Content Include="Views\Manage\Sandbox.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

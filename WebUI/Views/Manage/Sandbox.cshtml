@@ -1,0 +1,166 @@
+﻿@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Jou Grafieken</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body wizard-content">
+                                <h4 class="card-title">Grafiek toevoegen</h4>
+                                <form action="#" class="tab-wizard wizard-circle">
+                                    <!-- Step 1 -->
+                                    <h6>Soort</h6>
+                                    <section>
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <label class="control-label">Soort statistiek?</label>
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio1" name="radio" type="radio" checked="" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Cijfers</span>
+                                                    </label>
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio2" name="radio" type="radio" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Kruising</span>
+                                                    </label>
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio2" name="radio" type="radio" class="custom-control-input">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description">Vergelijking</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 2 -->
+                                    <h6>Gegevens Selecteren</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-lg-6 col-xlg-4">
+                                                <h5 class="box-title">Selecteer entiteiten:</h5>
+                                                <select multiple id="optgroup" name="optgroup[]">
+                                                    <optgroup label="Personen">
+                                                        <option value="1">Bart De Wever</option>
+                                                        <option value="1">Maggie De Block</option>
+                                                    </optgroup>
+                                                    <optgroup label="Organisatie">
+                                                        <option value="3">N-VA</option>
+                                                        <option value="3">Open-Vld</option>
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-6 col-xlg-4  m-b-30">
+                                                <h5 class="box-title">Te tonen gegevens:</h5>
+                                                <select id='pre-selected-options' multiple='multiple'>
+                                                    <option value='elem_1'>Aantal posts</option>
+                                                    <option value='elem_2'>Aanwezige trends</option>
+                                                    <option value='elem_3'>Verwante termen</option>
+                                                    <option value='elem_4'>Verwante links</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 3 -->
+                                    <h6>Bevestig</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="card">
+                                                    <div class="card-header bg-info">
+                                                        <h4 class="m-b-0 text-white">Overzicht</h4>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <form class="form-horizontal" role="form">
+                                                            <div class="form-body">
+                                                                <h3 class="box-title">Jou geselecteerde gegevens:</h3>
+                                                                <hr class="m-t-0 m-b-40">
+                                                                <div class="row">
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group row">
+                                                                            <label class="control-label text-right col-md-3">Soort:</label>
+                                                                            <div class="col-md-9">
+                                                                                <p class="form-control-static"> Cijfers </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--/span-->
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group row">
+                                                                            <label class="control-label text-right col-md-3">Entiteit:</label>
+                                                                            <div class="col-md-9">
+                                                                                <p class="form-control-static"> N-VA </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-12">
+                                                                        <div class="form-group row">
+                                                                            <label class="control-label text-right col-md-3">Te tonen gegevens:</label>
+                                                                            <div class="col-md-9">
+                                                                                <p class="form-control-static"> Aanwezige trends </p>
+                                                                                <p class="form-control-static"> Aantal tweets </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <!--/span-->
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+
