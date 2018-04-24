@@ -4271,13 +4271,26 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Entiteit\IndexThema.cshtml" />
+    <Content Include="Views\Entiteit\CreateThema.cshtml" />
+    <Content Include="Views\Entiteit\DeleteThema.cshtml" />
+    <Content Include="Views\Entiteit\EditThema.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Sleutelwoord.cshtml" />
     <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Alert\AddAlert.cshtml" />
+    <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
+    <Content Include="Views\Account\LoginNew.cshtml" />
+    <Content Include="Views\Account\RegisterNew.cshtml" />
+    <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
+    <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

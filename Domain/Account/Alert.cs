@@ -15,5 +15,6 @@ namespace Domain.Account
         public Domain.Enum.PlatformType PlatformType { get; set; }
         public Account Account { get; set; }
         public Domain.Entiteit.Entiteit Entiteit { get; set; }
+        public bool Triggered { get; set; }
     }
 }

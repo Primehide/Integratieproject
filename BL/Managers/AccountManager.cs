@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DAL;
 
 using Domain.Account;
+using Domain.Entiteit;
 
 namespace BL
 {
@@ -47,6 +48,38 @@ namespace BL
         public Account getAccount(string ID)
         {
             return repo.ReadAccount(ID);
+        }
+
+        public void genereerAlerts()
+        {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
+            List<Alert> Alerts = getAlleAlerts();
+            Entiteit e;
+            //1 keer alle trends resetten om vandaag te kunnen kijken of er een trend aanwezig is
+            entiteitMgr.ResetTrends();
+            foreach (var alert in Alerts)
+            {
+                e = alert.Entiteit;
+                if (entiteitMgr.berekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
+                {
+                    alert.Triggered = true;
+                    UpdateAlert(alert);
+                }
+            }
+            throw new NotImplementedException();
+        }
+
+        public void UpdateAlert(Alert alert)
+        {
+            initNonExistingRepo();
+            accountRepository.UpdateAlert(alert);
+        }
+
+        public List<Alert> getAlleAlerts()
+        {
+            initNonExistingRepo();
+            return accountRepository.getAlleAlerts();
         }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)

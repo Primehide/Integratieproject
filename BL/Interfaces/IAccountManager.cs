@@ -11,5 +11,8 @@ namespace BL
     public interface IAccountManager
     {
         void addUser(Account account);
+        void genereerAlerts();
+        List<Alert> getAlleAlerts();
+        void UpdateAlert(Alert alert);
     }
 }

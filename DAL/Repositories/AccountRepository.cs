@@ -30,6 +30,18 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
+
+        public List<Alert> getAlleAlerts()
+        {
+            return ctx.Alerts.ToList();
+        }
+
+        public void UpdateAlert(Alert alert)
+        {
+            ctx.Entry(alert).State = System.Data.Entity.EntityState.Modified;
+            ctx.SaveChanges();
+        }
+
         public void updateUser(Account account  )
         {
             Account updated = ctx.Accounts.Find(account.AccountId);
@@ -37,13 +49,7 @@ namespace DAL
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
             updated.Email = account.Email;
-
-
-
-
             ctx.SaveChanges();
-
-
         }
 
         public Account ReadAccount(string ID)

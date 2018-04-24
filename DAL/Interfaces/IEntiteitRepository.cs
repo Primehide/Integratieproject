@@ -33,6 +33,13 @@ namespace DAL
         void AddEntiteit(Entiteit entiteit);
         List<Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
-
+        
+        void CreateThema(Thema thema);
+        void UpdateThema(Thema thema);
+        void DeleteThema(int entiteitsId);
+        void DeleteSleutelwoord(int sleutelId);
+        Thema ReadThema(int entiteitsId);
+        Sleutelwoord readSleutelwoord(int sleutelId);
+        IEnumerable<Thema> ReadThemas();
     }
 }

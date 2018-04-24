@@ -8,6 +8,13 @@ namespace Domain.Entiteit
 {
     public class Sleutelwoord
     {
+        public Sleutelwoord(string Woord) {
+            woord = Woord;
+            }
+        public Sleutelwoord()
+        {
+
+        }
         public int SleutelwoordId { get; set; }
         public string woord { get; set; }
     }

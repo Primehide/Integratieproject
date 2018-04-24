@@ -127,7 +127,6 @@ namespace WebUI.Controllers
         // POST: /Account/VerifyCode
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -161,23 +160,23 @@ namespace WebUI.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult RegisterNew()
+        {
+            return View();
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model, string voornaam, string achternaam, string date)
+        public async Task<ActionResult> Register(RegisterViewModel model)
         {
-
-
-
-            DateTime birthdate = DateTime.ParseExact(date, "yyyy-MM-dd",
-                                       System.Globalization.CultureInfo.InvariantCulture);
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, voornaam, achternaam, birthdate);
+                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -187,18 +186,16 @@ namespace WebUI.Controllers
 
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
-                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                    //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
-                         + "before you can log in.";
 
-                    return View("Info");
+                    return View("PleaseConfirmEmail");
                 }
                 AddErrors(result);
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View("RegisterNew",model);
         }
 
         //
@@ -214,6 +211,17 @@ namespace WebUI.Controllers
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
+        [AllowAnonymous]
+        public async Task<ActionResult> ConfirmEmailNew(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            return View(result.Succeeded ? "ConfirmEmailNew" : "Error");
+        }
+
         //
         // GET: /Account/ForgotPassword
         [AllowAnonymous]
@@ -226,7 +234,6 @@ namespace WebUI.Controllers
         // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -270,7 +277,6 @@ namespace WebUI.Controllers
         // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
@@ -304,7 +310,6 @@ namespace WebUI.Controllers
         // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
@@ -330,7 +335,6 @@ namespace WebUI.Controllers
         // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
             if (!ModelState.IsValid)
@@ -380,7 +384,6 @@ namespace WebUI.Controllers
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
@@ -418,7 +421,6 @@ namespace WebUI.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
@@ -451,6 +453,13 @@ namespace WebUI.Controllers
             }
 
             base.Dispose(disposing);
+        }
+
+        public ActionResult GenereerAlerts()
+        {
+            BL.AccountManager accountManager = new BL.AccountManager();
+            accountManager.genereerAlerts();
+            return new HttpStatusCodeResult(200);
         }
 
         #region Helpers
@@ -514,7 +523,7 @@ namespace WebUI.Controllers
         private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
         {
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
-            var callbackUrl = Url.Action("ConfirmEmail", "Account",
+            var callbackUrl = Url.Action("ConfirmEmailNew", "Account",
                new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject,
                "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
