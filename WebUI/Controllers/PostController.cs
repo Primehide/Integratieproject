@@ -20,5 +20,17 @@ namespace WebUI.Controllers
             IPostManager postManager = new PostManager();
             await postManager.SyncDataAsync();
         }
+
+        [HttpPost]
+        public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<int> entiteitInts = new List<int>();
+            //voeg later alle ints toe
+            entiteitInts.Add(model.Entiteit1);
+
+            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, entiteitInts);
+            return new HttpStatusCodeResult(200);
+        }
     }
 }

@@ -77,10 +77,10 @@ namespace BL
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Entiteit.Naam,
-                    //since = new DateTime(2018, 04, 01),
-                    //until = new DateTime(2018, 04, 09)
-                    since = vandaag,
-                    until = gisteren
+                    since = new DateTime(2018, 04, 01),
+                    until = new DateTime(2018, 04, 09)
+                    //since = vandaag,
+                    //until = gisteren
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();
@@ -196,6 +196,28 @@ namespace BL
             //postRepository.AddPosts(PostsToAdd);
             entiteitManager.updateEntiteit(entiteit);
             uowManager.Save();
+        }
+
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)
+        {
+            initNonExistingRepo(true);
+            IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
+
+            switch (grafiekType)
+            {
+                case Domain.Enum.GrafiekType.CIJFERS:
+                    Entiteit e1 = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    List<Post> postsEerste = e1.Posts;
+                    int aantalPosts = postsEerste.Count;
+                    int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                    //grafiek.Entiteiten.First().Trends;
+
+                    grafiekMap.Add("aantalPosts", aantalPosts);
+                    grafiekMap.Add("aantalRetweets", retweets);
+                    break;
+            }
+            return grafiekMap;
         }
     }
 }

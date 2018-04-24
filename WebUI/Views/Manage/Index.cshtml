@@ -1,4 +1,5 @@
-﻿@{
+﻿@model WebUI.Models.DashboardModel
+@{
     Layout = null;
 }
 
@@ -33,6 +34,38 @@
                 <!-- Start Page Content -->
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
+                <div class="row">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Cijfer gegevens</h4>
+                            <h6 class="card-subtitle"></h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped ">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th class="text-center">
+                                                Waarde
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var blok in Model.Configuratie.DashboardBlokken)
+                                        {
+                                            foreach (var waarde in blok.Grafiek.Waardes)
+                                            {
+                                                <tr>
+                                                    <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                                    <td>@waarde.Waarde</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="card">

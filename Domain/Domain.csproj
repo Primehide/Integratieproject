@@ -74,6 +74,7 @@
     <Compile Include="Post\Term.cs" />
     <Compile Include="Post\URL.cs" />
     <Compile Include="Post\Verhaal.cs" />
+    <Compile Include="Post\GrafiekWaarde.cs" />
     <Compile Include="Post\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextGain\PostRequest.cs" />

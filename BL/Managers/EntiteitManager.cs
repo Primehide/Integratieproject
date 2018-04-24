@@ -58,18 +58,18 @@ namespace BL
             Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
             {
                 Naam = "Ben Weyts",
-                Organisaties = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>()
             };
 
             Domain.Entiteit.Persoon Bartje = new Domain.Entiteit.Persoon()
             {
                 Naam = "Bart De Wever",
-                Organisaties = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>()
             };
 
             //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
-            BenWeyts.Organisaties.Add(NVA);
-            Bartje.Organisaties.Add(NVA);
+            BenWeyts.Organisations.Add(NVA);
+            Bartje.Organisations.Add(NVA);
 
 
             entiteitRepository.AddEntiteit(NVA);
@@ -286,6 +286,27 @@ namespace BL
         public Thema GetThema(int entiteitsId)
         {
             return entiteitRepository.ReadThema(entiteitsId);
+        }
+
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)
+        {
+            initNonExistingRepo();
+            Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
+
+            switch (grafiekType)
+            {
+                case Domain.Enum.GrafiekType.CIJFERS:
+                    Entiteit e1 = entiteitRepository.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    List<Post> postsEerste = e1.Posts;
+                    int aantalPosts = postsEerste.Count;
+                    int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                    //grafiek.Entiteiten.First().Trends;
+
+                    grafiekMap.Add("aantalPosts", aantalPosts);
+                    grafiekMap.Add("aantalRetweets", retweets);
+                    break;
+            }
+            return grafiekMap;
         }
 
         #region

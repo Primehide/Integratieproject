@@ -36,5 +36,7 @@ namespace BL
         Thema GetThema(int entiteitsId);
         Sleutelwoord GetSleutelwoord(int sleutelId);
 
+        Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten);
+
     }
 }

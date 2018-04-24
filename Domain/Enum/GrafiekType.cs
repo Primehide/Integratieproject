@@ -9,6 +9,7 @@ namespace Domain.Enum
     public enum GrafiekType
     {
         KRUISING,
-        VERGELIJKING
+        VERGELIJKING,
+        CIJFERS
     }
 }

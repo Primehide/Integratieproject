@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using DAL;
 
 using Domain.Account;
@@ -45,6 +46,7 @@ namespace BL
             accountRepository.updateUser(account);
             uowManager.Save();
         }
+
         public Account getAccount(string ID)
         {
             return repo.ReadAccount(ID);
@@ -100,6 +102,58 @@ namespace BL
             {
                 accountRepository = (accountRepository == null) ? new AccountRepository() : accountRepository;
             }
+        }
+
+        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts)
+        {
+            initNonExistingRepo(true);
+            //IPostManager postManager = new PostManager(uowManager);
+            IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            Domain.Account.Account user = accountRepository.ReadAccount(IdentityId);
+            Domain.Post.Grafiek grafiek = new Domain.Post.Grafiek();
+
+            List<Entiteit> entiteiten = new List<Entiteit>();
+            foreach (var i in entiteitInts)
+            {
+                var e = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == i);
+                entiteiten.Add(e);
+            }
+
+            Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten);
+            List<Domain.Post.GrafiekWaarde> grafiekWaardes = new List<Domain.Post.GrafiekWaarde>();
+            
+            foreach (var item in waardes)
+            {
+                Domain.Post.GrafiekWaarde w = new Domain.Post.GrafiekWaarde()
+                {
+                    Naam = item.Key,
+                    Waarde = item.Value
+                };
+                grafiekWaardes.Add(w);
+            }
+
+            grafiek.Type = TypeGrafiek;
+            grafiek.Waardes = grafiekWaardes;
+
+            //cijfers
+            grafiek.Entiteiten = new List<Entiteit>();
+            switch (TypeGrafiek)
+            {
+                case Domain.Enum.GrafiekType.CIJFERS:
+                    grafiek.Entiteiten.Add(entiteiten.First());
+                    break;
+            }
+
+            Domain.Account.DashboardBlok dashboardBlok = new Domain.Account.DashboardBlok()
+            {
+                Grafiek = grafiek
+            };
+
+            if (user.Dashboard.Configuratie.DashboardBlokken == null)
+                user.Dashboard.Configuratie.DashboardBlokken = new List<DashboardBlok>();
+            user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
+            accountRepository.updateUser(user);
+            uowManager.Save();
         }
     }
 }
