@@ -12,5 +12,6 @@ namespace WebUI.Models
         public bool aantalPosts { get; set; }
         public bool aantalRetweets { get; set; }
         public int Entiteit1 { get; set; }
+        public List<int> EntiteitIds { get; set; }
     }
 }

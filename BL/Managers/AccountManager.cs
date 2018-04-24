@@ -136,11 +136,10 @@ namespace BL
             grafiek.Waardes = grafiekWaardes;
 
             //cijfers
-            grafiek.Entiteiten = new List<Entiteit>();
             switch (TypeGrafiek)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    grafiek.Entiteiten.Add(entiteiten.First());
+                    grafiek.Naam = entiteiten.First().Naam;
                     break;
             }
 
