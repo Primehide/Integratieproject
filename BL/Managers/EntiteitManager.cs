@@ -58,8 +58,15 @@ namespace BL
             Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
             {
                 Naam = "Ben Weyts",
-                Organisations = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
             };
+
+            Trend trend = new Trend()
+            {
+                Voorwaarde = Voorwaarde.KEYWORDS
+            };
+            BenWeyts.Trends.Add(trend);
 
             Domain.Entiteit.Persoon Bartje = new Domain.Entiteit.Persoon()
             {
@@ -288,7 +295,7 @@ namespace BL
             return entiteitRepository.ReadThema(entiteitsId);
         }
 
-        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties)
         {
             initNonExistingRepo();
             Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
@@ -298,12 +305,42 @@ namespace BL
                 case Domain.Enum.GrafiekType.CIJFERS:
                     Entiteit e1 = entiteitRepository.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
                     List<Post> postsEerste = e1.Posts;
-                    int aantalPosts = postsEerste.Count;
-                    int retweets = postsEerste.Where(x => x.retweet == true).Count();
-                    //grafiek.Entiteiten.First().Trends;
-
-                    grafiekMap.Add("aantalPosts", aantalPosts);
-                    grafiekMap.Add("aantalRetweets", retweets);
+                    foreach (var cijferOptie in CijferOpties)
+                    {
+                        if(cijferOptie.ToLower() == "aantalposts")
+                        {
+                            int aantalPosts = postsEerste.Count;
+                            grafiekMap.Add("aantalPosts", aantalPosts);
+                        }
+                        if(cijferOptie.ToLower() == "aantalRetweets")
+                        {
+                            int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                            grafiekMap.Add("aantalRetweets", retweets);
+                        }
+                        if(cijferOptie.ToLower() == "aanwezigetrends")
+                        {
+                            foreach (var trend in e1.Trends)
+                            {
+                                switch (trend.Voorwaarde)
+                                {
+                                    case Voorwaarde.SENTIMENT:
+                                        grafiekMap.Add("trendSentiment", 1);
+                                        break;
+                                    case Voorwaarde.AANTALVERMELDINGEN:
+                                        grafiekMap.Add("trendAantalVermeldingen", 1);
+                                        break;
+                                    case Voorwaarde.TRENDING:
+                                        grafiekMap.Add("trendTrending", 1);
+                                        break;
+                                    case Voorwaarde.KEYWORDS:
+                                        grafiekMap.Add("trendKeywords", 1);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
                     break;
             }
             return grafiekMap;

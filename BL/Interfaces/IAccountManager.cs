@@ -16,6 +16,6 @@ namespace BL
         void UpdateAlert(Alert alert);
         Account getAccount(string ID);
         void updateUser(Account account);
-        void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts);
+        void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties);
     }
 }

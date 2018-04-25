@@ -25,7 +25,7 @@ namespace WebUI.Controllers
         public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
         {
             IAccountManager accountManager = new AccountManager();
-            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds);
+            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties);
             return RedirectToAction("Index","Manage");
         }
     }

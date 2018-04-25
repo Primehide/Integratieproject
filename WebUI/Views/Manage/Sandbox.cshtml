@@ -74,8 +74,8 @@
                                                 <h5 class="box-title">Selecteer entiteiten:</h5>
                                                 <select multiple id="optgroup" name="optgroup[]">
                                                     <optgroup label="Personen">
-                                                        <option value="12">Bart De Wever</option>
-                                                        <option value="11">Ben Weyts</option>
+                                                        <option value="15">Bart De Wever</option>
+                                                        <option value="14">Ben Weyts</option>
                                                     </optgroup>
                                                     <optgroup label="Organisatie">
                                                         <option value="N-VA">N-VA</option>
@@ -176,8 +176,8 @@
                 for (i = 0; i < cijferSelected.length; i++) {
                     $('<input>').attr({
                         type: 'hidden',
-                        name: 'CijferGegevens.' + cijferSelected[i],
-                        value: 'True'
+                        name: 'CijferOpties[' + i + ']',
+                        value: cijferSelected[i]
                     }).appendTo('#grafiekForm');
                 }
             }

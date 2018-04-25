@@ -104,7 +104,7 @@ namespace BL
             }
         }
 
-        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts)
+        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties)
         {
             initNonExistingRepo(true);
             //IPostManager postManager = new PostManager(uowManager);
@@ -119,7 +119,7 @@ namespace BL
                 entiteiten.Add(e);
             }
 
-            Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten);
+            Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten,CijferOpties);
             List<Domain.Post.GrafiekWaarde> grafiekWaardes = new List<Domain.Post.GrafiekWaarde>();
             
             foreach (var item in waardes)
