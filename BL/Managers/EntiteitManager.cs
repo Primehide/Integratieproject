@@ -302,7 +302,7 @@ namespace BL
             return entiteitRepository.ReadThema(entiteitsId);
         }
 
-        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties)
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie)
         {
             initNonExistingRepo();
             Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
@@ -349,7 +349,15 @@ namespace BL
                         }
                     }
                     break;
-
+                case GrafiekType.VERGELIJKING:
+                    if(VergelijkOptie.ToLower() == "populariteit")
+                    {
+                        foreach (var e in entiteiten)
+                        {
+                            grafiekMap.Add("Post " + e.Naam, e.Posts.Count);
+                        }
+                    }
+                    break;
             }
             return grafiekMap;
         }

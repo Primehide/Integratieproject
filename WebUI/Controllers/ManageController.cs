@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -63,6 +64,22 @@ namespace WebUI.Controllers
             {
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie
             };
+            StringBuilder LabelBuilder = new StringBuilder();
+            StringBuilder DataBuilder = new StringBuilder();
+            int counter = 0;
+            foreach (var blok in model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING))
+            {
+                LabelBuilder.Clear();
+                DataBuilder.Clear();
+                for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+                {
+                    LabelBuilder.Append("\"" + blok.Grafiek.Waardes.ElementAt(i).Naam + "\",");
+                    DataBuilder.Append("\"" + blok.Grafiek.Waardes.ElementAt(i).Waarde + "\",");
+                }
+                ViewData.Add("ChartLabels" + counter, LabelBuilder);
+                ViewData.Add("DataLabels" + counter, DataBuilder);
+                counter++;
+            }
             return View(model);
         }
 

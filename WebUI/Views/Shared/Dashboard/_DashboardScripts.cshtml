@@ -163,43 +163,7 @@
 
 <!-- Add chart example -->
 <script>
-    var ctx2 = document.getElementById("chart2").getContext("2d");
-    var data2 = {
-        labels: ["Bart De Wever", "Maggie De Block"],
-        datasets: [
-            {
-                label: "Tweets vandaag",
-                fillColor: "#009efb",
-                strokeColor: "#009efb",
-                highlightFill: "#009efb",
-                highlightStroke: "#009efb",
-                data: [10, 30]
-            },
-            {
-                label: "Tweets vandaag",
-                fillColor: "#55ce63",
-                strokeColor: "#55ce63",
-                highlightFill: "#55ce63",
-                highlightStroke: "#55ce63",
-                data: [15, 48]
-            }
-        ]
-    };
-
-    var chart2 = new Chart(ctx2).Bar(data2, {
-        scaleBeginAtZero: true,
-        scaleShowGridLines: true,
-        scaleGridLineColor: "rgba(0,0,0,.005)",
-        scaleGridLineWidth: 0,
-        scaleShowHorizontalLines: true,
-        scaleShowVerticalLines: true,
-        barShowStroke: true,
-        barStrokeWidth: 0,
-        tooltipCornerRadius: 2,
-        barDatasetSpacing: 3,
-        legendTemplate: "",
-        responsive: true,
-    });
+   
 
     var ctx4 = document.getElementById("chart4").getContext("2d");
     var data4 = [

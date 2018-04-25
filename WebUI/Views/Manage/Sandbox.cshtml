@@ -108,11 +108,11 @@
                                             <!--Enkel te tonen wanneer vergelijking is gekozen-->
                                             <div class="col-md-4" id="vergelijkingSelect" style="display:none;">
                                                 <h5 class="box-title">Wat wil je vergelijken?:</h5>
-                                                <select class="selectpicker" data-style="form-control btn-secondary">
+                                                <select class="selectpicker" id="vergelijkOpties" data-style="form-control btn-secondary">
                                                     <option>--Selecteer--</option>
-                                                    <option>Populariteit</option>
-                                                    <option>Sentiment</option>
-                                                    <option>Post frequentie</option>
+                                                    <option value="populariteit">Populariteit</option>
+                                                    <option value="sentitment">Sentiment</option>
+                                                    <option value="post frequentie">Post frequentie</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4" style="display:none;" id="kruisingSelect">
@@ -192,6 +192,15 @@
                         value: cijferSelected[i]
                     }).appendTo('#grafiekForm');
                 }
+
+                //vergelijk select
+                var vergelijkoptie = $('#vergelijkOpties').find(":selected").text();
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'vergelijkOptie',
+                    value: vergelijkoptie
+                }).appendTo('#grafiekForm');
+
             }
         </script>
         <script>

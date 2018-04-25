@@ -37,64 +37,59 @@
                 <div class="row">
                     @foreach (var blok in Model.Configuratie.DashboardBlokken)
                     {
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Cijfer gegevens - @blok.Grafiek.Naam</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped ">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th class="text-center">
-                                                        Waarde
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var waarde in blok.Grafiek.Waardes)
-                                                {
+                        if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
+                        {
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Cijfer gegevens - @blok.Grafiek.Naam</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped ">
+                                                <thead>
                                                     <tr>
-                                                        <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                                        @if (waarde.Naam.ToLower().Contains("trend"))
-                                                        {
-                                                            <td>Aanwezig</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>@waarde.Waarde</td>
-                                                        }
+                                                        <th></th>
+                                                        <th class="text-center">
+                                                            Waarde
+                                                        </th>
                                                     </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var waarde in blok.Grafiek.Waardes)
+                                                    {
+                                                        <tr>
+                                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                                            @if (waarde.Naam.ToLower().Contains("trend"))
+                                                            {
+                                                                <td>Aanwezig</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@waarde.Waarde</td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        }
+                        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                        {
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Vergelijking</h4>
+                                        <div>
+                                            <canvas id="chart @Model.CanvasCounter" height="158" width="317" style="width: 317px; height: 158px;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            Model.CanvasCounter++;
+                        }
                     }
-                </div>
-                <div class="row">
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Vergelijking tweets gisteren vs vandaag</h4>
-                                <div>
-                                    <canvas id="chart2" height="158" width="317" style="width: 317px; height: 158px;"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">Vergelijking mannen vs vrouwen twitter</h4>
-                                <div>
-                                    <canvas id="chart4" height="158" width="317" style="width: 317px; height: 158px;"> </canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
@@ -188,6 +183,42 @@
         </div>
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+
+        @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING))
+        {
+            <script>
+var ctx2 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+    var data2 = {
+        labels: [@Html.Raw(ViewData["ChartLabels" + Model.ScriptCounter])],
+        datasets: [
+            {
+                label: "Tweets vandaag",
+                fillColor: "#009efb",
+                strokeColor: "#009efb",
+                highlightFill: "#009efb",
+                highlightStroke: "#009efb",
+                data: [@Html.Raw(ViewData["DataLabels" + Model.ScriptCounter])]
+            },
+        ]
+    };
+
+    var chart2 = new Chart(ctx2).Bar(data2, {
+        scaleBeginAtZero: true,
+        scaleShowGridLines: true,
+        scaleGridLineColor: "rgba(0,0,0,.005)",
+        scaleGridLineWidth: 0,
+        scaleShowHorizontalLines: true,
+        scaleShowVerticalLines: true,
+        barShowStroke: true,
+        barStrokeWidth: 0,
+        tooltipCornerRadius: 2,
+        barDatasetSpacing: 3,
+        legendTemplate: "",
+        responsive: true,
+    });
+            </script>
+            Model.ScriptCounter++;
+        }
     </div>
 </body>
 
