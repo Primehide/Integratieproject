@@ -1,0 +1,37 @@
+﻿@model WebUI.Models.ChangePlatformViewModel
+
+@{
+    ViewBag.Title = "DisplayPlatform";
+}
+
+<h2>DisplayPlatform</h2>
+
+<div>
+    <h4>ChangePlatformViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+    </dl>
+
+        
+
+        @Html.DisplayNameFor(m => m.requestedDeelplatform)
+    <table>
+        @Html.DisplayFor(m => m.requestedDeelplatform.Naam)
+    </table>
+        @Html.DisplayNameFor(m => m.personen)
+    <table>
+        @Html.DisplayFor(m => m.personen, "People")
+    </table>
+        @Html.DisplayNameFor(m => m.organisaties)
+    <table>
+        @Html.DisplayFor(m => m.organisaties, "Organisations")
+    </table>
+        @Html.DisplayNameFor(m => m.themas)
+    <table>
+        @Html.DisplayFor(m => m.themas, "Themas")
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
