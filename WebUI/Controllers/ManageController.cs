@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -97,7 +98,15 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public ActionResult Sandbox()
         {
-            return View();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Personen = entiteitManager.GetAllPeople(),
+                Organisaties = entiteitManager.GetAllOrganisaties(),
+                Themas = entiteitManager.GetThemas().ToList()
+            };
+            return View(model);
         }
 
         //

@@ -56,7 +56,14 @@
                                                 {
                                                     <tr>
                                                         <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                                        <td>@waarde.Waarde</td>
+                                                        @if (waarde.Naam.ToLower().Contains("trend"))
+                                                        {
+                                                            <td>Aanwezig</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>@waarde.Waarde</td>
+                                                        }
                                                     </tr>
                                                 }
                                             </tbody>

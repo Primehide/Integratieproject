@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@model WebUI.Models.GrafiekViewModel
 @{
     Layout = null;
 }
@@ -74,12 +75,22 @@
                                                 <h5 class="box-title">Selecteer entiteiten:</h5>
                                                 <select multiple id="optgroup" name="optgroup[]">
                                                     <optgroup label="Personen">
-                                                        <option value="15">Bart De Wever</option>
-                                                        <option value="14">Ben Weyts</option>
+                                                        @foreach (var p in Model.Personen)
+                                                        {
+                                                            <option value="@p.EntiteitId">@p.Naam</option>
+                                                        }
                                                     </optgroup>
                                                     <optgroup label="Organisatie">
-                                                        <option value="N-VA">N-VA</option>
-                                                        <option value="Open-VLD">Open-Vld</option>
+                                                        @foreach (var o in Model.Organisaties)
+                                                        {
+                                                            <option value="@o.EntiteitId">@o.Naam</option>
+                                                        }
+                                                    </optgroup>
+                                                    <optgroup label="Themas">
+                                                        @foreach (var t in Model.Themas)
+                                                        {
+                                                            <option value="@t.EntiteitId">@t.Naam</option>
+                                                        }
                                                     </optgroup>
                                                 </select>
                                             </div>
@@ -88,6 +99,7 @@
                                                 <h5 class="box-title">Te tonen gegevens:</h5>
                                                 <select id='pre-selected-options' multiple='multiple'>
                                                     <option value='AantalPosts'>Aantal posts</option>
+                                                    <option value="AantalRetweets">Aantal retweets</option>
                                                     <option value='AanwezigeTrends'>Aanwezige trends</option>
                                                     <option value='VerzqnteTermen'>Verwante termen</option>
                                                     <option value='VerwanteLinks'>Verwante links</option>

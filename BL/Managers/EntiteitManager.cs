@@ -68,11 +68,18 @@ namespace BL
             };
             BenWeyts.Trends.Add(trend);
 
+            Trend trend2 = new Trend()
+            {
+                Voorwaarde = Voorwaarde.TRENDING
+            };
+
             Domain.Entiteit.Persoon Bartje = new Domain.Entiteit.Persoon()
             {
                 Naam = "Bart De Wever",
-                Organisations = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
             };
+            Bartje.Trends.Add(trend2);
 
             //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
             BenWeyts.Organisations.Add(NVA);
@@ -310,12 +317,12 @@ namespace BL
                         if(cijferOptie.ToLower() == "aantalposts")
                         {
                             int aantalPosts = postsEerste.Count;
-                            grafiekMap.Add("aantalPosts", aantalPosts);
+                            grafiekMap.Add("Aantal posts", aantalPosts);
                         }
                         if(cijferOptie.ToLower() == "aantalRetweets")
                         {
                             int retweets = postsEerste.Where(x => x.retweet == true).Count();
-                            grafiekMap.Add("aantalRetweets", retweets);
+                            grafiekMap.Add("Aantal retweets", retweets);
                         }
                         if(cijferOptie.ToLower() == "aanwezigetrends")
                         {
@@ -324,16 +331,16 @@ namespace BL
                                 switch (trend.Voorwaarde)
                                 {
                                     case Voorwaarde.SENTIMENT:
-                                        grafiekMap.Add("trendSentiment", 1);
+                                        grafiekMap.Add("Trend Sentiment", 1);
                                         break;
                                     case Voorwaarde.AANTALVERMELDINGEN:
-                                        grafiekMap.Add("trendAantalVermeldingen", 1);
+                                        grafiekMap.Add("Trend Aantal Vermeldingen", 1);
                                         break;
                                     case Voorwaarde.TRENDING:
-                                        grafiekMap.Add("trendTrending", 1);
+                                        grafiekMap.Add("Trend trending", 1);
                                         break;
                                     case Voorwaarde.KEYWORDS:
-                                        grafiekMap.Add("trendKeywords", 1);
+                                        grafiekMap.Add("Trend Keywords", 1);
                                         break;
                                     default:
                                         break;
@@ -342,6 +349,7 @@ namespace BL
                         }
                     }
                     break;
+
             }
             return grafiekMap;
         }
