@@ -18,5 +18,7 @@ namespace Domain.Post
         //public List<Entiteit.Entiteit> Entiteiten { get; set; }
         public List<GrafiekWaarde> Waardes { get; set; }
         public string Naam { get; set; }
+        public Domain.Enum.GrafiekSoort GrafiekSoort { get; set; }
+        public Domain.Enum.SoortGegevens soortGegevens { get; set; }
     }
 }

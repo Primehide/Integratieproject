@@ -108,11 +108,11 @@
                                             <!--Enkel te tonen wanneer vergelijking is gekozen-->
                                             <div class="col-md-4" id="vergelijkingSelect" style="display:none;">
                                                 <h5 class="box-title">Wat wil je vergelijken?:</h5>
-                                                <select class="selectpicker" id="vergelijkOpties" data-style="form-control btn-secondary">
+                                                <select class="selectpicker" id="vergelijkOpties" name="vergelijkOpties" data-style="form-control btn-secondary">
                                                     <option>--Selecteer--</option>
                                                     <option value="populariteit">Populariteit</option>
                                                     <option value="sentitment">Sentiment</option>
-                                                    <option value="post frequentie">Post frequentie</option>
+                                                    <option value="postFrequentie">Post frequentie</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-4" style="display:none;" id="kruisingSelect">
@@ -127,11 +127,11 @@
                                             <!--Enkel te tonen wanneer vergelijking of kruising is gekozen-->
                                             <div class="col-md-4" id="SelecteerGrafiek" style="display:none;">
                                                 <h5 class="box-title">Soort Grafiek:</h5>
-                                                <select class="selectpicker" data-style="form-control btn-secondary">
+                                                <select class="selectpicker" id="SoortGrafiek" name="SoortGrafiek" data-style="form-control btn-secondary">
                                                     <option>--Selecteer grafiek--</option>
-                                                    <option>Staafdiagram</option>
-                                                    <option>Taartdiagram</option>
-                                                    <option>Lijndiagram</option>
+                                                    <option value="STAFGRAFIEK">Staafdiagram</option>
+                                                    <option value="TAARTGRAFIEK">Taartdiagram</option>
+                                                    <option value="LIJNGRAFIEK">Lijndiagram</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -194,11 +194,18 @@
                 }
 
                 //vergelijk select
-                var vergelijkoptie = $('#vergelijkOpties').find(":selected").text();
+                var vergelijkoptie = $('select[name=vergelijkOpties]').val()
                 $('<input>').attr({
                     type: 'hidden',
                     name: 'vergelijkOptie',
                     value: vergelijkoptie
+                }).appendTo('#grafiekForm');
+
+                var SoortGrafiek = $('select[name=SoortGrafiek]').val()
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'GrafiekSoort',
+                    value: SoortGrafiek
                 }).appendTo('#grafiekForm');
 
             }

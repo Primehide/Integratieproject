@@ -16,5 +16,6 @@ namespace WebUI.Models
         public List<int> EntiteitIds { get; set; }
         public List<string> CijferOpties { get; set; }
         public string VergelijkOptie { get; set; }
+        public Domain.Enum.GrafiekSoort GrafiekSoort { get; set; }
     }
 }

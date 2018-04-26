@@ -64,8 +64,8 @@ namespace BL
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
-            DateTime vandaag = DateTime.Today;
-            DateTime gisteren = DateTime.Today.AddDays(-1);
+            DateTime vandaag = DateTime.Today.Date;
+            DateTime gisteren = DateTime.Today.AddDays(-1).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
@@ -77,10 +77,10 @@ namespace BL
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Entiteit.Naam,
-                    since = new DateTime(2018, 04, 01),
-                    until = new DateTime(2018, 04, 09)
-                    //since = vandaag,
-                    //until = gisteren
+                    //since = new DateTime(2018, 04, 01),
+                    //until = new DateTime(2018, 04, 09)
+                    since = gisteren,
+                    until = vandaag
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();

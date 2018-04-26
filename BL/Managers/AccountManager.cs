@@ -104,7 +104,7 @@ namespace BL
             }
         }
 
-        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie)
+        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
             //IPostManager postManager = new PostManager(uowManager);
@@ -134,6 +134,15 @@ namespace BL
 
             grafiek.Type = TypeGrafiek;
             grafiek.Waardes = grafiekWaardes;
+            grafiek.GrafiekSoort = grafiekSoort;
+            if(VergelijkOptie.ToLower() == "populariteit")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POPULARITEIT;
+            } else if(VergelijkOptie.ToLower() == "postfrequentie")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POSTFREQUENTIE;
+            }
+
 
             //cijfers
             switch (TypeGrafiek)

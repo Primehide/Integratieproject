@@ -55,12 +55,26 @@ namespace BL
                 Naam = "N-VA"
             };
 
+            Domain.Entiteit.Organisatie OpenVLD = new Domain.Entiteit.Organisatie()
+            {
+                Leden = new List<Domain.Entiteit.Persoon>(),
+                Naam = "Open-VLD"
+            };
+
             Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
             {
                 Naam = "Ben Weyts",
                 Organisations = new List<Domain.Entiteit.Organisatie>(),
                 Trends = new List<Trend>()
             };
+
+            Domain.Entiteit.Persoon Maggie = new Domain.Entiteit.Persoon()
+            {
+                Naam = "Maggie De Block",
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
+            };
+
 
             Trend trend = new Trend()
             {
@@ -84,11 +98,14 @@ namespace BL
             //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
             BenWeyts.Organisations.Add(NVA);
             Bartje.Organisations.Add(NVA);
+            Maggie.Organisations.Add(OpenVLD);
 
 
             entiteitRepository.AddEntiteit(NVA);
+            entiteitRepository.AddEntiteit(OpenVLD);
             entiteitRepository.AddEntiteit(BenWeyts);
             entiteitRepository.AddEntiteit(Bartje);
+            entiteitRepository.AddEntiteit(Maggie);
         }
 
         public List<Entiteit> getAlleEntiteiten()
@@ -319,7 +336,7 @@ namespace BL
                             int aantalPosts = postsEerste.Count;
                             grafiekMap.Add("Aantal posts", aantalPosts);
                         }
-                        if(cijferOptie.ToLower() == "aantalRetweets")
+                        if(cijferOptie.ToLower() == "aantalretweets")
                         {
                             int retweets = postsEerste.Where(x => x.retweet == true).Count();
                             grafiekMap.Add("Aantal retweets", retweets);
@@ -355,6 +372,22 @@ namespace BL
                         foreach (var e in entiteiten)
                         {
                             grafiekMap.Add("Post " + e.Naam, e.Posts.Count);
+                        }
+                    }
+                    if(VergelijkOptie.ToLower() == "postfrequentie")
+                    {
+                        DateTime today = DateTime.Today;
+                        int counter = 0;
+                        foreach (var e in entiteiten)
+                        {
+
+                            for(int i = 12; i > 0; i--)
+                            {
+                                List<Post> postsHuidigeDag = e.Posts.Where(x => x.Date.Date == today.AddDays(-i).Date).ToList();
+                                grafiekMap.Add("Posts" + i + " " + e.Naam, postsHuidigeDag.Count);
+                            }
+                            grafiekMap.Add("EndPostFrequentie" + counter,counter);
+                            counter++;
                         }
                     }
                     break;

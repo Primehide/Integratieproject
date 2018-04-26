@@ -36,9 +36,9 @@ namespace WebUI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -64,22 +64,37 @@ namespace WebUI.Controllers
             {
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie
             };
-            StringBuilder LabelBuilder = new StringBuilder();
-            StringBuilder DataBuilder = new StringBuilder();
-            int counter = 0;
-            foreach (var blok in model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING))
+            //vergelijking + post frequentie
+            StringBuilder LabelPostFreqBuilder = new StringBuilder();
+            StringBuilder DataPostFreqBuilder = new StringBuilder();
+            foreach (var blok in model.Configuratie.DashboardBlokken
+                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE))
             {
-                LabelBuilder.Clear();
-                DataBuilder.Clear();
+                //create labels once
+                DateTime today = DateTime.Today;
+                LabelPostFreqBuilder.Clear();
+                for (int i = 12; i > 0; i--)
+                {
+                    LabelPostFreqBuilder.Append("\"" + today.AddDays(-i).ToShortDateString() + "\",");
+                }
+                ViewData.Add("PostFreqLabels", LabelPostFreqBuilder);
+
+                //data opstellen voor grafiek
                 for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
                 {
-                    LabelBuilder.Append("\"" + blok.Grafiek.Waardes.ElementAt(i).Naam + "\",");
-                    DataBuilder.Append("\"" + blok.Grafiek.Waardes.ElementAt(i).Waarde + "\",");
+                    if (blok.Grafiek.Waardes.ElementAt(i).Naam.Contains("EndPostFrequentie"))
+                    {
+                        string data = DataPostFreqBuilder.ToString();
+                        ViewData.Add("PostFreqData" + blok.Grafiek.Waardes.ElementAt(i).Waarde, data);
+                        DataPostFreqBuilder.Clear();
+                        continue;
+                    }
+                    DataPostFreqBuilder.Append("\"" + blok.Grafiek.Waardes.ElementAt(i).Waarde + "\",");
                 }
-                ViewData.Add("ChartLabels" + counter, LabelBuilder);
-                ViewData.Add("DataLabels" + counter, DataBuilder);
-                counter++;
             }
+
+
             return View(model);
         }
 
@@ -359,7 +374,7 @@ namespace WebUI.Controllers
 
             base.Dispose(disposing);
         }
-  
+
         //GET: /Manage/ManageAccount
         public ActionResult ManageAccount()
         {
@@ -370,7 +385,7 @@ namespace WebUI.Controllers
             ViewBag.Lastname = acc.Achternaam;
             ViewBag.Birthdate = acc.GeboorteDatum.ToString("yyyy-MM-dd"); ;
             ViewBag.Email = acc.Email;
-          
+
             return View();
         }
 
@@ -388,20 +403,20 @@ namespace WebUI.Controllers
             account.GeboorteDatum = parsedDate.Date;
 
             // if email changed:
-           if (User.Identity.GetUserName() != account.Email)
+            if (User.Identity.GetUserName() != account.Email)
             {
                 user.EmailConfirmed = false;
                 user.Email = account.Email;
                 user.UserName = account.Email;
 
                 //security stamp vernieuwen
-                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
+                await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-               
-               
+
+
                 UserManager.Update(user);
-            
-               //send mail 
+
+                //send mail 
                 var callbackUrl = Url.Action("ConfirmEmail", "Account",
                    new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "confirmation",
@@ -470,6 +485,6 @@ namespace WebUI.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }
