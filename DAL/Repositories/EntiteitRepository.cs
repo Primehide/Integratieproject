@@ -147,10 +147,10 @@ namespace DAL
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
         }
-
+ 
         public List<Entiteit> getAlleEntiteiten()
         {
-            return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
+             return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
         }
 
         public void updateEntiteit(Entiteit entiteit)
@@ -206,6 +206,11 @@ namespace DAL
         public IEnumerable<Thema> ReadThemas()
         {
             return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
+        }
+        public Entiteit ReadEntiteit(string naam)
+        {
+            Entiteit entiteit =  ctx.Entiteiten.Where(x => x.Naam == naam).First();
+            return entiteit;
         }
 
         public void DeleteSleutelwoord(int sleutelId)

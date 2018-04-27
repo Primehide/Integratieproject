@@ -47,6 +47,7 @@ namespace BL
         }
         public Account getAccount(string ID)
         {
+            initNonExistingRepo(true);
             return repo.ReadAccount(ID);
         }
 
@@ -75,6 +76,13 @@ namespace BL
             initNonExistingRepo();
             accountRepository.UpdateAlert(alert);
         }
+        public void addAlert(Alert alert)
+        {
+            initNonExistingRepo(true);
+            accountRepository.AddAlert(alert);
+            uowManager.Save();
+        }
+
 
         public List<Alert> getAlleAlerts()
         {
