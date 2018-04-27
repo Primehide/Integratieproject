@@ -25,7 +25,7 @@ namespace BL
         {
             uowManager = uofMgr;
         }
-
+        
         public void initNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
@@ -76,6 +76,8 @@ namespace BL
             entiteitRepository.AddEntiteit(BenWeyts);
             entiteitRepository.AddEntiteit(Bartje);
         }
+
+
 
         public List<Entiteit> getAlleEntiteiten()
         {
@@ -326,6 +328,11 @@ namespace BL
             initNonExistingRepo(false);
             return entiteitRepository.ReadPerson(id);
         }
+        public Entiteit GetEntiteit(int naam)
+        {
+            initNonExistingRepo(true);
+            return entiteitRepository.ReadEntiteit(naam);
+        }
 
         public void RemovePerson(int id)
         {
@@ -455,6 +462,11 @@ namespace BL
         public Sleutelwoord GetSleutelwoord(int sleutelId)
         {
             return entiteitRepository.readSleutelwoord(sleutelId);
+        }
+
+        public Entiteit GetEntiteit(string naam)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

@@ -147,10 +147,10 @@ namespace DAL
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
         }
-
+ 
         public List<Entiteit> getAlleEntiteiten()
         {
-            return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
+             return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
         }
 
         public void updateEntiteit(Entiteit entiteit)
@@ -207,12 +207,22 @@ namespace DAL
         {
             return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
         }
+        public Entiteit ReadEntiteit(int i)
+        {
+            Entiteit entiteit =  ctx.Entiteiten.Where(x => x.EntiteitId == i).First();
+            return entiteit;
+        }
 
         public void DeleteSleutelwoord(int sleutelId)
         {
             Sleutelwoord sleutelwoord = readSleutelwoord(sleutelId);
             ctx.SleutelWoorden.Remove(sleutelwoord);
             ctx.SaveChanges();
+        }
+
+        public Entiteit ReadEntiteit(string naam)
+        {
+            throw new NotImplementedException();
         }
 
         public EntiteitRepository(UnitOfWork uow)

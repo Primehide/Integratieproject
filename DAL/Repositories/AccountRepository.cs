@@ -31,6 +31,11 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+        public void AddAlert(Alert alert)
+        {
+            ctx.Alerts.Add(alert);
+            ctx.SaveChanges();
+        }
         public List<Alert> getAlleAlerts()
         {
             return ctx.Alerts.ToList();
@@ -58,5 +63,7 @@ namespace DAL
             Account account = ctx.Accounts.Where(a => a.IdentityId == ID).First();
             return account;
         }
+
+   
     }
 }

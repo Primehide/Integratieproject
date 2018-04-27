@@ -47,6 +47,7 @@ namespace BL
         }
         public Account getAccount(string ID)
         {
+            initNonExistingRepo(true);
             return repo.ReadAccount(ID);
         }
 
@@ -60,7 +61,8 @@ namespace BL
             entiteitMgr.ResetTrends();
             foreach (var alert in Alerts)
             {
-                e = alert.Entiteit;
+                
+                e = entiteitMgr.GetEntiteit(alert.Entiteit);
                 if (entiteitMgr.berekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
                 {
                     alert.Triggered = true;
@@ -75,6 +77,13 @@ namespace BL
             initNonExistingRepo();
             accountRepository.UpdateAlert(alert);
         }
+        public void addAlert(Alert alert)
+        {
+            initNonExistingRepo(true);
+            accountRepository.AddAlert(alert);
+            uowManager.Save();
+        }
+
 
         public List<Alert> getAlleAlerts()
         {

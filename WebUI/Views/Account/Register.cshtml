@@ -1,4 +1,5 @@
-﻿@model WebUI.Models.RegisterViewModel
+﻿
+@model WebUI.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
@@ -43,7 +44,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.geboortedatum, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.geboortedatum, new { @class = "form-control", @type = "date", @Value = Model.geboortedatum.ToString("yyyy-MM-dd") })
+            @Html.TextBoxFor(m => m.geboortedatum, new { @class = "form-control", @type = "date" })
         </div>
     </div>
 

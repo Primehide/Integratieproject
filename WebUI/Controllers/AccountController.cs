@@ -23,7 +23,7 @@ namespace WebUI.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -35,9 +35,9 @@ namespace WebUI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -77,7 +77,7 @@ namespace WebUI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("LoginNew",model);
+                return RedirectToAction("LoginNew", model);
             }
 
             // Require the user to have a confirmed email before they can log on.
@@ -138,7 +138,7 @@ namespace WebUI.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -160,11 +160,6 @@ namespace WebUI.Controllers
             return View();
         }
 
-        [AllowAnonymous]
-        public ActionResult RegisterNew()
-        {
-            return View();
-        }
 
         //
         // POST: /Account/Register
@@ -195,7 +190,7 @@ namespace WebUI.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View("RegisterNew",model);
+            return View("RegisterNew", model);
         }
 
         //
@@ -248,7 +243,7 @@ namespace WebUI.Controllers
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
@@ -544,6 +539,7 @@ namespace WebUI.Controllers
                 GeboorteDatum = geboorteDatum,
                 Dashboard = new Domain.Account.Dashboard()
             };
+            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
             accountManager.addUser(domainAccount);
         }
         #endregion
