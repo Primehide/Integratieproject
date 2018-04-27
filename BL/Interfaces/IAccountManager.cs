@@ -15,5 +15,8 @@ namespace BL
         List<Alert> getAlleAlerts();
         void UpdateAlert(Alert alert);
         List<Account> GetAccounts();
+        Account getAccount(string ID);
+        void UpdateUser(Account account);
+        void DeleteUser(string accountId);
     }
 }

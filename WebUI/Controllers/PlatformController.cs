@@ -20,8 +20,7 @@ namespace WebUI.Controllers
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
-            
+            List<Account> accounts = accountManager.GetAccounts();         
             return View(accounts);
         }
 

@@ -32,7 +32,7 @@ namespace BL
             accountRepository.addUser(account);
             uowManager.Save();
         }
-        public void updateUser(Account account)
+        public void UpdateUser(Account account)
         {
          
             initNonExistingRepo(true);
@@ -106,6 +106,12 @@ namespace BL
             {
                 accountRepository = (accountRepository == null) ? new AccountRepository() : accountRepository;
             }
+        }
+
+        public void DeleteUser(string accountId)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteUser(accountId);
         }
     }
 }
