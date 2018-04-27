@@ -14,7 +14,7 @@ namespace Domain.Account
         public string Achternaam { get; set; }
         public DateTime GeboorteDatum { get; set; }
         public string Email { get; set; }
-        //public string Wachtwoord { get; set; }
+        //public strinwoord { get; set; }
         public List<Alert> Alerts { get; set; }
         public Dashboard Dashboard { get; set; }
     }

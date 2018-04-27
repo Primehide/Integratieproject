@@ -20,7 +20,7 @@ namespace DAL
         void DeletePerson(int id);
         IEnumerable<Persoon> ReadAllPeople();
         byte[] GetPersonImageFromDataBase(int Id);
-
+        Entiteit ReadEntiteit(string naam);
         void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase ImageFile);
         void CreateOrganisatieWithoutPhoto(Organisatie o);
         Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie);
@@ -41,5 +41,6 @@ namespace DAL
         Thema ReadThema(int entiteitsId);
         Sleutelwoord readSleutelwoord(int sleutelId);
         IEnumerable<Thema> ReadThemas();
+
     }
 }

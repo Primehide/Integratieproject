@@ -9,6 +9,10 @@ namespace WebUI.Controllers
     [RequireHttps]
     public class HomeController : Controller
     {
+        public ActionResult HomePagina()
+        {
+            return View();
+        }
         public ActionResult Index()
         {
             return View();
