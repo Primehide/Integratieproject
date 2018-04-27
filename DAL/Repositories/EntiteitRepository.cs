@@ -207,9 +207,9 @@ namespace DAL
         {
             return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
         }
-        public Entiteit ReadEntiteit(string naam)
+        public Entiteit ReadEntiteit(int i)
         {
-            Entiteit entiteit =  ctx.Entiteiten.Where(x => x.Naam == naam).First();
+            Entiteit entiteit =  ctx.Entiteiten.Where(x => x.EntiteitId == i).First();
             return entiteit;
         }
 
@@ -218,6 +218,11 @@ namespace DAL
             Sleutelwoord sleutelwoord = readSleutelwoord(sleutelId);
             ctx.SleutelWoorden.Remove(sleutelwoord);
             ctx.SaveChanges();
+        }
+
+        public Entiteit ReadEntiteit(string naam)
+        {
+            throw new NotImplementedException();
         }
 
         public EntiteitRepository(UnitOfWork uow)

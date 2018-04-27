@@ -16,7 +16,7 @@ namespace Domain.Account
         public double MinWaarde { get; set; }
         public Domain.Enum.PlatformType PlatformType { get; set; }
         public Account Account { get; set; }
-        public Domain.Entiteit.Entiteit Entiteit { get; set; }
+        public int Entiteit { get; set; }
         public bool Triggered { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace WebUI.Controllers
             fillNamen();
 
             Entiteit ent = NaamType.Keys.Where(x => x.Naam == types).FirstOrDefault();
-             newAlert.Entiteit = ent;
+             newAlert.Entiteit = ent.EntiteitId;
     
 
             if (android == true)

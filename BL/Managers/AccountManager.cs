@@ -61,7 +61,8 @@ namespace BL
             entiteitMgr.ResetTrends();
             foreach (var alert in Alerts)
             {
-                e = alert.Entiteit;
+                
+                e = entiteitMgr.GetEntiteit(alert.Entiteit);
                 if (entiteitMgr.berekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
                 {
                     alert.Triggered = true;
