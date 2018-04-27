@@ -4333,7 +4333,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54057</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44365/</IISUrl>
+          <IISUrl>https://localhost:44365</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

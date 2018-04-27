@@ -1,7 +1,9 @@
 ﻿using BL;
 using Domain.Entiteit;
 using Domain.Platform;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using WebUI.Models;
 
@@ -13,11 +15,13 @@ namespace WebUI.Controllers
     {
         PlatformManager pM = new PlatformManager();
         EntiteitManager eM = new EntiteitManager();
+        public static int currentPlatform;
 
         // GET: Platform
         public  ActionResult Index()
         {
             //I have to be able to see a list of created SubPlatforms
+
 
             return View(pM.GetAllDeelplatformen());
         }
@@ -126,7 +130,8 @@ namespace WebUI.Controllers
 
             //I have to be able to direct the user to the homepage of the selected Platform (Implementation)
             #region
-
+            currentPlatform = id;
+            HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home", new { platId = id });
 
             #endregion

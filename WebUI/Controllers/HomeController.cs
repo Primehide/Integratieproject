@@ -9,9 +9,9 @@ namespace WebUI.Controllers
     [RequireHttps]
     public partial class HomeController : Controller
     {
-        public virtual ActionResult Index(int platId)
+        public virtual ActionResult Index()
         {
-            ViewBag.platId = platId;
+            ViewBag.platId = PlatformController.currentPlatform;
 
             return View();
         }
