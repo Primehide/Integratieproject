@@ -65,7 +65,7 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-1).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
