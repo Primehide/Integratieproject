@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Enum
 {
-    public enum GrafiekType
+    public enum SoortGegevens
     {
-        KRUISING,
-        VERGELIJKING,
-        CIJFERS
+        POPULARITEIT,
+        POSTFREQUENTIE,
+        SENTIMENT
     }
 }

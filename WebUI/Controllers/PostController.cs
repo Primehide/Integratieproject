@@ -20,6 +20,14 @@ namespace WebUI.Controllers
             IPostManager postManager = new PostManager();
             await postManager.SyncDataAsync();
         }
+
+        [HttpPost]
+        public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
+            return RedirectToAction("Index","Manage");
+        }
     }
 
 

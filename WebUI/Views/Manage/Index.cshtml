@@ -1,4 +1,5 @@
-﻿@{
+﻿@model WebUI.Models.DashboardModel
+@{
     Layout = null;
 }
 
@@ -15,13 +16,11 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Starter kit</h3>
+                        <h3 class="text-themecolor">Jou Grafieken</h3>
                     </div>
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                            <li class="breadcrumb-item">pages</li>
-                            <li class="breadcrumb-item active">Starter kit</li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
                         </ol>
                     </div>
                     <div>
@@ -36,10 +35,143 @@
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
                 <div class="row">
-                    <div class="col-12">
+                    @foreach (var blok in Model.Configuratie.DashboardBlokken)
+                {
+                    if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped ">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="text-center">
+                                                        Waarde
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var waarde in blok.Grafiek.Waardes)
+                                            {
+                                                <tr>
+                                                    <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                                    @if (waarde.Naam.ToLower().Contains("trend"))
+                                                {
+                                                    <td>Aanwezig</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@waarde.Waarde</td>
+                                        }
+                                                </tr>
+                                        }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                }
+                else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                {
+                    <div class="col-md-4" style="overflow:hidden;">
                         <div class="card">
                             <div class="card-body">
-                                This is some text within a card block.
+                                <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                <div>
+                                    <canvas id="chart @Model.CanvasCounter"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                Model.CanvasCounter++;
+            }
+        }
+                </div>
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Meest actieve personen</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_bart.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Bart De Wever</h3>
+                                <h6 class="text-muted">N-VA</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">1099</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_maggie.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Maggie De Block</h3>
+                                <h6 class="text-muted">Open-Vld</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">876</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 col-xlg-4">
+                        <div class="card">
+                            <div class="card-body little-profile text-center">
+                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_kris.jpg" alt="user"></div>
+                                <h3 class="m-b-0">Kris Peeters</h3>
+                                <h6 class="text-muted">CD&V</h6>
+                                <ul class="list-inline soc-pro m-t-30">
+                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
+                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                            <div class="text-center bg-light">
+                                <div class="row">
+                                    <div class="col-12  p-20 b-r">
+                                        <h4 class="m-b-0 font-medium">767</h4><small>Tweets</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
                             </div>
                         </div>
                     </div>
@@ -51,6 +183,155 @@
         </div>
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+
+        @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+        {
+            Model.DataSetTeller = 0;
+            if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
+            {
+        <script>
+                    var ctx1 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data1 = {
+                        labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
+                        position: 'top',
+                        datasets: [
+                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                            {
+                                <text>
+                                    {
+                                        label: "",
+                                        fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        strokeColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        pointColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        pointStrokeColor: "#fff",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
+                                    },
+                                </text>
+                                Model.DataSetTeller++;
+                            }
+
+                        ],
+
+                    };
+                    Chart.types.Line.extend({
+                        name: "LineAlt",
+                        initialize: function () {
+                            Chart.types.Line.prototype.initialize.apply(this, arguments);
+
+                            var ctx = this.chart.ctx;
+                            var originalStroke = ctx.stroke;
+                            ctx1.stroke = function () {
+                                ctx1.save();
+                                ctx1.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                                ctx1.shadowBlur = 10;
+                                ctx1.shadowOffsetX = 8;
+                                ctx1.shadowOffsetY = 8;
+                                originalStroke.apply(this, arguments)
+                                ctx1.restore();
+
+                            }
+                        }
+                    });
+                    var chart1 = new Chart(ctx1).LineAlt(data1, {
+                        scaleShowGridLines: true,
+                        scaleGridLineColor: "rgba(0,0,0,.005)",
+                        scaleGridLineWidth: 0,
+                        scaleShowHorizontalLines: true,
+                        scaleShowVerticalLines: true,
+                        bezierCurve: true,
+                        bezierCurveTension: 0.4,
+                        pointDot: true,
+                        pointDotRadius: 4,
+                        pointDotStrokeWidth: 2,
+                        pointHitDetectionRadius: 2,
+                        datasetStroke: true,
+                        tooltipCornerRadius: 2,
+                        datasetStrokeWidth: 0,
+                        datasetFill: false,
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+                        responsive: true
+                    });
+        </script>
+            } else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
+            {
+        <script>
+                    var ctx2 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data2 = {
+                        labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
+                        datasets: [
+                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                            {
+                                <text>
+                                {
+                                label: "",
+                                fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                strokeColor:"@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                highlightFill: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                highlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
+                                },
+                                </text>
+                                Model.DataSetTeller++;
+                            }
+                        ]
+                    };
+
+                    var chart2 = new Chart(ctx2).Bar(data2, {
+                        scaleBeginAtZero: true,
+                        scaleShowGridLines: true,
+                        scaleGridLineColor: "rgba(0,0,0,.005)",
+                        scaleGridLineWidth: 0,
+                        scaleShowHorizontalLines: true,
+                        scaleShowVerticalLines: true,
+                        barShowStroke: true,
+                        barStrokeWidth: 0,
+                        tooltipCornerRadius: 2,
+                        barDatasetSpacing: 3,
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+                        responsive: true
+                    });
+        </script>
+            } else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
+            {
+        <script>
+                    var ctx3 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data3 = [
+                        @{
+                            int teller = 0;
+                        }
+                        @foreach (var dataset in blok.Grafiek.Waardes)
+                        {
+                            <text>
+                                {
+                                    value: @dataset.Waarde,
+                                    color: "@Model.ColorCodes.ElementAt(teller)",
+                                    highlight: "@Model.ColorCodes.ElementAt(teller)",
+                                    label: "@dataset.Naam"
+                                },
+                            </text>
+                            teller++;
+                        }
+                    ];
+
+                    var myPieChart = new Chart(ctx3).Pie(data3, {
+                        segmentShowStroke: true,
+                        segmentStrokeColor: "#fff",
+                        segmentStrokeWidth: 0,
+                        animationSteps: 100,
+                        tooltipCornerRadius: 0,
+                        animationEasing: "easeOutBounce",
+                        animateRotate: true,
+                        animateScale: false,
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
+                        responsive: true
+                    });
+        </script>
+            }
+            Model.ScriptCounter++;
+        }
+
     </div>
 </body>
 

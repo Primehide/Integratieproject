@@ -13,6 +13,5 @@ namespace Domain.Entiteit
         public string LastName { get; set; }
         public List<Organisatie> Organisations { get; set; }
         public byte[] Image { get; set; }
-        public List<Organisatie> Organisaties { get; set; }
     }
 }

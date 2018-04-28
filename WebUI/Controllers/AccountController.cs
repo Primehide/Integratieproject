@@ -575,6 +575,7 @@ namespace WebUI.Controllers
                 GeboorteDatum = geboorteDatum,
                 Dashboard = new Domain.Account.Dashboard()
             };
+            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
             accountManager.addUser(domainAccount);
         }
         #endregion

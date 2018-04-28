@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Account;
+using System.Data.Entity;
 
 namespace DAL
 {
@@ -55,7 +56,13 @@ namespace DAL
         public Account ReadAccount(string ID)
         {
             string test = ID;
-            Account account = ctx.Accounts.Where(a => a.IdentityId == ID).First();
+            Account account = ctx.Accounts
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
+                .Where(a => a.IdentityId == ID).First();
             return account;
         }
 
