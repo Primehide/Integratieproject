@@ -56,11 +56,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/Index
-<<<<<<< HEAD
         public ActionResult Index()
-=======
-        public virtual async Task<ActionResult> Index(ManageMessageId? message)
->>>>>>> master
         {
             IAccountManager accountManager = new AccountManager();
 
