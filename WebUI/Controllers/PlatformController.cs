@@ -160,7 +160,6 @@ namespace WebUI.Controllers
             return RedirectToAction("Index");
 
         }
-<<<<<<< HEAD
         #endregion
         public ActionResult ExportUsers()
         {
