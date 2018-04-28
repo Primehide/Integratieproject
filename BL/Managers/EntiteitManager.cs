@@ -381,7 +381,7 @@ namespace BL
                         foreach (var e in entiteiten)
                         {
 
-                            for(int i = 12; i > 0; i--)
+                            for(int i = 10; i > 0; i--)
                             {
                                 List<Post> postsHuidigeDag = e.Posts.Where(x => x.Date.Date == today.AddDays(-i).Date).ToList();
                                 grafiekMap.Add("Posts" + i + " " + e.Naam, postsHuidigeDag.Count);

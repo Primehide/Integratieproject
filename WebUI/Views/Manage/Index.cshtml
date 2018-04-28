@@ -36,60 +36,60 @@
                 <!-- ============================================================== -->
                 <div class="row">
                     @foreach (var blok in Model.Configuratie.DashboardBlokken)
+                {
+                    if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
                     {
-                        if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
-                        {
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Cijfer gegevens - @blok.Grafiek.Naam</h4>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-striped ">
-                                                <thead>
-                                                    <tr>
-                                                        <th></th>
-                                                        <th class="text-center">
-                                                            Waarde
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var waarde in blok.Grafiek.Waardes)
-                                                    {
-                                                        <tr>
-                                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                                            @if (waarde.Naam.ToLower().Contains("trend"))
-                                                            {
-                                                                <td>Aanwezig</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>@waarde.Waarde</td>
-                                                            }
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped ">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="text-center">
+                                                        Waarde
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var waarde in blok.Grafiek.Waardes)
+                                            {
+                                                <tr>
+                                                    <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                                    @if (waarde.Naam.ToLower().Contains("trend"))
+                                                {
+                                                    <td>Aanwezig</td>
+                                            }
+                                            else
+                                            {
+                                                <td>@waarde.Waarde</td>
+                                        }
+                                                </tr>
+                                        }
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                        }
-                        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                        {
-                            <div class="col-md-4" style="overflow:hidden;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">Vergelijking</h4>
-                                        <div>
-                                            <canvas id="chart @Model.CanvasCounter"></canvas>
-                                        </div>
-                                    </div>
+                        </div>
+                }
+                else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                {
+                    <div class="col-md-4" style="overflow:hidden;">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                <div>
+                                    <canvas id="chart @Model.CanvasCounter"></canvas>
                                 </div>
                             </div>
-                            Model.CanvasCounter++;
-                        }
-                    }
+                        </div>
+                    </div>
+                Model.CanvasCounter++;
+            }
+        }
                 </div>
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
@@ -184,79 +184,101 @@
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
 
-        @foreach (var blok in Model.Configuratie.DashboardBlokken
-                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                .Where(x => x.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
-                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE))
+        @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
         {
-            Model.PostFreqDataCounter = 0;
-            <script>
-                    var ctx = document.getElementById("chart @Model.ScriptCounter" ).getContext("2d");
-                        var data = {
-                labels: [@Html.Raw(ViewData["PostFreqLabels" + Model.PostFreqLabelCounter])],
-                datasets: [
-                                @foreach (var waarde in blok.Grafiek.Waardes)
-                                {
-                                    if (waarde.Naam.ToLower().Contains("endpostfrequentie"))
-                                    {
-                                        <text>
-                                        {
-                                            label: "My First dataset",
-                                            fillColor: "#009efb",
-                                            strokeColor: "#009efb",
-                                            highlightFill: "#009efb",
-                                            highlightStroke: "#009efb",
-                                            data: [@ViewData["PostFreqData" + Model.PostFreqDataCounter + "Grafiek" + Model.PostFreqGrafiekCounter]]
-                                        },
-                                        </text>
-                                        Model.PostFreqDataCounter++;
-                                    }
-                                }
-                        ],
-
-                    };
-                    var chart = new Chart(ctx).Bar(data, {
-                        scaleBeginAtZero: true,
-                        scaleShowGridLines: true,
-                        scaleGridLineColor: "rgba(0,0,0,.005)",
-                        scaleGridLineWidth: 0,
-                        scaleShowHorizontalLines: true,
-                        scaleShowVerticalLines: true,
-                        barShowStroke: true,
-                        barStrokeWidth: 0,
-                        tooltipCornerRadius: 2,
-                        barDatasetSpacing: 3,
-                        legendTemplate: "test label",
-                        responsive: true
-                    });
-            </script>
-            Model.PostFreqLabelCounter++;
-            Model.PostFreqGrafiekCounter++;
-            Model.ScriptCounter++;
-        }
-
-        @foreach (var blok in Model.Configuratie.DashboardBlokken
-    .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-    .Where(x => x.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
-    .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT))
-        {
-            <script>
-                    var ctx = document.getElementById("chart @Model.ScriptCounter" ).getContext("2d");
-                    var data = {
-                        labels: [@Html.Raw(ViewData["PopulariteitLabel" + Model.PopulariteitLabelCounter])],
+            Model.DataSetTeller = 0;
+            if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
+            {
+        <script>
+                    var ctx1 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data1 = {
+                        labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
+                        position: 'top',
                         datasets: [
-                                {
+                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                            {
+                                <text>
+                                    {
                                         label: "",
-                                        fillColor: "#009efb",
-                                        strokeColor: "#009efb",
-                                        highlightFill: "#009efb",
-                                        highlightStroke: "#009efb",
-                                        data: [@ViewData["PopulariteitData" + Model.PopulariteitDataCounter]]
+                                        fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        strokeColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        pointColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        pointStrokeColor: "#fff",
+                                        pointHighlightFill: "#fff",
+                                        pointHighlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                        data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
                                     },
+                                </text>
+                                Model.DataSetTeller++;
+                            }
+
                         ],
 
                     };
-                    var chart = new Chart(ctx).Bar(data, {
+                    Chart.types.Line.extend({
+                        name: "LineAlt",
+                        initialize: function () {
+                            Chart.types.Line.prototype.initialize.apply(this, arguments);
+
+                            var ctx = this.chart.ctx;
+                            var originalStroke = ctx.stroke;
+                            ctx1.stroke = function () {
+                                ctx1.save();
+                                ctx1.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                                ctx1.shadowBlur = 10;
+                                ctx1.shadowOffsetX = 8;
+                                ctx1.shadowOffsetY = 8;
+                                originalStroke.apply(this, arguments)
+                                ctx1.restore();
+
+                            }
+                        }
+                    });
+                    var chart1 = new Chart(ctx1).LineAlt(data1, {
+                        scaleShowGridLines: true,
+                        scaleGridLineColor: "rgba(0,0,0,.005)",
+                        scaleGridLineWidth: 0,
+                        scaleShowHorizontalLines: true,
+                        scaleShowVerticalLines: true,
+                        bezierCurve: true,
+                        bezierCurveTension: 0.4,
+                        pointDot: true,
+                        pointDotRadius: 4,
+                        pointDotStrokeWidth: 2,
+                        pointHitDetectionRadius: 2,
+                        datasetStroke: true,
+                        tooltipCornerRadius: 2,
+                        datasetStrokeWidth: 0,
+                        datasetFill: false,
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+                        responsive: true
+                    });
+        </script>
+            } else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
+            {
+        <script>
+                    var ctx2 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data2 = {
+                        labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
+                        datasets: [
+                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                            {
+                                <text>
+                                {
+                                label: "",
+                                fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                strokeColor:"@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                highlightFill: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                highlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
+                                },
+                                </text>
+                                Model.DataSetTeller++;
+                            }
+                        ]
+                    };
+
+                    var chart2 = new Chart(ctx2).Bar(data2, {
                         scaleBeginAtZero: true,
                         scaleShowGridLines: true,
                         scaleGridLineColor: "rgba(0,0,0,.005)",
@@ -267,14 +289,49 @@
                         barStrokeWidth: 0,
                         tooltipCornerRadius: 2,
                         barDatasetSpacing: 3,
-                        legendTemplate: "test label",
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
                         responsive: true
                     });
-            </script>
+        </script>
+            } else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
+            {
+        <script>
+                    var ctx3 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
+                    var data3 = [
+                        @{
+                            int teller = 0;
+                        }
+                        @foreach (var dataset in blok.Grafiek.Waardes)
+                        {
+                            <text>
+                                {
+                                    value: @dataset.Waarde,
+                                    color: "@Model.ColorCodes.ElementAt(teller)",
+                                    highlight: "@Model.ColorCodes.ElementAt(teller)",
+                                    label: "@dataset.Naam"
+                                },
+                            </text>
+                            teller++;
+                        }
+                    ];
+
+                    var myPieChart = new Chart(ctx3).Pie(data3, {
+                        segmentShowStroke: true,
+                        segmentStrokeColor: "#fff",
+                        segmentStrokeWidth: 0,
+                        animationSteps: 100,
+                        tooltipCornerRadius: 0,
+                        animationEasing: "easeOutBounce",
+                        animateRotate: true,
+                        animateScale: false,
+                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
+                        responsive: true
+                    });
+        </script>
+            }
             Model.ScriptCounter++;
-            Model.PopulariteitLabelCounter++;
-            Model.PopulariteitDataCounter++;
         }
+
     </div>
 </body>
 

@@ -148,7 +148,16 @@ namespace BL
             switch (TypeGrafiek)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    grafiek.Naam = entiteiten.First().Naam;
+                    grafiek.Naam = "Cijfer gegevens - " + entiteiten.First().Naam;
+                    break;
+                case Domain.Enum.GrafiekType.VERGELIJKING:
+                    if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                    {
+                        grafiek.Naam = "Vergelijking post frequentie";
+                    } else if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                    {
+                        grafiek.Naam = "Vergelijking populariteit";
+                    }
                     break;
             }
 

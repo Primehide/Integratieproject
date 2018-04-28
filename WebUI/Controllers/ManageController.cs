@@ -62,63 +62,72 @@ namespace WebUI.Controllers
 
             WebUI.Models.DashboardModel model = new DashboardModel()
             {
-                Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie
+                Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
+                GrafiekLabels = new Dictionary<string, string>(),
+                GrafiekDataSets = new Dictionary<string, string>(),
+                ColorCodes = new List<string>()
             };
-            //vergelijking + post frequentie
-            StringBuilder LabelPostFreqBuilder = new StringBuilder();
-            StringBuilder DataPostFreqBuilder = new StringBuilder();
-            int labelCounter = 0;
-            int dataCounter = 0;
-            foreach (var blok in model.Configuratie.DashboardBlokken
-                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                .Where(x => x.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
-                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE))
-            {
-                //create labels once
-                DateTime today = DateTime.Today;
-                LabelPostFreqBuilder.Clear();
-                for (int i = 12; i > 0; i--)
-                {
-                    LabelPostFreqBuilder.Append("\"" + today.AddDays(-i).ToShortDateString() + "\",");
-                }
-                ViewData.Add("PostFreqLabels" + labelCounter, LabelPostFreqBuilder);
-                labelCounter++;
 
-                //data opstellen voor grafiek
-                for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+            model.ColorCodes.Add("#2E2EFE");
+            model.ColorCodes.Add("#74DF00");
+            model.ColorCodes.Add("#BF00FF");
+            model.ColorCodes.Add("#6E6E6E");
+            model.ColorCodes.Add("#0489B1");
+            model.ColorCodes.Add("#FE2E2E");
+            model.ColorCodes.Add("#FF8000");
+            model.ColorCodes.Add("#DA81F5");
+            model.ColorCodes.Add("#FA5882");
+            model.ColorCodes.Add("#0B6121");
+
+            int grafiekTeller = 0;
+            int dataSetTeller = 0;
+            //overlopen van elke blok
+            foreach (var blok in model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+            {
+                //dataset teller resetten
+                dataSetTeller = 0;
+                //kijkt na of het soort gegeven een postfrequentie is. Als dat zo is zijn de labels anders.
+                if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
                 {
-                    if (blok.Grafiek.Waardes.ElementAt(i).Naam.Contains("EndPostFrequentie"))
+                    DateTime vandaag = DateTime.Today;
+                    //Labels aanmaken van laatste 10 dagen
+                    //post frequentie toont het aantal posts van vandaag tot 10 dagen terug
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    //Labels aanmaken van laatste 10 dagen
+                    for (int i = 10; i > 0; i--)
                     {
-                        string data = DataPostFreqBuilder.ToString();
-                        ViewData.Add("PostFreqData" + blok.Grafiek.Waardes.ElementAt(i).Waarde + "Grafiek" + dataCounter, data);
-                        DataPostFreqBuilder.Clear();
-                        continue;
+                        labelBuilder.Append("'").Append(vandaag.AddDays(-i).Date.ToShortDateString()).Append("'").Append(",");
                     }
-                    DataPostFreqBuilder.Append(blok.Grafiek.Waardes.ElementAt(i).Waarde + ",");
-                }
-                dataCounter++;
-            }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    //Elke waarde van de grafiek overlopen en toevoegen aan de dictonary
+                    for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+                    {
+                        if (blok.Grafiek.Waardes.ElementAt(i).Naam.ToLower().Contains("endpostfrequentie"))
+                        {
+                            model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                            dataSetTeller++;
+                            dataBuilder.Clear();
+                            continue;
+                        }
+                        dataBuilder.Append(blok.Grafiek.Waardes.ElementAt(i).Waarde).Append(",");
+                    }
 
-            //vergelijking + populariteit
-            StringBuilder LabelPopulariteitBuilder = new StringBuilder();
-            StringBuilder DataPopulariteitBuilder = new StringBuilder();
-            int LabelCounter = 0;
-            int DataCounter = 0;
-            foreach (var blok in model.Configuratie.DashboardBlokken
-                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT))
-            {
-                LabelPopulariteitBuilder.Clear();
-                DataPopulariteitBuilder.Clear();
-                foreach (var waarde in blok.Grafiek.Waardes)
-                {
-                    LabelPopulariteitBuilder.Append("\"" + waarde.Naam + "\",");
-                    DataPopulariteitBuilder.Append(waarde.Waarde + ",");
                 }
-                ViewData.Add("PopulariteitLabel" + LabelCounter, LabelPopulariteitBuilder.ToString());
-                ViewData.Add("PopulariteitData" + DataCounter, DataPopulariteitBuilder.ToString());
-                DataCounter++;
-                LabelCounter++;
+                else if(blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                {
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    foreach (var waarde in blok.Grafiek.Waardes)
+                    {
+                        labelBuilder.Append("'").Append(waarde.Naam).Append("'").Append(",");
+                        dataBuilder.Append(waarde.Waarde).Append(",");
+                    }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                }
+                //grafiek is gemaakt, teller met 1 verhogen
+                grafiekTeller++;
             }
 
             return View(model);
@@ -150,7 +159,15 @@ namespace WebUI.Controllers
 
         public ActionResult AddGrafiek()
         {
-            return View();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Personen = entiteitManager.GetAllPeople(),
+                Organisaties = entiteitManager.GetAllOrganisaties(),
+                Themas = entiteitManager.GetThemas().ToList()
+            };
+            return View(model);
         }
 
         [AllowAnonymous]
