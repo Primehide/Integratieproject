@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Account;
 
 namespace BL
 {
@@ -40,6 +41,18 @@ namespace BL
             {
                 platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
             }
+        }
+
+      
+        public StringBuilder ConvertToCSV(List<Account> accounts)
+        {
+            var lstData = accounts;
+            var sb = new StringBuilder();
+            foreach (var data in lstData)
+            {
+                sb.AppendLine(data.AccountId + "," + data.Voornaam + "," + data.Achternaam + ", " + data.Email + ", " + data.GeboorteDatum);
+            }
+            return sb;
         }
     }
 }

@@ -4282,13 +4282,12 @@
     <Content Include="Views\Account\RegisterNew.cshtml" />
     <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
     <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
+    <Content Include="Views\Platform\ExportUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\EditorTemplates\" />
-    <Folder Include="Views\Platform\" />
     <Folder Include="Views\Post\" />
-    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

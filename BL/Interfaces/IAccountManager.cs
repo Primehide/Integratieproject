@@ -14,5 +14,6 @@ namespace BL
         void genereerAlerts();
         List<Alert> getAlleAlerts();
         void UpdateAlert(Alert alert);
+        List<Account> GetAccounts();
     }
 }
