@@ -185,5 +185,11 @@ namespace BL
             accountRepository.updateUser(user);
             uowManager.Save();
         }
+
+        public void updateUser(Account account)
+        {
+            initNonExistingRepo();
+            repo.updateUser(account);
+        }
     }
 }

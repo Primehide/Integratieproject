@@ -56,7 +56,12 @@ namespace DAL
         public Account ReadAccount(string ID)
         {
             Account account = ctx.Accounts
-                .Include(x => x.Dashboard).Where(a => a.IdentityId == ID).First();
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
+                .Where(a => a.IdentityId == ID).First();
             return account;
         }
 
