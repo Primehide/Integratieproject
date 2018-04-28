@@ -4,25 +4,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Platform;
 using Domain.Account;
 
 namespace BL
 {
     public class PlatformManager : IPlatformManager
     {
-        private IPlatformRepository platformRepository;
+        private PlatformRepository platformRepository;
         private UnitOfWorkManager uowManager;
 
         public PlatformManager()
         {
-
+            platformRepository = new PlatformRepository();
         }
 
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
+            platformRepository = new PlatformRepository();
+
             uowManager = uofMgr;
         }
 
+        public void AddDeelplatform(Deelplatform newPlatform)
+        {
+            platformRepository.CreateDeelplatform(newPlatform);
+        }
+
+        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
+        {
+            return platformRepository.UpdateDeelplatform(changedDeelplatform);
+        }
+
+        public Deelplatform GetDeelplatform(int platformId)
+        {
+            return platformRepository.ReadDeelplatform(platformId);
+        }
+
+        public void RemoveDeelplatform(int platformId)
+        {
+            platformRepository.DeleteDeelplatform(platformId);
+        }
+
+        public IEnumerable<Deelplatform> GetAllDeelplatformen()
+        {
+            return platformRepository.ReadAllDeelplatformen();
+        }
+
+        #region
         public void initNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
@@ -42,6 +71,11 @@ namespace BL
                 platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
             }
         }
+
+<<<<<<< HEAD
+
+        #endregion
+
 
       
         public StringBuilder ConvertToCSV(List<Account> accounts)

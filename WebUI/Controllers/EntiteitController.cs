@@ -11,12 +11,12 @@ using WebUI.Models;
 
 namespace WebUI.Controllers
 {
-    public class EntiteitController : Controller
+    public partial class EntiteitController : Controller
     {
         private EntiteitManager eM = new EntiteitManager();
 
         // Index Page for all Entities.
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             //List<Entiteit> AllEntities = new List<Entiteit>();
             //AllEntities.AddRange(eM.GetAllPeople());
@@ -30,7 +30,7 @@ namespace WebUI.Controllers
         }
 
         // Index Page for all Entities.
-        public ActionResult Test()
+        public virtual ActionResult Test()
         {
             //List<Entiteit> AllEntities = new List<Entiteit>();
             //AllEntities.AddRange(eM.GetAllPeople());
@@ -41,7 +41,7 @@ namespace WebUI.Controllers
 
         // This region is for adding a person to the database and persisting.
         #region
-        public ActionResult AddPerson()
+        public virtual ActionResult AddPerson(int platformId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
@@ -52,13 +52,14 @@ namespace WebUI.Controllers
                 {
                     Text = o.Naam,
                     Value = o.EntiteitId.ToString(),
-              
+
                 };
                 ListBoxItems.Add(Organisation);
             }
 
             PersoonVM StartCreation = new PersoonVM()
             {
+                platId = platformId,
                 OrganisationChecks = new SelectedOrganisationVM
                 {
                     Organisations = ListBoxItems
@@ -69,7 +70,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddPerson(PersoonVM pvm, IEnumerable<string> SelectedOrganisations)
+        public virtual ActionResult AddPerson(PersoonVM pvm, IEnumerable<string> SelectedOrganisations)
         {
 
             if (!ModelState.IsValid)
@@ -83,7 +84,8 @@ namespace WebUI.Controllers
             {
                 LastName = pvm.Ln,
                 Organisations = new List<Organisatie>(),
-                FirstName = pvm.Fn
+                FirstName = pvm.Fn,
+                PlatformId = pvm.platId
             };
 
             if (SelectedOrganisations != null)
@@ -104,7 +106,7 @@ namespace WebUI.Controllers
                 file = hpfb;
             }
 
-            eM.AddPerson(AddedPerson,file);
+            eM.AddPerson(AddedPerson, file);
 
             return RedirectToAction("Index");
 
@@ -113,7 +115,7 @@ namespace WebUI.Controllers
 
         // This region is for displaying a certain person, given that a certain entityId is given.
         #region
-        public ActionResult DisplayPerson(int EntityId)
+        public virtual ActionResult DisplayPerson(int EntityId)
         {
             Persoon ToDisplay = eM.GetPerson(EntityId);
             return View(ToDisplay);
@@ -122,21 +124,21 @@ namespace WebUI.Controllers
 
         // This region will handle the updating of a certain person. After the update you will be redirected to the Display page of the updated person;
         #region
-        public ActionResult UpdatePerson(int EntityId)
+        public virtual ActionResult UpdatePerson(int EntityId)
         {
 
-        List<SelectListItem> ListBoxItems = new List<SelectListItem>();
+            List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
-        List<Organisatie> AllOrganisations = eM.GetAllOrganisaties();
+            List<Organisatie> AllOrganisations = eM.GetAllOrganisaties();
             foreach (Organisatie o in AllOrganisations)
             {
-                    SelectListItem Organisation = new SelectListItem()
-                    {
-                        Text = o.Naam,
-                        Value = o.EntiteitId.ToString(),
+                SelectListItem Organisation = new SelectListItem()
+                {
+                    Text = o.Naam,
+                    Value = o.EntiteitId.ToString(),
 
-                    };
-                    ListBoxItems.Add(Organisation);
+                };
+                ListBoxItems.Add(Organisation);
             }
 
             UpdatePersonVM UPVM = new UpdatePersonVM
@@ -153,7 +155,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
+        public virtual ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
         {
 
             if (SelectedOrganisations != null)
@@ -161,26 +163,27 @@ namespace WebUI.Controllers
 
                 eM.ChangePerson(EditedPerson.RequestedPerson, SelectedOrganisations);
 
-                        
-            } else
+
+            }
+            else
             {
                 eM.ChangePerson(EditedPerson.RequestedPerson);
             }
 
-         return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
-         #endregion
+        #endregion
 
         // This region will handle the deletion of a certain person
         #region
-        public ActionResult DeletePerson(int EntityId)
+        public virtual ActionResult DeletePerson(int EntityId)
         {
             eM.RemovePerson(EntityId);
             return RedirectToAction("Index");
         }
         #endregion
 
-        public ActionResult RetrieveImage(int id)
+        public virtual ActionResult RetrieveImage(int id)
         {
             byte[] cover = null;
             Entiteit e = eM.GetPerson(id);
@@ -203,14 +206,14 @@ namespace WebUI.Controllers
                 return File(cover, "image/jpg");
             }
             else
-            { 
+            {
                 return null;
             }
         }
 
         // This region will add a newly created Organisatie object to the database and persist
         #region
-        public ActionResult AddOrganisation() 
+        public virtual ActionResult AddOrganisation(int platformId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
@@ -228,6 +231,7 @@ namespace WebUI.Controllers
 
             OrganisatieVM StartCreation = new OrganisatieVM()
             {
+                platId = platformId,
                 PeopleChecks = new SelectedPeopleVM
                 {
                     People = ListBoxItems
@@ -238,7 +242,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddOrganisation(OrganisatieVM newOrganisation, IEnumerable<string> SelectedPeople)
+        public virtual ActionResult AddOrganisation(OrganisatieVM newOrganisation, IEnumerable<string> SelectedPeople)
         {
             if (!ModelState.IsValid)
             {
@@ -248,6 +252,7 @@ namespace WebUI.Controllers
             {
                 Naam = newOrganisation.Name,
                 Leden = new List<Persoon>(),
+                PlatformId = newOrganisation.platId,
                 Gemeente = newOrganisation.Town
             };
             if (SelectedPeople != null)
@@ -267,7 +272,7 @@ namespace WebUI.Controllers
 
         // This region is for displaying a certain Organisatie object, given that a certain entityId is given.
         #region
-        public ActionResult DisplayOrganisation(int EntityId)
+        public virtual ActionResult DisplayOrganisation(int EntityId)
         {
             Organisatie ToDisplay = eM.GetOrganisatie(EntityId);
             return View(ToDisplay);
@@ -277,7 +282,7 @@ namespace WebUI.Controllers
         // This region will handle the updating of a certain Organisation. After the update you will be redirected to the Display page of the updated organisation;
         // TODO : Application of UOW to prevent double creation of an Organisatie Object
         #region
-        public ActionResult UpdateOrganisation(int EntityId)
+        public virtual ActionResult UpdateOrganisation(int EntityId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
@@ -306,13 +311,14 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateOrganisation(UpdateOrganisatieVM editedOrganisation,IEnumerable<string> SelectedPeople)
+        public virtual ActionResult UpdateOrganisation(UpdateOrganisatieVM editedOrganisation, IEnumerable<string> SelectedPeople)
         {
             if (SelectedPeople != null)
             {
                 eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie, SelectedPeople);
 
-            } else
+            }
+            else
             {
                 eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie);
             }
@@ -323,7 +329,7 @@ namespace WebUI.Controllers
 
         // This region will handle the deletion of a certain Organisation
         #region
-        public ActionResult DeleteOrganisation(int EntityId)
+        public virtual ActionResult DeleteOrganisation(int EntityId)
         {
             eM.RemoveOrganisatie(EntityId);
 
@@ -337,22 +343,23 @@ namespace WebUI.Controllers
             entiteitManager.CreateTestData();
         }
 
-        public ActionResult IndexThema()
+        public virtual ActionResult IndexThema()
         {
             IEnumerable<Thema> themas = eM.GetThemas();
             return View(themas);
         }
 
         // GET: Thema/Create
-        public ActionResult CreateThema()
+        public virtual ActionResult CreateThema(int platid)
         {
-            return View();
+
+            return View(new Thema { PlatformId = platid });
         }
         // POST: Thema/Create
         [HttpPost]
-        public ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden)
+        public virtual ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden)
         {
-           // sleutelwoorden.RemoveAll(item => item.woord == null);
+            // sleutelwoorden.RemoveAll(item => item.woord == null);
             string woorden = sleutelwoorden[0].woord;
             string[] split = woorden.Split(',');
             List<Sleutelwoord> mijnList = new List<Sleutelwoord>();
@@ -363,7 +370,7 @@ namespace WebUI.Controllers
             }
             if (ModelState.IsValid)
             {
-                eM.AddThema(thema.Naam,mijnList);
+                eM.AddThema(thema, mijnList);
                 return RedirectToAction("IndexThema");
             }
             return View();
@@ -371,13 +378,13 @@ namespace WebUI.Controllers
 
 
         // GET: Thema/Edit/
-        public ActionResult EditThema(int id)
+        public virtual ActionResult EditThema(int id)
         {
             return View(eM.GetThema(id));
         }
 
         [HttpPost]
-        public ActionResult EditThema(Thema thema, int id, List<Sleutelwoord> sleutelwoorden)
+        public virtual ActionResult EditThema(Thema thema, int id, List<Sleutelwoord> sleutelwoorden)
         {
             thema.EntiteitId = id;
 
@@ -395,39 +402,39 @@ namespace WebUI.Controllers
                 thema.SleutenWoorden = mijnList;
             }
             eM.UpdateThema(thema);
-                return RedirectToAction("IndexThema");                 
+            return RedirectToAction("IndexThema");
         }
 
 
-        public ActionResult DeleteThema(int id)
+        public virtual ActionResult DeleteThema(int id)
         {
             return View(eM.GetThema(id));
         }
 
         [HttpPost]
-        public ActionResult DeleteThema(int id, FormCollection collection)
+        public virtual ActionResult DeleteThema(int id, FormCollection collection)
         {
 
 
             eM.DeleteThema(id);
-                return RedirectToAction("IndexThema");
-            
-            
-            
-               // return View();
-            
+            return RedirectToAction("IndexThema");
+
+
+
+            // return View();
+
         }
 
-        public ActionResult DeleteThemaSleutelwoord(int id)
+        public virtual ActionResult DeleteThemaSleutelwoord(int id)
         {
             return View(eM.GetSleutelwoord(id));
         }
         [HttpPost]
-        public ActionResult DeleteThemaSleutelwoord(int id, FormCollection collection)
+        public virtual ActionResult DeleteThemaSleutelwoord(int id, FormCollection collection)
         {
             eM.DeleteSleutelwoord(id);
             return RedirectToAction("IndexThema");
-       // return View();
+            // return View();
         }
     }
 }

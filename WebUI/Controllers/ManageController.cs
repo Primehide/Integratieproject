@@ -13,7 +13,7 @@ using WebUI.Models;
 namespace WebUI.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public partial class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -34,9 +34,9 @@ namespace WebUI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -54,7 +54,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/Index
-        public async Task<ActionResult> Index(ManageMessageId? message)
+        public virtual async Task<ActionResult> Index(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
@@ -81,7 +81,7 @@ namespace WebUI.Controllers
         // POST: /Manage/RemoveLogin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
+        public virtual async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             ManageMessageId? message;
             var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
@@ -103,7 +103,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/AddPhoneNumber
-        public ActionResult AddPhoneNumber()
+        public virtual ActionResult AddPhoneNumber()
         {
             return View();
         }
@@ -112,7 +112,7 @@ namespace WebUI.Controllers
         // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
+        public virtual async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -136,7 +136,7 @@ namespace WebUI.Controllers
         // POST: /Manage/EnableTwoFactorAuthentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EnableTwoFactorAuthentication()
+        public virtual async Task<ActionResult> EnableTwoFactorAuthentication()
         {
             await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -151,7 +151,7 @@ namespace WebUI.Controllers
         // POST: /Manage/DisableTwoFactorAuthentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DisableTwoFactorAuthentication()
+        public virtual async Task<ActionResult> DisableTwoFactorAuthentication()
         {
             await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), false);
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -164,7 +164,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
-        public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
+        public virtual async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
             // Send an SMS through the SMS provider to verify the phone number
@@ -175,7 +175,7 @@ namespace WebUI.Controllers
         // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
+        public virtual async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -200,7 +200,7 @@ namespace WebUI.Controllers
         // POST: /Manage/RemovePhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemovePhoneNumber()
+        public virtual async Task<ActionResult> RemovePhoneNumber()
         {
             var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
             if (!result.Succeeded)
@@ -217,7 +217,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        public virtual ActionResult ChangePassword()
         {
             return View();
         }
@@ -226,7 +226,7 @@ namespace WebUI.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        public virtual async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -248,7 +248,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/SetPassword
-        public ActionResult SetPassword()
+        public virtual ActionResult SetPassword()
         {
             return View();
         }
@@ -257,7 +257,7 @@ namespace WebUI.Controllers
         // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
+        public virtual async Task<ActionResult> SetPassword(SetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -280,7 +280,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/ManageLogins
-        public async Task<ActionResult> ManageLogins(ManageMessageId? message)
+        public virtual async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
@@ -305,7 +305,7 @@ namespace WebUI.Controllers
         // POST: /Manage/LinkLogin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LinkLogin(string provider)
+        public virtual ActionResult LinkLogin(string provider)
         {
             // Request a redirect to the external login provider to link a login for the current user
             return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
@@ -313,7 +313,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
-        public async Task<ActionResult> LinkLoginCallback()
+        public virtual async Task<ActionResult> LinkLoginCallback()
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
             if (loginInfo == null)
@@ -334,9 +334,9 @@ namespace WebUI.Controllers
 
             base.Dispose(disposing);
         }
-  
+
         //GET: /Manage/ManageAccount
-        public ActionResult ManageAccount()
+        public virtual ActionResult ManageAccount()
         {
             Account acc = new Account();
             AccountManager acm = new AccountManager();
@@ -345,14 +345,14 @@ namespace WebUI.Controllers
             ViewBag.Lastname = acc.Achternaam;
             ViewBag.Birthdate = acc.GeboorteDatum.ToString("yyyy-MM-dd"); ;
             ViewBag.Email = acc.Email;
-          
+
             return View();
         }
 
         //POST /Manage/ManageAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ManageAccount(Account account, string date)
+        public virtual async Task<ActionResult> ManageAccount(Account account, string date)
         {
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
@@ -363,20 +363,20 @@ namespace WebUI.Controllers
             account.GeboorteDatum = parsedDate.Date;
 
             // if email changed:
-           if (User.Identity.GetUserName() != account.Email)
+            if (User.Identity.GetUserName() != account.Email)
             {
                 user.EmailConfirmed = false;
                 user.Email = account.Email;
                 user.UserName = account.Email;
 
                 //security stamp vernieuwen
-                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
+                await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-               
-               
+
+
                 UserManager.Update(user);
-            
-               //send mail 
+
+                //send mail 
                 var callbackUrl = Url.Action("ConfirmEmail", "Account",
                    new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "confirmation",
@@ -445,6 +445,6 @@ namespace WebUI.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

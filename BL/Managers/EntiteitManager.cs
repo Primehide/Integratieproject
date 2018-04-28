@@ -256,12 +256,13 @@ namespace BL
             //als we hier komen is er geen trend aanwezig.
             return false;
         }
-
-        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        #region
+        public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
             Thema thema = new Thema()
             {
-                Naam = naam,
+                Naam = nieuwThema.Naam,
+                PlatformId = nieuwThema.PlatformId,
                 SleutenWoorden = sleutelwoorden
             };
             entiteitRepository.CreateThema(thema);
@@ -287,7 +288,7 @@ namespace BL
         {
             return entiteitRepository.ReadThema(entiteitsId);
         }
-
+#endregion
         #region
         public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {
@@ -333,8 +334,6 @@ namespace BL
             entiteitRepository.DeletePerson(id);
         }
         #endregion
-
-
         #region
         
         public void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile)
@@ -456,6 +455,18 @@ namespace BL
         {
             return entiteitRepository.readSleutelwoord(sleutelId);
         }
+
+        public List<Entiteit> GetEntiteitenVanDeelplatform(int id)
+        {
+            return entiteitRepository.ReadEntiteitenVanDeelplatform(id).ToList();
+        }
+
+        public void DeleteEntiteitenVanDeelplatform(int id)
+        {
+            entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
+        }
         #endregion
+
+
     }
 }

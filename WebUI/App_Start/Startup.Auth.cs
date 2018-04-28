@@ -6,6 +6,11 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using WebUI.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Web;
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebUI
 {
@@ -15,7 +20,7 @@ namespace WebUI
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, user manager and signin manager to use a single instance per request
-            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext(ApplicationDbContext<ApplicationUser>.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
             app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
@@ -63,6 +68,50 @@ namespace WebUI
                 ClientId = "347863212605-3nqdgoa8lb8o3u635mhtrn1qfvakebq9.apps.googleusercontent.com",
                 ClientSecret = "ie7cI7TBgnVFQqx2nlppAbMo"
             });
+
+            createRoles();
+            createSuperAdmin();
+        }
+
+        private void createRoles()
+        {
+            var roleMan = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>()));
+            if (!roleMan.RoleExists("Admin"))
+            {
+                var AdminRol = new IdentityRole();
+                AdminRol.Name = "Admin";
+                roleMan.Create(AdminRol);
+            }
+            if (!roleMan.RoleExists("SuperAdmin"))
+            {
+                var SuperAdminRol = new IdentityRole();
+                SuperAdminRol.Name = "SuperAdmin";
+                roleMan.Create(SuperAdminRol);
+            }
+        }
+
+        private void createSuperAdmin()
+        {
+            var user = new ApplicationUser { UserName = "admin@admin.com" /* + PlatformController.currentPlatform */, Email = "admin@admin.com", TenantId = 0, EmailConfirmed = true };
+            ApplicationDbContext<ApplicationUser> context = new ApplicationDbContext<ApplicationUser>();
+            ApplicationUserStore<ApplicationUser> userStore = new ApplicationUserStore<ApplicationUser>(context);
+
+            ApplicationUserManager aUM = new ApplicationUserManager(userStore);
+
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleMngr = new RoleManager<IdentityRole>(roleStore);
+
+            List<IdentityRole> roles = roleMngr.Roles.ToList();
+            List<string> roleStrings = new List<string>();
+            foreach (IdentityRole ir in roles)
+            {
+                roleStrings.Add(ir.Name.ToString());
+            }
+
+            var result = aUM.CreateAsync(user, "admin");
+            aUM.AddToRoleAsync(user.Id.ToString(), "Admin");
+            aUM.AddToRoleAsync(user.Id.ToString(), "SuperAdmin");
+            //var Iresult = aUM.AddToRolesAsync(user.Id,roleStrings.ToArray());
         }
     }
 }
