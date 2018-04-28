@@ -52,6 +52,12 @@ namespace BL
             return repo.ReadAccount(ID);
         }
 
+        public List<Account> GetAccounts()
+        {
+            initNonExistingRepo();
+            return accountRepository.readAccounts();
+        }
+
         public void genereerAlerts()
         {
             initNonExistingRepo(true);

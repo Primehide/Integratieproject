@@ -13,6 +13,7 @@
     <div class="form-horizontal">
         <h4>OrganisatieVM</h4>
         <hr />
+        @Html.HiddenFor(m => m.platId)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -52,5 +53,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.platId },null)
 </div>

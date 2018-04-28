@@ -17,5 +17,6 @@ namespace BL
         Account getAccount(string ID);
         void updateUser(Account account);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
+        List<Account> GetAccounts();
     }
 }

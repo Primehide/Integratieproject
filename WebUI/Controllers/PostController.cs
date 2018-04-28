@@ -7,10 +7,10 @@ using BL;
 
 namespace WebUI.Controllers
 {
-    public class PostController : Controller
+    public partial class PostController : Controller
     {
         // GET: Post
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             return View();
         }
@@ -29,4 +29,6 @@ namespace WebUI.Controllers
             return RedirectToAction("Index","Manage");
         }
     }
+
+
 }

@@ -167,10 +167,6 @@
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         <script>
-            function gatherForm() {
-            }
-        </script>
-        <script>
             document.getElementById('optgroup').addEventListener("click", function () {
                 $(".ms-selected").each(function () {
                     alert($(this).val());
