@@ -414,15 +414,8 @@ namespace WebUI.Controllers
         [HttpPost]
         public virtual ActionResult DeleteThema(int id, FormCollection collection)
         {
-
-
             eM.DeleteThema(id);
-            return RedirectToAction("IndexThema");
-
-
-
-            // return View();
-
+            return RedirectToAction("IndexThema");                                        
         }
 
         public virtual ActionResult DeleteThemaSleutelwoord(int id)

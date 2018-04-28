@@ -33,7 +33,7 @@ namespace BL
             accountRepository.addUser(account);
             uowManager.Save();
         }
-        public void updateUser(Account account)
+        public void UpdateUser(Account account)
         {
          
             initNonExistingRepo(true);
@@ -110,6 +110,13 @@ namespace BL
             }
         }
 
+
+        public void DeleteUser(string accountId)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteUser(accountId);
+        }
+
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
@@ -177,6 +184,12 @@ namespace BL
             user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
             accountRepository.updateUser(user);
             uowManager.Save();
+        }
+
+        public void updateUser(Account account)
+        {
+            initNonExistingRepo();
+            repo.updateUser(account);
         }
     }
 }

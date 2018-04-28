@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BL;
+using Domain.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -573,11 +576,61 @@ namespace WebUI.Controllers
                 Voornaam = voornaam,
                 Achternaam = achternaam,
                 GeboorteDatum = geboorteDatum,
-                Dashboard = new Domain.Account.Dashboard()
+                Dashboard = new Dashboard()
             };
             domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
             accountManager.addUser(domainAccount);
         }
         #endregion
+
+        public ActionResult IndexUsers()
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<Account> accounts = accountManager.GetAccounts();
+            return View(accounts);
+        }
+
+        //Aanmaken van een user door admin
+        public ActionResult CreateUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+
+        public async Task<ActionResult> CreateUser(RegisterViewModel model)
+        {
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
+            await UserManager.CreateAsync(user, model.Password);
+            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+            return RedirectToAction("IndexUsers");
+        }
+
+        public ActionResult DeleteUser(string id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.DeleteUser(id);
+            return RedirectToAction("IndexUsers");
+        }
+
+
+        public ActionResult EditUser(string id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            return View(accountManager.getAccount(id));
+        }
+
+        [HttpPost]
+        public ActionResult EditUser(Account account)
+        {
+           
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateUser(account);
+            return RedirectToAction("IndexUsers");
+        }
+
     }
+
+
+
 }

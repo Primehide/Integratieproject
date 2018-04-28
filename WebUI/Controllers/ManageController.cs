@@ -471,7 +471,7 @@ namespace WebUI.Controllers
 
             }
 
-            acm.updateUser(account);
+            acm.UpdateUser(account);
             ManageAccount();
             return View();
 

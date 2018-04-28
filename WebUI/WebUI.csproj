@@ -4295,6 +4295,9 @@
     <Content Include="Views\Shared\DisplayTemplates\Themas.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Platform\ExportUsers.cshtml" />
+    <Content Include="Views\Account\CreateUser.cshtml" />
+    <Content Include="Views\Account\IndexUsers.cshtml" />
+    <Content Include="Views\Account\EditUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
