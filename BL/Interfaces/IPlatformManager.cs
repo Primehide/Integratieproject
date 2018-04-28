@@ -1,4 +1,6 @@
-﻿using Domain.Platform;
+
+using Domain.Platform;
+﻿using Domain.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +16,6 @@ namespace BL
         Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform);
         IEnumerable<Deelplatform> GetAllDeelplatformen();
         void RemoveDeelplatform(int platformId);
+        StringBuilder ConvertToCSV(List<Account> accounts);
     }
 }

@@ -4286,6 +4286,7 @@
     <Content Include="Views\Platform\DisplayPlatform.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Themas.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Platform\ExportUsers.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -58,5 +58,10 @@ namespace DAL
             Account account = ctx.Accounts.Where(a => a.IdentityId == ID).First();
             return account;
         }
+
+        public List<Account> readAccounts()
+        {
+            return ctx.Accounts.ToList();
+        }
     }
 }
