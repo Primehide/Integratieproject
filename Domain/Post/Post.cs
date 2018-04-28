@@ -24,5 +24,6 @@ namespace Domain.Post
         public string source { get; set; }
         public List<URL> Urls { get; set; }
         public List<Mention> Mentions { get; set; }
+        public List<Entiteit.Entiteit> Entiteiten { get; set; }
     }
 }

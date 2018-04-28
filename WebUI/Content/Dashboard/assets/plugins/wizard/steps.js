@@ -3,15 +3,67 @@ $(".tab-wizard").steps({
     , bodyTag: "section"
     , transitionEffect: "fade"
     , titleTemplate: '<span class="step">#index#</span> #title#'
-    , labels: {
-        finish: "Submit"
-    }
     , onFinished: function (event, currentIndex) {
-       swal("Form Submitted!", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lorem erat eleifend ex semper, lobortis purus sed.");
+        swal("Form Submitted!", "Jou nieuwe grafiek is aangemaakt. Je kan hem bekijken op jou dashboard!");
+        //soort grafiek
+        var checkedValue = $('input[name=TypeGrafiekRadio]:checked').val();
+        var TypeGrafiek = $('#TypeGrafiek').val(checkedValue);
+
+        //geselecteerde entiteit
+        var selectedvalues = $('select#optgroup').val();
+        for (i = 0; i < selectedvalues.length; i++) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'EntiteitIds[' + i + ']',
+                value: selectedvalues[i]
+            }).appendTo('#grafiekForm');
+        }
+
+        //geselecteerde cijfer gegevens
+        var cijferSelected = $('select#pre-selected-options').val();
+        for (i = 0; i < cijferSelected.length; i++) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'CijferOpties[' + i + ']',
+                value: cijferSelected[i]
+            }).appendTo('#grafiekForm');
+        }
+
+        //vergelijk select
+        var vergelijkoptie = $('select[name=vergelijkOpties]').val()
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'vergelijkOptie',
+            value: vergelijkoptie
+        }).appendTo('#grafiekForm');
+
+        var SoortGrafiek = $('select[name=SoortGrafiek]').val()
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'GrafiekSoort',
+            value: SoortGrafiek
+        }).appendTo('#grafiekForm');
+
+        $.ajax({
+            url: '/post/createGrafiek',
+            type: 'POST',
+            data: $('#grafiekForm').serialize(),
+            success: function () {
+                wait(3500);
+                window.location.href = "/manage";
+            },
+        });
             
     }
 });
 
+function wait(ms) {
+    var start = new Date().getTime();
+    var end = start;
+    while (end < start + ms) {
+        end = new Date().getTime();
+    }
+}
 
 var form = $(".validation-wizard").show();
 

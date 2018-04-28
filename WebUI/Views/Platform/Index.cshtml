@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Domain.Platform.Deelplatform>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<table>
+    <tr>
+    <thead>
+        PlatformID
+    </thead>
+    <thead>
+        Naam
+    </thead>
+    <thead>
+        Aantal Entiteiten
+    </thead>
+    </tr>
+    @foreach (Domain.Platform.Deelplatform deelplat in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(m => deelplat.DeelplatformId)
+            </td>
+            <td>
+                @Html.DisplayFor(m => deelplat.Naam)
+            </td>
+            <td>
+               @deelplat.Entiteiten.Count()
+            </td>
+            <td>
+                @Html.ActionLink("Change", "ChangePlatform", new { id = deelplat.DeelplatformId})
+            </td>
+            <td>
+                @Html.ActionLink("Enter", "DisplayPlatform", new { id = deelplat.DeelplatformId })
+            </td>
+        </tr>
+    }
+
+    @Html.ActionLink("Maak Nieuw Platform","CreatePlatform","Platform")
+</table>
+
+
+
+
+

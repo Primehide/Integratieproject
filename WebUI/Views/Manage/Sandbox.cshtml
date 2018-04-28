@@ -1,0 +1,251 @@
+﻿@using Microsoft.AspNet.Identity
+@model WebUI.Models.GrafiekViewModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Jou Grafieken</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body wizard-content">
+                                <h4 class="card-title">Grafiek toevoegen</h4>
+                                <div action="#" class="tab-wizard wizard-circle">
+                                    <!-- Step 1 -->
+                                    <h6>Soort</h6>
+                                    <section>
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group">
+                                                <label class="control-label">Soort statistiek?</label>
+                                                <div class="form-check">
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio1" name="TypeGrafiekRadio" type="radio" checked="" value="CIJFERS" class="custom-control-input" onclick="toonGrafiekSelectie(false,'cijfers')">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description" onclick="toonGrafiekSelectie(false,'cijfers')">Cijfers</span>
+                                                    </label>
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio2" name="TypeGrafiekRadio" type="radio" value="KRUISING" class="custom-control-input" onclick="toonGrafiekSelectie(true,'kruising')">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description" onclick="toonGrafiekSelectie(true,'kruising')">Kruising</span>
+                                                    </label>
+                                                    <label class="custom-control custom-radio">
+                                                        <input id="radio2" name="TypeGrafiekRadio" type="radio" value="VERGELIJKING" class="custom-control-input" onclick="toonGrafiekSelectie(true,'vergelijking')">
+                                                        <span class="custom-control-indicator"></span>
+                                                        <span class="custom-control-description" onclick="toonGrafiekSelectie(true,'vergelijking')">Vergelijking</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 2 -->
+                                    <h6>Gegevens Selecteren</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <h5 class="box-title">Selecteer entiteiten:</h5>
+                                                <select multiple id="optgroup" name="optgroup[]">
+                                                    <optgroup label="Personen">
+                                                        @foreach (var p in Model.Personen)
+                                                        {
+                                                            <option value="@p.EntiteitId">@p.Naam</option>
+                                                        }
+                                                    </optgroup>
+                                                    <optgroup label="Organisatie">
+                                                        @foreach (var o in Model.Organisaties)
+                                                        {
+                                                            <option value="@o.EntiteitId">@o.Naam</option>
+                                                        }
+                                                    </optgroup>
+                                                    <optgroup label="Themas">
+                                                        @foreach (var t in Model.Themas)
+                                                        {
+                                                            <option value="@t.EntiteitId">@t.Naam</option>
+                                                        }
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <!--Enkel te tonen wanneer cijfers is gekozen-->
+                                            <div class="col-md-4" id="cijferSelect">
+                                                <h5 class="box-title">Te tonen gegevens:</h5>
+                                                <select id='pre-selected-options' multiple='multiple'>
+                                                    <option value='AantalPosts'>Aantal posts</option>
+                                                    <option value="AantalRetweets">Aantal retweets</option>
+                                                    <option value='AanwezigeTrends'>Aanwezige trends</option>
+                                                    <option value='VerzqnteTermen'>Verwante termen</option>
+                                                    <option value='VerwanteLinks'>Verwante links</option>
+                                                </select>
+                                            </div>
+                                            <!--Enkel te tonen wanneer vergelijking is gekozen-->
+                                            <div class="col-md-4" id="vergelijkingSelect" style="display:none;">
+                                                <h5 class="box-title">Wat wil je vergelijken?:</h5>
+                                                <select class="selectpicker" id="vergelijkOpties" name="vergelijkOpties" data-style="form-control btn-secondary">
+                                                    <option>--Selecteer--</option>
+                                                    <option value="populariteit">Populariteit</option>
+                                                    <option value="sentitment">Sentiment</option>
+                                                    <option value="postFrequentie">Post frequentie</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4" style="display:none;" id="kruisingSelect">
+                                                <h5 class="box-title">Welke gegevens wil je kruisen?</h5>
+                                                <select multiple id="public-methods" name="public-methods[]">
+                                                    <option value="elem_1">Geslacht</option>
+                                                    <option value="elem_2">Sentiment</option>
+                                                    <option value="elem_3">Leeftijd</option>
+                                                </select>
+                                            </div>
+
+                                            <!--Enkel te tonen wanneer vergelijking of kruising is gekozen-->
+                                            <div class="col-md-4" id="SelecteerGrafiek" style="display:none;">
+                                                <h5 class="box-title">Soort Grafiek:</h5>
+                                                <select class="selectpicker" id="SoortGrafiek" name="SoortGrafiek" data-style="form-control btn-secondary">
+                                                    <option>--Selecteer grafiek--</option>
+                                                    <option value="STAFGRAFIEK">Staafdiagram</option>
+                                                    <option value="TAARTGRAFIEK">Taartdiagram</option>
+                                                    <option value="LIJNGRAFIEK">Lijndiagram</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 3 -->
+                                    <h6>Klaar :)</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12">
+                                                <h4 class="card-title">Jou grafiek is aangemaakt!</h4>
+                                                <div class="alert alert-success">
+                                                    <h3 class="text-success"><i class="fa fa-check-circle"></i> Success</h3> Jou nieuwe grafiek is aangemaakt. Je kan hem bekijken op jou dashboard!
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form action="/post/createGrafiek" method="post" id="grafiekForm">
+                    <input type="hidden" name="identityId" value="@User.Identity.GetUserId()" />
+                    <input type="hidden" name="TypeGrafiek" id="TypeGrafiek" value="" />
+                    <input type="hidden" name="VergelijkParameter" value="" />
+                    <input type="hidden" name="SoortDiagram" value="" />
+                    <button type="submit" onclick="gatherForm()">submit test</button>
+                </form>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script>
+            function gatherForm() {
+                //soort grafiek
+                var checkedValue = $('input[name=TypeGrafiekRadio]:checked').val();
+                var TypeGrafiek = $('#TypeGrafiek').val(checkedValue);
+
+                //geselecteerde entiteit
+                var selectedvalues = $('select#optgroup').val();
+                for (i = 0; i < selectedvalues.length; i++) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'EntiteitIds[' + i + ']',
+                        value: selectedvalues[i]
+                    }).appendTo('#grafiekForm');
+                }
+
+                //geselecteerde cijfer gegevens
+                var cijferSelected = $('select#pre-selected-options').val();
+                for (i = 0; i < cijferSelected.length; i++) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'CijferOpties[' + i + ']',
+                        value: cijferSelected[i]
+                    }).appendTo('#grafiekForm');
+                }
+
+                //vergelijk select
+                var vergelijkoptie = $('select[name=vergelijkOpties]').val()
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'vergelijkOptie',
+                    value: vergelijkoptie
+                }).appendTo('#grafiekForm');
+
+                var SoortGrafiek = $('select[name=SoortGrafiek]').val()
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'GrafiekSoort',
+                    value: SoortGrafiek
+                }).appendTo('#grafiekForm');
+
+            }
+        </script>
+        <script>
+            document.getElementById('optgroup').addEventListener("click", function () {
+                $(".ms-selected").each(function () {
+                    alert($(this).val());
+                });
+            });
+
+
+            function toonGrafiekSelectie(show, soort) {
+                if (show == true) {
+                    $("#SelecteerGrafiek").show();
+                } else {
+                    $("#SelecteerGrafiek").hide();
+                }
+
+                if (soort == 'vergelijking') {
+                    $('#vergelijkingSelect').show();
+                    $('#cijferSelect').hide();
+                    $('#kruisingSelect').hide();
+                } else if (soort == 'kruising') {
+                    $('#vergelijkingSelect').hide();
+                    $('#cijferSelect').hide();
+                    $('#kruisingSelect').show();
+                } else {
+                    $('#vergelijkingSelect').hide();
+                    $('#cijferSelect').show();
+                    $('#kruisingSelect').hide();
+                }
+            }
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+

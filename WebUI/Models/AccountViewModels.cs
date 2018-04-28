@@ -4,6 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebUI.Models
 {
+    public class PlatformModel
+    {
+        public int PlatformIdentity { get; set; }
+    }
+
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
