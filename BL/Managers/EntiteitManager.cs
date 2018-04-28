@@ -319,7 +319,6 @@ namespace BL
         {
             return entiteitRepository.ReadThema(entiteitsId);
         }
-<<<<<<< HEAD
 
         public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie)
         {
@@ -397,9 +396,7 @@ namespace BL
             return grafiekMap;
         }
 
-=======
 #endregion
->>>>>>> master
         #region
         public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {

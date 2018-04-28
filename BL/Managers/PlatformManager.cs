@@ -72,7 +72,6 @@ namespace BL
             }
         }
 
-<<<<<<< HEAD
 
         #endregion
 

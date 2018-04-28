@@ -206,7 +206,7 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform};
                 var result = await UserManager.CreateAsync(user, model.Password);
-                //CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
