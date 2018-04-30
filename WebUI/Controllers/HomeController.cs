@@ -7,32 +7,38 @@ using System.Web.Mvc;
 namespace WebUI.Controllers
 {
     [RequireHttps]
-    public class HomeController : Controller
+    public partial class HomeController : Controller
     {
+
         public ActionResult HomePagina()
         {
             return View();
         }
-        public ActionResult Index()
+       
+
+        public virtual ActionResult Index()
+
         {
+            ViewBag.platId = PlatformController.currentPlatform;
+
             return View();
         }
 
-        public ActionResult About()
+        public virtual ActionResult About()
         {
             ViewBag.Message = "Your application description page.";
 
             return View();
         }
 
-        public ActionResult Contact()
+        public virtual ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
 
             return View();
         }
 
-        public ActionResult DashboardStart()
+        public virtual ActionResult DashboardStart()
         {
             return View("~/Views/Shared/Dashboard/DashboardStarterKit.cshtml");
         }

@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BL;
+using Domain.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
+using System.Collections.Generic;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace WebUI.Controllers
 {
     [Authorize]
     [RequireHttps]
-    public class AccountController : Controller
+    public partial class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -23,7 +28,7 @@ namespace WebUI.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -35,9 +40,9 @@ namespace WebUI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -53,18 +58,33 @@ namespace WebUI.Controllers
             }
         }
 
+        public ApplicationUserManager makeManager()
+        {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            ApplicationUserManager uM = new ApplicationUserManager(userstore);
+            return uM;
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public virtual ActionResult Login(string returnUrl)
         {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.platId = PlatformController.currentPlatform;
             return View();
         }
 
         [AllowAnonymous]
-        public ActionResult LoginNew(string returnUrl)
+        public virtual ActionResult LoginNew(string returnUrl)
         {
+            //var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            //var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = id };
+            //UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
             return View();
         }
@@ -73,15 +93,16 @@ namespace WebUI.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public virtual async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("LoginNew",model);
+                return RedirectToAction("LoginNew", model);
             }
 
             // Require the user to have a confirmed email before they can log on.
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
+
             if (user != null)
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
@@ -94,7 +115,7 @@ namespace WebUI.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.Email /* + PlatformController.currentPlatform */, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -113,7 +134,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
+        public virtual async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
         {
             // Require that the user has already logged in via username/password or external login
             if (!await SignInManager.HasBeenVerifiedAsync())
@@ -127,7 +148,7 @@ namespace WebUI.Controllers
         // POST: /Account/VerifyCode
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
+        public virtual async Task<ActionResult> VerifyCode(VerifyCodeViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -138,7 +159,7 @@ namespace WebUI.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -151,18 +172,30 @@ namespace WebUI.Controllers
                     return View(model);
             }
         }
+        [AllowAnonymous]
+        public ActionResult MakePartial()
+        {
+            ViewBag.platId = PlatformController.currentPlatform;
+            return PartialView("_LoginPartial");
+        }
 
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public virtual ActionResult Register()
         {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            UserManager = new ApplicationUserManager(userstore);
             return View();
         }
 
         [AllowAnonymous]
-        public ActionResult RegisterNew()
+        public virtual ActionResult RegisterNew()
         {
+            //var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            //var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = id };
+            //UserManager = new ApplicationUserManager(userstore);
             return View();
         }
 
@@ -170,11 +203,11 @@ namespace WebUI.Controllers
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public virtual async Task<ActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
@@ -183,7 +216,6 @@ namespace WebUI.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
                     //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -195,13 +227,13 @@ namespace WebUI.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View("RegisterNew",model);
+            return View("RegisterNew", model);
         }
 
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        public virtual async Task<ActionResult> ConfirmEmail(string userId, string code)
         {
             if (userId == null || code == null)
             {
@@ -212,7 +244,7 @@ namespace WebUI.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<ActionResult> ConfirmEmailNew(string userId, string code)
+        public virtual async Task<ActionResult> ConfirmEmailNew(string userId, string code)
         {
             if (userId == null || code == null)
             {
@@ -224,8 +256,8 @@ namespace WebUI.Controllers
 
         //
         // GET: /Account/ForgotPassword
-        [AllowAnonymous]
-        public ActionResult ForgotPassword()
+        [Authorize(Roles = "Admin")]
+        public virtual ActionResult ForgotPassword()
         {
             return View();
         }
@@ -234,11 +266,11 @@ namespace WebUI.Controllers
         // POST: /Account/ForgotPassword
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public virtual async Task<ActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email);
+                var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -248,7 +280,7 @@ namespace WebUI.Controllers
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
                 string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
@@ -260,7 +292,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/ForgotPasswordConfirmation
         [AllowAnonymous]
-        public ActionResult ForgotPasswordConfirmation()
+        public virtual ActionResult ForgotPasswordConfirmation()
         {
             return View();
         }
@@ -268,7 +300,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/ResetPassword
         [AllowAnonymous]
-        public ActionResult ResetPassword(string code)
+        public virtual ActionResult ResetPassword(string code)
         {
             return code == null ? View("Error") : View();
         }
@@ -277,13 +309,15 @@ namespace WebUI.Controllers
         // POST: /Account/ResetPassword
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        public virtual async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
-            var user = await UserManager.FindByNameAsync(model.Email);
+
+            
+            var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
             if (user == null)
             {
                 // Don't reveal that the user does not exist
@@ -301,7 +335,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/ResetPasswordConfirmation
         [AllowAnonymous]
-        public ActionResult ResetPasswordConfirmation()
+        public virtual ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
@@ -310,7 +344,7 @@ namespace WebUI.Controllers
         // POST: /Account/ExternalLogin
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
+        public virtual ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
@@ -319,7 +353,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/SendCode
         [AllowAnonymous]
-        public async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
+        public virtual async Task<ActionResult> SendCode(string returnUrl, bool rememberMe)
         {
             var userId = await SignInManager.GetVerifiedUserIdAsync();
             if (userId == null)
@@ -335,7 +369,7 @@ namespace WebUI.Controllers
         // POST: /Account/SendCode
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> SendCode(SendCodeViewModel model)
+        public virtual async Task<ActionResult> SendCode(SendCodeViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -353,7 +387,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
+        public virtual async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
             if (loginInfo == null)
@@ -384,7 +418,7 @@ namespace WebUI.Controllers
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public virtual async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -399,7 +433,7 @@ namespace WebUI.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform };
                 var result = await UserManager.CreateAsync(user);
                 CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
                 if (result.Succeeded)
@@ -421,7 +455,7 @@ namespace WebUI.Controllers
         //
         // POST: /Account/LogOff
         [HttpPost]
-        public ActionResult LogOff()
+        public virtual ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
@@ -430,7 +464,7 @@ namespace WebUI.Controllers
         //
         // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
+        public virtual ActionResult ExternalLoginFailure()
         {
             return View();
         }
@@ -455,7 +489,7 @@ namespace WebUI.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult GenereerAlerts()
+        public virtual ActionResult GenereerAlerts()
         {
             BL.AccountManager accountManager = new BL.AccountManager();
             accountManager.genereerAlerts();
@@ -542,10 +576,61 @@ namespace WebUI.Controllers
                 Voornaam = voornaam,
                 Achternaam = achternaam,
                 GeboorteDatum = geboorteDatum,
-                Dashboard = new Domain.Account.Dashboard()
+                Dashboard = new Dashboard()
             };
+            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
             accountManager.addUser(domainAccount);
         }
         #endregion
+
+        public ActionResult IndexUsers()
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<Account> accounts = accountManager.GetAccounts();
+            return View(accounts);
+        }
+
+        //Aanmaken van een user door admin
+        public ActionResult CreateUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+
+        public async Task<ActionResult> CreateUser(RegisterViewModel model)
+        {
+            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
+            await UserManager.CreateAsync(user, model.Password);
+            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+            return RedirectToAction("IndexUsers");
+        }
+
+        public ActionResult DeleteUser(string id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.DeleteUser(id);
+            return RedirectToAction("IndexUsers");
+        }
+
+
+        public ActionResult EditUser(string id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            return View(accountManager.getAccount(id));
+        }
+
+        [HttpPost]
+        public ActionResult EditUser(Account account)
+        {
+           
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateUser(account);
+            return RedirectToAction("IndexUsers");
+        }
+
     }
+
+
+
 }

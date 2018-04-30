@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Domain.Account.Account>
+
+@{
+    ViewBag.Title = "ExportUsers";
+}
+
+<h2>ExportUsers</h2>
+
+@foreach (Domain.Account.Account o in Model)
+{
+    <br />
+    <tr>
+        <td>
+            @Html.DisplayFor(i => o.AccountId)
+        </td>
+        <td>
+            @Html.DisplayFor(i => o.Voornaam)
+        </td>
+        <td>
+            @Html.DisplayFor(i => o.Achternaam)
+        </td>
+        <td>
+            @Html.DisplayFor(i => o.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(i => o.GeboorteDatum)
+        </td>
+    </tr>
+}
+<br />
+@Html.ActionLink("Export Data", "DownloadReport")
+
+

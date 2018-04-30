@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -13,7 +15,7 @@ using WebUI.Models;
 namespace WebUI.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public partial class ManageController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -34,9 +36,9 @@ namespace WebUI.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -54,26 +56,80 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/Index
-        public async Task<ActionResult> Index(ManageMessageId? message)
+        public ActionResult Index()
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Your two-factor authentication provider has been set."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : message == ManageMessageId.AddPhoneSuccess ? "Your phone number was added."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Your phone number was removed."
-                : "";
+            IAccountManager accountManager = new AccountManager();
 
-            var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
+            WebUI.Models.DashboardModel model = new DashboardModel()
             {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
+                Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
+                GrafiekLabels = new Dictionary<string, string>(),
+                GrafiekDataSets = new Dictionary<string, string>(),
+                ColorCodes = new List<string>()
             };
+
+            model.ColorCodes.Add("#2E2EFE");
+            model.ColorCodes.Add("#74DF00");
+            model.ColorCodes.Add("#BF00FF");
+            model.ColorCodes.Add("#6E6E6E");
+            model.ColorCodes.Add("#0489B1");
+            model.ColorCodes.Add("#FE2E2E");
+            model.ColorCodes.Add("#FF8000");
+            model.ColorCodes.Add("#DA81F5");
+            model.ColorCodes.Add("#FA5882");
+            model.ColorCodes.Add("#0B6121");
+
+            int grafiekTeller = 0;
+            int dataSetTeller = 0;
+            //overlopen van elke blok
+            foreach (var blok in model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+            {
+                //dataset teller resetten
+                dataSetTeller = 0;
+                //kijkt na of het soort gegeven een postfrequentie is. Als dat zo is zijn de labels anders.
+                if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                {
+                    DateTime vandaag = DateTime.Today;
+                    //Labels aanmaken van laatste 10 dagen
+                    //post frequentie toont het aantal posts van vandaag tot 10 dagen terug
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    //Labels aanmaken van laatste 10 dagen
+                    for (int i = 10; i > 0; i--)
+                    {
+                        labelBuilder.Append("'").Append(vandaag.AddDays(-i).Date.ToShortDateString()).Append("'").Append(",");
+                    }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    //Elke waarde van de grafiek overlopen en toevoegen aan de dictonary
+                    for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+                    {
+                        if (blok.Grafiek.Waardes.ElementAt(i).Naam.ToLower().Contains("endpostfrequentie"))
+                        {
+                            model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                            dataSetTeller++;
+                            dataBuilder.Clear();
+                            continue;
+                        }
+                        dataBuilder.Append(blok.Grafiek.Waardes.ElementAt(i).Waarde).Append(",");
+                    }
+
+                }
+                else if(blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                {
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    foreach (var waarde in blok.Grafiek.Waardes)
+                    {
+                        labelBuilder.Append("'").Append(waarde.Naam).Append("'").Append(",");
+                        dataBuilder.Append(waarde.Waarde).Append(",");
+                    }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                }
+                //grafiek is gemaakt, teller met 1 verhogen
+                grafiekTeller++;
+            }
+
             return View(model);
         }
 
@@ -81,7 +137,7 @@ namespace WebUI.Controllers
         // POST: /Manage/RemoveLogin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
+        public virtual async Task<ActionResult> RemoveLogin(string loginProvider, string providerKey)
         {
             ManageMessageId? message;
             var result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
@@ -101,9 +157,36 @@ namespace WebUI.Controllers
             return RedirectToAction("ManageLogins", new { Message = message });
         }
 
+        public ActionResult AddGrafiek()
+        {
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Personen = entiteitManager.GetAllPeople(),
+                Organisaties = entiteitManager.GetAllOrganisaties(),
+                Themas = entiteitManager.GetThemas().ToList()
+            };
+            return View(model);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Sandbox()
+        {
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Personen = entiteitManager.GetAllPeople(),
+                Organisaties = entiteitManager.GetAllOrganisaties(),
+                Themas = entiteitManager.GetThemas().ToList()
+            };
+            return View(model);
+        }
+
         //
         // GET: /Manage/AddPhoneNumber
-        public ActionResult AddPhoneNumber()
+        public virtual ActionResult AddPhoneNumber()
         {
             return View();
         }
@@ -112,7 +195,7 @@ namespace WebUI.Controllers
         // POST: /Manage/AddPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
+        public virtual async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -136,7 +219,7 @@ namespace WebUI.Controllers
         // POST: /Manage/EnableTwoFactorAuthentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EnableTwoFactorAuthentication()
+        public virtual async Task<ActionResult> EnableTwoFactorAuthentication()
         {
             await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -151,7 +234,7 @@ namespace WebUI.Controllers
         // POST: /Manage/DisableTwoFactorAuthentication
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DisableTwoFactorAuthentication()
+        public virtual async Task<ActionResult> DisableTwoFactorAuthentication()
         {
             await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), false);
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
@@ -164,7 +247,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/VerifyPhoneNumber
-        public async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
+        public virtual async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
         {
             var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
             // Send an SMS through the SMS provider to verify the phone number
@@ -175,7 +258,7 @@ namespace WebUI.Controllers
         // POST: /Manage/VerifyPhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
+        public virtual async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -200,7 +283,7 @@ namespace WebUI.Controllers
         // POST: /Manage/RemovePhoneNumber
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> RemovePhoneNumber()
+        public virtual async Task<ActionResult> RemovePhoneNumber()
         {
             var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
             if (!result.Succeeded)
@@ -217,7 +300,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        public virtual ActionResult ChangePassword()
         {
             return View();
         }
@@ -226,7 +309,7 @@ namespace WebUI.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        public virtual async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -248,7 +331,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/SetPassword
-        public ActionResult SetPassword()
+        public virtual ActionResult SetPassword()
         {
             return View();
         }
@@ -257,7 +340,7 @@ namespace WebUI.Controllers
         // POST: /Manage/SetPassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SetPassword(SetPasswordViewModel model)
+        public virtual async Task<ActionResult> SetPassword(SetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -280,7 +363,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/ManageLogins
-        public async Task<ActionResult> ManageLogins(ManageMessageId? message)
+        public virtual async Task<ActionResult> ManageLogins(ManageMessageId? message)
         {
             ViewBag.StatusMessage =
                 message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
@@ -305,7 +388,7 @@ namespace WebUI.Controllers
         // POST: /Manage/LinkLogin
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LinkLogin(string provider)
+        public virtual ActionResult LinkLogin(string provider)
         {
             // Request a redirect to the external login provider to link a login for the current user
             return new AccountController.ChallengeResult(provider, Url.Action("LinkLoginCallback", "Manage"), User.Identity.GetUserId());
@@ -313,7 +396,7 @@ namespace WebUI.Controllers
 
         //
         // GET: /Manage/LinkLoginCallback
-        public async Task<ActionResult> LinkLoginCallback()
+        public virtual async Task<ActionResult> LinkLoginCallback()
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
             if (loginInfo == null)
@@ -334,9 +417,9 @@ namespace WebUI.Controllers
 
             base.Dispose(disposing);
         }
-  
+
         //GET: /Manage/ManageAccount
-        public ActionResult ManageAccount()
+        public virtual ActionResult ManageAccount()
         {
             Account acc = new Account();
             AccountManager acm = new AccountManager();
@@ -345,14 +428,14 @@ namespace WebUI.Controllers
             ViewBag.Lastname = acc.Achternaam;
             ViewBag.Birthdate = acc.GeboorteDatum.ToString("yyyy-MM-dd"); ;
             ViewBag.Email = acc.Email;
-          
+
             return View();
         }
 
         //POST /Manage/ManageAccount
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ManageAccount(Account account, string date)
+        public virtual async Task<ActionResult> ManageAccount(Account account, string date)
         {
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
 
@@ -363,20 +446,20 @@ namespace WebUI.Controllers
             account.GeboorteDatum = parsedDate.Date;
 
             // if email changed:
-           if (User.Identity.GetUserName() != account.Email)
+            if (User.Identity.GetUserName() != account.Email)
             {
                 user.EmailConfirmed = false;
                 user.Email = account.Email;
                 user.UserName = account.Email;
 
                 //security stamp vernieuwen
-                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
+                await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-               
-               
+
+
                 UserManager.Update(user);
-            
-               //send mail 
+
+                //send mail 
                 var callbackUrl = Url.Action("ConfirmEmail", "Account",
                    new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 await UserManager.SendEmailAsync(user.Id, "confirmation",
@@ -388,7 +471,7 @@ namespace WebUI.Controllers
 
             }
 
-            acm.updateUser(account);
+            acm.UpdateUser(account);
             ManageAccount();
             return View();
 
@@ -445,6 +528,6 @@ namespace WebUI.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

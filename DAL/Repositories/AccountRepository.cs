@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Account;
+using System.Data.Entity;
 
 namespace DAL
 {
@@ -42,7 +43,7 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public void updateUser(Account account  )
+        public void updateUser(Account account)
         {
             Account updated = ctx.Accounts.Find(account.AccountId);
             updated.Voornaam = account.Voornaam;
@@ -54,9 +55,41 @@ namespace DAL
 
         public Account ReadAccount(string ID)
         {
-            string test = ID;
-            Account account = ctx.Accounts.Where(a => a.IdentityId == ID).First();
+            Account account = ctx.Accounts
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
+                .Where(a => a.IdentityId == ID).First();
             return account;
         }
+
+        public List<Account> readAccounts()
+        {
+            return ctx.Accounts.ToList();
+        }
+
+        public void DeleteUser(string accountId)
+        {
+            Account account = ReadAccount(accountId);
+            if (account.Dashboard != null) {
+                ctx.Dashboards.Remove(account.Dashboard);
+            }
+
+            if (account.Alerts != null)
+            {
+                foreach (Alert alert in account.Alerts.ToList())
+                {
+                    ctx.Alerts.Remove(alert);
+                }
+                account.Alerts = null;
+            }
+            ctx.SaveChanges();
+            ctx.Accounts.Remove(account);
+            ctx.SaveChanges();
+
+        }
+
     }
 }

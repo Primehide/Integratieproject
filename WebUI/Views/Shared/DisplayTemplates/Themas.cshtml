@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Domain.Entiteit.Thema>
+@{
+    ViewBag.Title = "Themas";
+}
+
+<h2>Themas</h2>
+
+@foreach (Domain.Entiteit.Thema t in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(m => t.Naam)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "EditThema", "Entiteit", new { id = t.EntiteitId }, null) |
+        </td>
+    </tr>
+}
