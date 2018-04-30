@@ -441,6 +441,11 @@ namespace WebUI.Controllers
             return View(model);
         }
 
+        public ActionResult UpdateAlerts()
+        {
+            return View();
+        }
+
         //POST /Manage/ManageAccount
         [HttpPost]
         public virtual async Task<ActionResult> ManageAccount(Models.ChangeProfileViewModel model)
