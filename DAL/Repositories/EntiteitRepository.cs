@@ -13,9 +13,16 @@ namespace DAL
     public class EntiteitRepository : IEntiteitRepository
     {
         private EFContext ctx;
+
         public EntiteitRepository()
         {
             ctx = new EFContext();
+        }
+
+        public EntiteitRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
@@ -211,12 +218,6 @@ namespace DAL
             Sleutelwoord sleutelwoord = readSleutelwoord(sleutelId);
             ctx.SleutelWoorden.Remove(sleutelwoord);
             ctx.SaveChanges();
-        }
-
-        public EntiteitRepository(UnitOfWork uow)
-        {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
         }
 
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
