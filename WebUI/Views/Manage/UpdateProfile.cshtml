@@ -1,0 +1,110 @@
+﻿@model Domain.Account.Account
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Profiel Updaten</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">Profiel</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="alert alert-success" id="profileSuccess" style="display:none;">Jou verandering zijn opgeslagen!</div>
+                                <form class="form-horizontal form-material" action="/manage/ManageAccount" method="post" id="profileForm">
+                                    <div class="form-group">
+                                        <label class="col-md-12">Voornaam</label>
+                                        <div class="col-md-12">
+                                            <input type="text" name="Voornaam" placeholder="@Model.Voornaam" value="@Model.Voornaam" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-12">Achternaam</label>
+                                        <div class="col-md-12">
+                                            <input type="text" name="Achternaam" placeholder="@Model.Achternaam" value="@Model.Achternaam" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="example-email" class="col-md-12">Email</label>
+                                        <div class="col-md-12">
+                                            <input type="email" name="Email" placeholder="@Model.Email" value="@Model.Email" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="example-email" class="col-md-12">Geboortedatum</label>
+                                        <div class="col-md-12">
+                                            <input type="datetime" placeholder="@Model.GeboorteDatum.Date.ToShortDateString()" value="@Model.GeboorteDatum.ToShortDateString()" name="Geboortedatum" class="form-control form-control-line">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <button class="btn btn-success">Update Profile</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script>
+        $(document).ready(function () {
+            $(document).on('submit', '#profileForm', function (e) {
+                // stop default form submission
+                e.preventDefault();
+
+                $.ajax({
+                    url: '/manage/ManageAccount',
+                    type: 'POST',
+                    data: $('#profileForm').serialize(),
+                    success: function () {
+                        $('#profileSuccess').toggle();
+                    },
+                });
+            });
+        });
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+

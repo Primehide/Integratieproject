@@ -54,6 +54,8 @@ namespace WebUI.Controllers
             }
         }
 
+        
+
         //
         // GET: /Manage/Index
         public ActionResult Index()
@@ -432,25 +434,32 @@ namespace WebUI.Controllers
             return View();
         }
 
+        public ActionResult UpdateProfile()
+        {
+            AccountManager acm = new AccountManager();
+            Domain.Account.Account model = acm.getAccount(User.Identity.GetUserId());
+            return View(model);
+        }
+
         //POST /Manage/ManageAccount
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> ManageAccount(Account account, string date)
+        public virtual async Task<ActionResult> ManageAccount(Models.ChangeProfileViewModel model)
         {
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-
-            DateTime parsedDate = DateTime.Parse(date);
             AccountManager acm = new AccountManager();
-            account.IdentityId = (User.Identity.GetUserId());
-            account.Dashboard = new Domain.Account.Dashboard();
-            account.GeboorteDatum = parsedDate.Date;
+            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
+            Domain.Account.Account accountToUpdate = acm.getAccount(user.Id);
+
+            accountToUpdate.Voornaam = model.Voornaam;
+            accountToUpdate.Achternaam = model.Achternaam;
+            accountToUpdate.GeboorteDatum = model.Geboortedatum;
 
             // if email changed:
-            if (User.Identity.GetUserName() != account.Email)
+            if (User.Identity.GetUserName() != model.Email)
             {
                 user.EmailConfirmed = false;
-                user.Email = account.Email;
-                user.UserName = account.Email;
+                user.Email = model.Email;
+                user.UserName = model.Email;
+                accountToUpdate.Email = model.Email;
 
                 //security stamp vernieuwen
                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
@@ -471,9 +480,9 @@ namespace WebUI.Controllers
 
             }
 
-            acm.UpdateUser(account);
-            ManageAccount();
-            return View();
+            acm.UpdateUser(accountToUpdate);
+            //ManageAccount();
+            return new HttpStatusCodeResult(200);
 
         }
 
