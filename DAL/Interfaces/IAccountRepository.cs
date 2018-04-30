@@ -14,5 +14,8 @@ namespace DAL
         void UpdateAlert(Alert alert);
         void updateUser(Domain.Account.Account account);
         Account ReadAccount(string ID);
+        List<Account> readAccounts();
+        void DeleteUser(string accountId);
+
     }
 }

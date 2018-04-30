@@ -1,4 +1,5 @@
-﻿using Domain.Post;
+﻿using Domain.Entiteit;
+using Domain.Post;
 using Domain.TextGain;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace BL
         Task SyncDataAsync();
         void AddPost(Post post);
         List<Post> getAllPosts();
+        Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten);
     }
 }

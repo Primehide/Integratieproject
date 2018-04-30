@@ -1,8 +1,12 @@
 ﻿using BL;
+using Domain.Account;
 using Domain.Entiteit;
 using Domain.Platform;
 using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using WebUI.Models;
@@ -157,5 +161,20 @@ namespace WebUI.Controllers
 
         }
         #endregion
+        public ActionResult ExportUsers()
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<Account> accounts = accountManager.GetAccounts();         
+            return View(accounts);
+        }
+
+        public FileResult DownloadReport()
+        {
+            IPlatformManager platformManager = new PlatformManager();
+            IAccountManager accountManager = new AccountManager();
+            List<Account> list = accountManager.GetAccounts();
+            StringBuilder sb = platformManager.ConvertToCSV(list);
+            return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "export.csv");
+        }
     }
 }

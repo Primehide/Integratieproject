@@ -13,7 +13,6 @@ namespace DAL
     public class EntiteitRepository : IEntiteitRepository
     {
         private EFContext ctx;
-        private DbModelBuilder modelBuilder;
         public EntiteitRepository()
         {
             ctx = new EFContext();

@@ -228,7 +228,10 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Models\EntiteitViewModels.cs" />
+    <Compile Include="Models\GrafiekModel.cs" />
+    <Compile Include="Models\GrafiekViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
@@ -315,6 +318,9 @@
     <Content Include="Content\Dashboard\assets\images\users\6.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\7.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\8.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_bart.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_kris.jpg" />
+    <Content Include="Content\Dashboard\assets\images\users\avatar_maggie.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d1.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d2.jpg" />
     <Content Include="Content\Dashboard\assets\images\users\d3.jpg" />
@@ -4292,12 +4298,18 @@
     <Content Include="Views\Account\RegisterNew.cshtml" />
     <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
     <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
+    <Content Include="Views\Manage\AddGrafiek.cshtml" />
+    <Content Include="Views\Manage\Sandbox.cshtml" />
     <Content Include="Views\Platform\CreatePlatform.cshtml" />
     <Content Include="Views\Platform\Index.cshtml" />
     <Content Include="Views\Platform\ChangePlatform.cshtml" />
     <Content Include="Views\Platform\DisplayPlatform.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Themas.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Platform\ExportUsers.cshtml" />
+    <Content Include="Views\Account\CreateUser.cshtml" />
+    <Content Include="Views\Account\IndexUsers.cshtml" />
+    <Content Include="Views\Account\EditUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

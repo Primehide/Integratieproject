@@ -38,5 +38,7 @@ namespace BL
         List<Entiteit> GetEntiteitenVanDeelplatform(int id);
         void DeleteEntiteitenVanDeelplatform(int id);
 
+        Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie);
+
     }
 }

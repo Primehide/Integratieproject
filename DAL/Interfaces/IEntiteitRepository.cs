@@ -41,7 +41,6 @@ namespace DAL
         Thema ReadThema(int entiteitsId);
         Sleutelwoord readSleutelwoord(int sleutelId);
         IEnumerable<Thema> ReadThemas();
-
         IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id);
         void DeleteEntiteitenVanDeelplatform(int id);
     }
