@@ -17,6 +17,7 @@ using Microsoft.Owin.Security;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using WebUI.Models;
+using WebUI.Controllers;
 
 namespace WebUI
 {
@@ -58,9 +59,11 @@ namespace WebUI
         {
         }
 
+
+
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new ApplicationUserStore<ApplicationUser>(context.Get<ApplicationDbContext<ApplicationUser>>()) { TenantId = PlatformController.currentPlatform });
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<ApplicationUser>(manager)
             {
@@ -72,7 +75,7 @@ namespace WebUI
             manager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
+                RequireNonLetterOrDigit = false,
                 RequireDigit = true,
                 RequireLowercase = true,
                 RequireUppercase = true,
@@ -106,8 +109,41 @@ namespace WebUI
         }
     }
 
-    // Configure the application sign-in manager which is used in this application.
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
+    public class ApplicationUserStore<TUser> : UserStore<TUser>
+        where TUser : ApplicationUser
+    {
+        public ApplicationUserStore(DbContext context)
+          : base(context)
+        {
+        }
+
+        public int TenantId { get; set; }
+
+        public override Task CreateAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.TenantId = this.TenantId;
+            return base.CreateAsync(user);
+        }
+
+        public override Task<TUser> FindByEmailAsync(string email)
+        {
+            return this.GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper()
+                && u.TenantId == this.TenantId);
+        }
+
+        public override Task<TUser> FindByNameAsync(string userName)
+        {
+            return this.GetUserAggregateAsync(u => u.UserName.ToUpper() == userName.ToUpper()
+                && u.TenantId == this.TenantId);
+        }
+    }
+        // Configure the application sign-in manager which is used in this application.
+        public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)

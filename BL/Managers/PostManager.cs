@@ -64,8 +64,8 @@ namespace BL
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
-            DateTime vandaag = DateTime.Today;
-            DateTime gisteren = DateTime.Today.AddDays(-1);
+            DateTime vandaag = DateTime.Today.Date;
+            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
@@ -79,8 +79,8 @@ namespace BL
                     name = Entiteit.Naam,
                     //since = new DateTime(2018, 04, 01),
                     //until = new DateTime(2018, 04, 09)
-                    since = vandaag,
-                    until = gisteren
+                    since = gisteren,
+                    until = vandaag
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();
@@ -196,6 +196,28 @@ namespace BL
             //postRepository.AddPosts(PostsToAdd);
             entiteitManager.updateEntiteit(entiteit);
             uowManager.Save();
+        }
+
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)
+        {
+            initNonExistingRepo(true);
+            IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
+
+            switch (grafiekType)
+            {
+                case Domain.Enum.GrafiekType.CIJFERS:
+                    Entiteit e1 = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    List<Post> postsEerste = e1.Posts;
+                    int aantalPosts = postsEerste.Count;
+                    int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                    //grafiek.Entiteiten.First().Trends;
+
+                    grafiekMap.Add("aantalPosts", aantalPosts);
+                    grafiekMap.Add("aantalRetweets", retweets);
+                    break;
+            }
+            return grafiekMap;
         }
     }
 }

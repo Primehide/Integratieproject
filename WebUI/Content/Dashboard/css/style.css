@@ -2537,7 +2537,7 @@ File: scss
 Custom-select
 ******************/
 .custom-select {
-  background: url(../../assets/images/custom-select.png) right 0.75rem center no-repeat; }
+  background: url(/Content/Dashboard/assets/images/custom-select.png) right 0.75rem center no-repeat; }
 
 /*******************
 textarea
@@ -5589,7 +5589,7 @@ File: scss
   color: #ef5350; }
 
 .has-danger .form-control-danger {
-  background-image: url(../../assets/images/icon/danger.svg); }
+  background-image: url(/Content/Dashboard/assets/images/icon/danger.svg); }
 
 .has-danger .form-control {
   border-color: #ef5350; }

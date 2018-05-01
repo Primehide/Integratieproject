@@ -55,26 +55,57 @@ namespace BL
                 Naam = "N-VA"
             };
 
+            Domain.Entiteit.Organisatie OpenVLD = new Domain.Entiteit.Organisatie()
+            {
+                Leden = new List<Domain.Entiteit.Persoon>(),
+                Naam = "Open-VLD"
+            };
+
             Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
             {
                 Naam = "Ben Weyts",
-                Organisaties = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
+            };
+
+            Domain.Entiteit.Persoon Maggie = new Domain.Entiteit.Persoon()
+            {
+                Naam = "Maggie De Block",
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
+            };
+
+
+            Trend trend = new Trend()
+            {
+                Voorwaarde = Voorwaarde.KEYWORDS
+            };
+            BenWeyts.Trends.Add(trend);
+
+            Trend trend2 = new Trend()
+            {
+                Voorwaarde = Voorwaarde.TRENDING
             };
 
             Domain.Entiteit.Persoon Bartje = new Domain.Entiteit.Persoon()
             {
                 Naam = "Bart De Wever",
-                Organisaties = new List<Domain.Entiteit.Organisatie>()
+                Organisations = new List<Domain.Entiteit.Organisatie>(),
+                Trends = new List<Trend>()
             };
+            Bartje.Trends.Add(trend2);
 
             //legt eveneens relatie van organisatie -> lid (Ben Weyts) en van Ben Weyts kunnen we zijn orginasaties opvragen (in dit geval N-VA)
-            BenWeyts.Organisaties.Add(NVA);
-            Bartje.Organisaties.Add(NVA);
+            BenWeyts.Organisations.Add(NVA);
+            Bartje.Organisations.Add(NVA);
+            Maggie.Organisations.Add(OpenVLD);
 
 
             entiteitRepository.AddEntiteit(NVA);
+            entiteitRepository.AddEntiteit(OpenVLD);
             entiteitRepository.AddEntiteit(BenWeyts);
             entiteitRepository.AddEntiteit(Bartje);
+            entiteitRepository.AddEntiteit(Maggie);
         }
 
         public List<Entiteit> getAlleEntiteiten()
@@ -262,12 +293,13 @@ namespace BL
             //als we hier komen is er geen trend aanwezig.
             return false;
         }
-
-        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        #region
+        public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
             Thema thema = new Thema()
             {
-                Naam = naam,
+                Naam = nieuwThema.Naam,
+                PlatformId = nieuwThema.PlatformId,
                 SleutenWoorden = sleutelwoorden
             };
             entiteitRepository.CreateThema(thema);
@@ -294,6 +326,83 @@ namespace BL
             return entiteitRepository.ReadThema(entiteitsId);
         }
 
+        public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie)
+        {
+            initNonExistingRepo();
+            Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
+
+            switch (grafiekType)
+            {
+                case Domain.Enum.GrafiekType.CIJFERS:
+                    Entiteit e1 = entiteitRepository.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    List<Post> postsEerste = e1.Posts;
+                    foreach (var cijferOptie in CijferOpties)
+                    {
+                        if(cijferOptie.ToLower() == "aantalposts")
+                        {
+                            int aantalPosts = postsEerste.Count;
+                            grafiekMap.Add("Aantal posts", aantalPosts);
+                        }
+                        if(cijferOptie.ToLower() == "aantalretweets")
+                        {
+                            int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                            grafiekMap.Add("Aantal retweets", retweets);
+                        }
+                        if(cijferOptie.ToLower() == "aanwezigetrends")
+                        {
+                            foreach (var trend in e1.Trends)
+                            {
+                                switch (trend.Voorwaarde)
+                                {
+                                    case Voorwaarde.SENTIMENT:
+                                        grafiekMap.Add("Trend Sentiment", 1);
+                                        break;
+                                    case Voorwaarde.AANTALVERMELDINGEN:
+                                        grafiekMap.Add("Trend Aantal Vermeldingen", 1);
+                                        break;
+                                    case Voorwaarde.TRENDING:
+                                        grafiekMap.Add("Trend trending", 1);
+                                        break;
+                                    case Voorwaarde.KEYWORDS:
+                                        grafiekMap.Add("Trend Keywords", 1);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case GrafiekType.VERGELIJKING:
+                    if(VergelijkOptie.ToLower() == "populariteit")
+                    {
+                        foreach (var e in entiteiten)
+                        {
+                            grafiekMap.Add("Post " + e.Naam, e.Posts.Count);
+                        }
+                    }
+                    if(VergelijkOptie.ToLower() == "postfrequentie")
+                    {
+                        DateTime today = DateTime.Today;
+                        int counter = 0;
+                        foreach (var e in entiteiten)
+                        {
+
+                            for(int i = 10; i > 0; i--)
+                            {
+                                List<Post> postsHuidigeDag = e.Posts.Where(x => x.Date.Date == today.AddDays(-i).Date).ToList();
+                                grafiekMap.Add("Posts" + i + " " + e.Naam, postsHuidigeDag.Count);
+                            }
+                            grafiekMap.Add("EndPostFrequentie" + counter,counter);
+                            counter++;
+                        }
+                    }
+                    break;
+            }
+            return grafiekMap;
+        }
+
+#endregion
         #region
         public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {
@@ -339,8 +448,6 @@ namespace BL
             entiteitRepository.DeletePerson(id);
         }
         #endregion
-
-
         #region
         
         public void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile)
@@ -462,6 +569,18 @@ namespace BL
         {
             return entiteitRepository.readSleutelwoord(sleutelId);
         }
+
+        public List<Entiteit> GetEntiteitenVanDeelplatform(int id)
+        {
+            return entiteitRepository.ReadEntiteitenVanDeelplatform(id).ToList();
+        }
+
+        public void DeleteEntiteitenVanDeelplatform(int id)
+        {
+            entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
+        }
         #endregion
+
+
     }
 }
