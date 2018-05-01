@@ -17,6 +17,6 @@ namespace DAL
         Account ReadAccount(string ID);
         List<Account> readAccounts();
         void DeleteUser(string accountId);
-        void FollowEntiteit(string accountId, Entiteit entiteit);
+        void FollowEntiteit(string accountId, int entiteitID);
     }
 }

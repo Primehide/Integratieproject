@@ -55,7 +55,7 @@ namespace DAL
 
         public Account ReadAccount(string ID)
         {           
-            Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Where(a => a.IdentityId == ID).First();
+            Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
             return account;
         }
 
@@ -83,13 +83,12 @@ namespace DAL
 
         }
 
-        public void FollowEntiteit(string accountId, Entiteit entiteit)
+        public void FollowEntiteit(string accountId, int entiteitID)
         {
             Account updated = ReadAccount(accountId);
-            if (updated.Entiteiten == null) { 
-            updated.Entiteiten = new List<Entiteit>();
-             }
-            updated.Entiteiten.Add(entiteit);            
+            Item item = new Item(entiteitID);
+            updated.Items.Add(item);
+            ctx.Items.Add(item);
             ctx.SaveChanges();
         }
     }
