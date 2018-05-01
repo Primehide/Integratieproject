@@ -28,6 +28,9 @@ namespace BL
         void CreateTestData();
         List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
+        Entiteit GetEntiteit(int id);
+
+
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
         void UpdateThema(Thema thema);
         void DeleteThema(int entiteitsId);

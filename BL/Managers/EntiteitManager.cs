@@ -83,6 +83,12 @@ namespace BL
             return entiteitRepository.getAlleEntiteiten();
         }
 
+        public Entiteit GetEntiteit(int id)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(id);
+        }
+
         public void updateEntiteit(Entiteit entiteit)
         {
             initNonExistingRepo(false);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Account;
+using Domain.Entiteit;
 
 namespace DAL
 {
@@ -53,9 +54,8 @@ namespace DAL
         }
 
         public Account ReadAccount(string ID)
-        {
-            
-            Account account = ctx.Accounts.Include("Dashboard").Where(a => a.IdentityId == ID).First();
+        {           
+            Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Where(a => a.IdentityId == ID).First();
             return account;
         }
 
@@ -67,10 +67,8 @@ namespace DAL
         public void DeleteUser(string accountId)
         {
             Account account = ReadAccount(accountId);
-            if (account.Dashboard != null) {
-                ctx.Dashboards.Remove(account.Dashboard);
-            }
-
+            ctx.Dashboards.Remove(account.Dashboard);
+ 
             if (account.Alerts != null)
             {
                 foreach (Alert alert in account.Alerts.ToList())
@@ -85,5 +83,14 @@ namespace DAL
 
         }
 
+        public void FollowEntiteit(string accountId, Entiteit entiteit)
+        {
+            Account updated = ReadAccount(accountId);
+            if (updated.Entiteiten == null) { 
+            updated.Entiteiten = new List<Entiteit>();
+             }
+            updated.Entiteiten.Add(entiteit);            
+            ctx.SaveChanges();
+        }
     }
 }

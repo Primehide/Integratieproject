@@ -214,6 +214,11 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+        public Entiteit ReadEntiteit(int id)
+        {
+            return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
+        }
+
         public EntiteitRepository(UnitOfWork uow)
         {
             ctx = uow.Context;

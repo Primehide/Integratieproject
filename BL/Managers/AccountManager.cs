@@ -113,5 +113,14 @@ namespace BL
             initNonExistingRepo();
             accountRepository.DeleteUser(accountId);
         }
+
+        public void FollowEntity(string identityID, int entiteitID)
+        {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
+            Entiteit entiteit = entiteitMgr.GetEntiteit(entiteitID);
+
+            accountRepository.FollowEntiteit(identityID, entiteit);
+        }
     }
 }

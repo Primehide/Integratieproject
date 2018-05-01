@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using Domain.Account;
+using Domain.Entiteit;
 
 namespace BL
 {
@@ -18,5 +19,6 @@ namespace BL
         Account getAccount(string ID);
         void UpdateUser(Account account);
         void DeleteUser(string accountId);
+        void FollowEntity(string identityID, int entiteitID);
     }
 }

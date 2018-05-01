@@ -597,6 +597,15 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexUsers");
         }
 
+        public ActionResult FollowEntiteit(int id)
+        {
+            string entityID = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+       
+            accountManager.FollowEntity(entityID, id);
+            return View();
+        }
+
     }
 
 

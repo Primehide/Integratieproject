@@ -4286,6 +4286,7 @@
     <Content Include="Views\Account\CreateUser.cshtml" />
     <Content Include="Views\Account\IndexUsers.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
+    <Content Include="Views\Account\FollowEntiteit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -17,5 +17,6 @@ namespace Domain.Account
         //public string Wachtwoord { get; set; }
         public List<Alert> Alerts { get; set; }
         public Dashboard Dashboard { get; set; }
+        public List<Entiteit.Entiteit> Entiteiten { get; set; }
     }
 }

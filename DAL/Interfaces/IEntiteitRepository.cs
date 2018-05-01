@@ -33,6 +33,7 @@ namespace DAL
         void AddEntiteit(Entiteit entiteit);
         List<Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
+        Entiteit ReadEntiteit(int id);
         
         void CreateThema(Thema thema);
         void UpdateThema(Thema thema);
