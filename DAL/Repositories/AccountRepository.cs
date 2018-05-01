@@ -37,6 +37,12 @@ namespace DAL
             return ctx.Alerts.ToList();
         }
 
+        public void AddAlert(Alert alert)
+        {
+            ctx.Alerts.Add(alert);
+            ctx.SaveChanges();
+        }
+
         public void UpdateAlert(Alert alert)
         {
             ctx.Entry(alert).State = System.Data.Entity.EntityState.Modified;

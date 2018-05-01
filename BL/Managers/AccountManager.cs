@@ -78,11 +78,24 @@ namespace BL
             }
             throw new NotImplementedException();
         }
+        public void AddAlert(Alert alert)
+        {
+            initNonExistingRepo();
+            accountRepository.AddAlert(alert);
+           // uowManager.Save();
+        }
 
         public void UpdateAlert(Alert alert)
         {
             initNonExistingRepo();
             accountRepository.UpdateAlert(alert);
+        }
+
+        public void addUser(Alert alert)
+        {
+            initNonExistingRepo();
+            accountRepository.AddAlert(alert);
+            uowManager.Save();
         }
 
         public List<Alert> getAlleAlerts()

@@ -14,6 +14,7 @@ namespace BL
         void genereerAlerts();
         List<Alert> getAlleAlerts();
         void UpdateAlert(Alert alert);
+        void AddAlert(Alert alert);
         Account getAccount(string ID);
         void updateUser(Account account);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);

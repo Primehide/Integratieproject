@@ -9,6 +9,7 @@ namespace Domain.Account
     public class Alert
     {
         public int AlertId { get; set; }
+        public string AlertNaam { get; set; }
         public Domain.Enum.TrendType TrendType { get; set; }
         public Domain.Enum.Voorwaarde Voorwaarde { get; set; }
         public double MinWaarde { get; set; }
