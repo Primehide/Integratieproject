@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Account;
-<<<<<<< HEAD
 using Domain.Entiteit;
-=======
 using System.Data.Entity;
->>>>>>> upstream/master
 
 namespace DAL
 {
@@ -58,19 +55,19 @@ namespace DAL
         }
 
         public Account ReadAccount(string ID)
-<<<<<<< HEAD
         {           
             Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
-=======
-        {
+
+       /* {
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
+                .Include("Alerts")
+                .Include("Items")
                 .Include(x => x.Dashboard.Configuratie)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.IdentityId == ID).First();
->>>>>>> upstream/master
+                .Where(a => a.IdentityId == ID).First();*/
             return account;
         }
 
@@ -104,6 +101,24 @@ namespace DAL
             Item item = new Item(entiteitID);
             updated.Items.Add(item);
             ctx.Items.Add(item);
+            ctx.SaveChanges();
+        }
+
+        public void UnFollowEntiteit(string accountId, int EntiteitID)
+        {
+            int ItemId = 0;
+            Account updated = ReadAccount(accountId);
+            List<Item> items = updated.Items;
+            foreach(Item item in items)
+            {
+               if(item.EntiteitId == EntiteitID)
+                {
+                    ItemId = item.ItemId;
+                }
+            }
+            Item ItemToUnfollow = ctx.Items.SingleOrDefault(p => p.ItemId == ItemId);          
+            updated.Items.Remove(ItemToUnfollow);
+            ctx.Items.Remove(ItemToUnfollow);
             ctx.SaveChanges();
         }
     }

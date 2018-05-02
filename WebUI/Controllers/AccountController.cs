@@ -638,6 +638,15 @@ namespace WebUI.Controllers
             return View();
         }
 
+        public ActionResult UnfollowEntiteit(int id)
+        {
+            string entityID = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+
+            accountManager.UnfollowEntity(entityID, id);
+            return View();
+        }
+
     }
 
 

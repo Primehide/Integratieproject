@@ -117,13 +117,18 @@ namespace BL
             accountRepository.DeleteUser(accountId);
         }
 
-<<<<<<< HEAD
         public void FollowEntity(string identityID, int entiteitID)
         {
 
             initNonExistingRepo();
             accountRepository.FollowEntiteit(identityID, entiteitID);
-=======
+        }
+
+        public void UnfollowEntity(string identityID, int entiteitID)
+        {
+            initNonExistingRepo();
+            accountRepository.UnFollowEntiteit(identityID, entiteitID);
+        }
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
@@ -197,7 +202,6 @@ namespace BL
         {
             initNonExistingRepo();
             repo.updateUser(account);
->>>>>>> upstream/master
         }
     }
 }

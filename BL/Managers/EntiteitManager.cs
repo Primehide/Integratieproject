@@ -579,6 +579,11 @@ namespace BL
         {
             entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
         }
+
+        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
 

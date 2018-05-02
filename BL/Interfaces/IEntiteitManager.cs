@@ -28,14 +28,11 @@ namespace BL
         void CreateTestData();
         List<Domain.Entiteit.Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
-<<<<<<< HEAD
         Entiteit GetEntiteit(int id);
 
 
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
-=======
         void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden);
->>>>>>> upstream/master
         void UpdateThema(Thema thema);
         void DeleteThema(int entiteitsId);
         void DeleteSleutelwoord(int sleutelId);

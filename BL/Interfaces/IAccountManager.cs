@@ -22,5 +22,6 @@ namespace BL
         void UpdateUser(Account account);
         void DeleteUser(string accountId);
         void FollowEntity(string identityID, int entiteitID);
+        void UnfollowEntity(string identityID, int entiteitID);
     }
 }
