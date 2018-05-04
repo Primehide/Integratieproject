@@ -66,6 +66,24 @@ namespace WebUI.Controllers
             return uM;
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminCp()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerGebruikers()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerEntiteiten()
+        {
+            return View();
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]

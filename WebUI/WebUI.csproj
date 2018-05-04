@@ -4302,6 +4302,10 @@
     <Content Include="Views\Account\EditUser.cshtml" />
     <Content Include="Views\Manage\UpdateProfile.cshtml" />
     <Content Include="Views\Manage\UpdateAlerts.cshtml" />
+    <Content Include="Views\Account\AdminCp.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_AdminCpLeftBar.cshtml" />
+    <Content Include="Views\Account\AdminBeheerGebruikers.cshtml" />
+    <Content Include="Views\Account\AdminBeheerEntiteiten.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
