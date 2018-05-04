@@ -29,7 +29,7 @@
         @Html.AntiForgeryToken()
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "IndexThema")
         </div>
     }
+    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.PlatformId }, null)
 </div>

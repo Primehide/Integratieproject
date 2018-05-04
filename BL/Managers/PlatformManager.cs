@@ -4,24 +4,59 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL;
+using Domain.Platform;
+using Domain.Account;
 
 namespace BL
 {
     public class PlatformManager : IPlatformManager
     {
-        private IPlatformRepository platformRepository;
+        private PlatformRepository platformRepository;
         private UnitOfWorkManager uowManager;
 
         public PlatformManager()
         {
-
+            platformRepository = new PlatformRepository();
         }
 
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
+            platformRepository = new PlatformRepository();
+
             uowManager = uofMgr;
         }
 
+        public void AddDeelplatform(Deelplatform newPlatform)
+        {
+            initNonExistingRepo();
+            platformRepository.CreateDeelplatform(newPlatform);
+        }
+
+        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
+        {
+            initNonExistingRepo();
+            return platformRepository.UpdateDeelplatform(changedDeelplatform);
+        }
+
+        public Deelplatform GetDeelplatform(int platformId)
+        {
+            initNonExistingRepo();
+            return platformRepository.ReadDeelplatform(platformId);
+        }
+
+        public void RemoveDeelplatform(int platformId)
+        {
+            initNonExistingRepo();
+            platformRepository.DeleteDeelplatform(platformId);
+        }
+
+        public IEnumerable<Deelplatform> GetAllDeelplatformen()
+        {
+            initNonExistingRepo();
+            return platformRepository.ReadAllDeelplatformen();
+        }
+
+        #region
         public void initNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
@@ -40,6 +75,23 @@ namespace BL
             {
                 platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
             }
+        }
+
+
+        #endregion
+
+
+      
+        public StringBuilder ConvertToCSV(List<Account> accounts)
+        {
+            initNonExistingRepo();
+            var lstData = accounts;
+            var sb = new StringBuilder();
+            foreach (var data in lstData)
+            {
+                sb.AppendLine(data.AccountId + "," + data.Voornaam + "," + data.Achternaam + ", " + data.Email + ", " + data.GeboorteDatum);
+            }
+            return sb;
         }
     }
 }

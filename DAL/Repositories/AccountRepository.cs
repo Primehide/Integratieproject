@@ -43,7 +43,7 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public void updateUser(Account account  )
+        public void updateUser(Account account)
         {
             Account updated = ctx.Accounts.Find(account.AccountId);
             updated.Voornaam = account.Voornaam;
@@ -55,7 +55,6 @@ namespace DAL
 
         public Account ReadAccount(string ID)
         {
-            string test = ID;
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
                 .Include(x => x.Dashboard.Configuratie)
@@ -65,5 +64,32 @@ namespace DAL
                 .Where(a => a.IdentityId == ID).First();
             return account;
         }
+
+        public List<Account> readAccounts()
+        {
+            return ctx.Accounts.ToList();
+        }
+
+        public void DeleteUser(string accountId)
+        {
+            Account account = ReadAccount(accountId);
+            if (account.Dashboard != null) {
+                ctx.Dashboards.Remove(account.Dashboard);
+            }
+
+            if (account.Alerts != null)
+            {
+                foreach (Alert alert in account.Alerts.ToList())
+                {
+                    ctx.Alerts.Remove(alert);
+                }
+                account.Alerts = null;
+            }
+            ctx.SaveChanges();
+            ctx.Accounts.Remove(account);
+            ctx.SaveChanges();
+
+        }
+
     }
 }

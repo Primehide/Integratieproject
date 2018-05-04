@@ -7,17 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
-using Domain.Entiteit;
 
 namespace DAL
 {
     public class EntiteitRepository : IEntiteitRepository
     {
         private EFContext ctx;
-        private DbModelBuilder modelBuilder;
+
         public EntiteitRepository()
         {
             ctx = new EFContext();
+        }
+
+        public EntiteitRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
@@ -100,7 +105,7 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            ctx.Entry(UpdatedOrganisatie).State = EntityState.Modified;
+            //ctx.Entry(UpdatedOrganisatie).State = EntityState.Modified;
             ctx.SaveChanges();
             return UpdatedOrganisatie;
         }
@@ -215,12 +220,14 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public EntiteitRepository(UnitOfWork uow)
+       public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
+            return ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();
         }
 
-       
+        public void DeleteEntiteitenVanDeelplatform(int id)
+        {
+            ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
+        }
     }
 }

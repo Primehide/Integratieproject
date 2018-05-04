@@ -29,14 +29,14 @@ namespace BL
 
         public void addUser(Account account)
         {
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             accountRepository.addUser(account);
             uowManager.Save();
         }
-        public void updateUser(Account account)
+        public void UpdateUser(Account account)
         {
          
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             Account oldaccount = new Account();
 
             oldaccount = accountRepository.ReadAccount(account.IdentityId);
@@ -49,7 +49,14 @@ namespace BL
 
         public Account getAccount(string ID)
         {
+            initNonExistingRepo();
             return repo.ReadAccount(ID);
+        }
+
+        public List<Account> GetAccounts()
+        {
+            initNonExistingRepo();
+            return accountRepository.readAccounts();
         }
 
         public void genereerAlerts()
@@ -104,6 +111,13 @@ namespace BL
             }
         }
 
+
+        public void DeleteUser(string accountId)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteUser(accountId);
+        }
+
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
@@ -148,7 +162,16 @@ namespace BL
             switch (TypeGrafiek)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    grafiek.Naam = entiteiten.First().Naam;
+                    grafiek.Naam = "Cijfer gegevens - " + entiteiten.First().Naam;
+                    break;
+                case Domain.Enum.GrafiekType.VERGELIJKING:
+                    if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                    {
+                        grafiek.Naam = "Vergelijking post frequentie";
+                    } else if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                    {
+                        grafiek.Naam = "Vergelijking populariteit";
+                    }
                     break;
             }
 
@@ -162,6 +185,12 @@ namespace BL
             user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
             accountRepository.updateUser(user);
             uowManager.Save();
+        }
+
+        public void updateUser(Account account)
+        {
+            initNonExistingRepo();
+            repo.updateUser(account);
         }
     }
 }
