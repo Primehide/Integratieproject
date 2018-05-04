@@ -132,6 +132,87 @@ namespace WebUI.Controllers
                 grafiekTeller++;
             }
 
+            //vergelijking + populariteit LIJN
+            StringBuilder LabelPopulariteitBuilder2 = new StringBuilder();
+            StringBuilder DataPopulariteitBuilder2 = new StringBuilder();
+            int LabelCounter2 = 0;
+            int DataCounter2 = 0;
+            foreach (var blok in model.Configuratie.DashboardBlokken
+                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT))
+            {
+                LabelPopulariteitBuilder2.Clear();
+                DataPopulariteitBuilder2.Clear();
+                foreach (var waarde in blok.Grafiek.Waardes)
+                {
+                    LabelPopulariteitBuilder2.Append("\"" + waarde.Naam + "\",");
+                    DataPopulariteitBuilder2.Append(waarde.Waarde + ",");
+                }
+                ViewData.Add("PopulariteitLabelLijn" + LabelCounter2, LabelPopulariteitBuilder2.ToString());
+                ViewData.Add("PopulariteitDataLijn" + DataCounter2, DataPopulariteitBuilder2.ToString());
+                DataCounter2++;
+                LabelCounter2++;
+            }
+
+            //vergelijking + postfrequentie LIJN
+            StringBuilder LabelPostFreqBuilder3 = new StringBuilder();
+            StringBuilder DataPostFreqBuilder3 = new StringBuilder();
+            int labelCounter3 = 0;
+            int dataCounter3 = 0;
+            foreach (var blok in model.Configuratie.DashboardBlokken
+                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                .Where(x => x.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
+                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE))
+            {
+                //create labels once
+                DateTime today = DateTime.Today;
+                LabelPostFreqBuilder3.Clear();
+                for (int i = 12; i > 0; i--)
+                {
+                    LabelPostFreqBuilder3.Append("\"" + today.AddDays(-i).ToShortDateString() + "\",");
+                }
+                ViewData.Add("PostFreqLabelsLijn" + labelCounter3, LabelPostFreqBuilder3);
+                labelCounter3++;
+
+                //data opstellen voor grafiek
+                for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+                {
+                    if (blok.Grafiek.Waardes.ElementAt(i).Naam.Contains("EndPostFrequentie"))
+                    {
+                        string data = DataPostFreqBuilder3.ToString();
+                        ViewData.Add("PostFreqDataLijn" + blok.Grafiek.Waardes.ElementAt(i).Waarde + "Grafiek" + dataCounter3, data);
+                        DataPostFreqBuilder3.Clear();
+                        continue;
+                    }
+                    DataPostFreqBuilder3.Append(blok.Grafiek.Waardes.ElementAt(i).Waarde + ",");
+                }
+                dataCounter3++;
+            }
+
+            StringBuilder LabelPopulariteitBuilder4 = new StringBuilder();
+            StringBuilder DataPopulariteitBuilder4 = new StringBuilder();
+            int LabelCounter4 = 0;
+            int DataCounter4 = 0;
+            int grafiekCounter4 = 0;
+            foreach (var blok in model.Configuratie.DashboardBlokken
+                .Where(x => x.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                .Where(x => x.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
+                .Where(x => x.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT))
+            {
+                LabelPopulariteitBuilder.Clear();
+                DataPopulariteitBuilder.Clear();
+                foreach (var waarde in blok.Grafiek.Waardes)
+                {
+                    ViewData.Add("PopulariteitLabelTaart" + LabelCounter4 + "Grafiek" + grafiekCounter4, waarde.Naam);
+                    ViewData.Add("PopulariteitDataTaart" + DataCounter4 + "Grafiek" + grafiekCounter4, waarde.Waarde);
+                    DataCounter4++;
+                    LabelCounter4++;
+                }
+                //ViewData.Add("PopulariteitLabel" + LabelCounter, LabelPopulariteitBuilder.ToString());
+                //ViewData.Add("PopulariteitData" + DataCounter, DataPopulariteitBuilder.ToString());
+                grafiekCounter4++;
+            }
+
             return View(model);
         }
 
