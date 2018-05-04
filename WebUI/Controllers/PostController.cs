@@ -15,10 +15,10 @@ namespace WebUI.Controllers
             return View();
         }
 
-        public async System.Threading.Tasks.Task SyncDataAsync()
+        public async System.Threading.Tasks.Task SyncDataAsync(bool AllPosts = false)
         {
             IPostManager postManager = new PostManager();
-            await postManager.SyncDataAsync();
+            await postManager.SyncDataAsync(AllPosts);
         }
 
         [HttpPost]
@@ -28,6 +28,8 @@ namespace WebUI.Controllers
             accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
             return RedirectToAction("Index","Manage");
         }
+
+
     }
 
 
