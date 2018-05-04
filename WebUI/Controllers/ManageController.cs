@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using BL;
 using Domain.Account;
+using Domain.Entiteit;
+using Domain.Enum;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -54,7 +57,7 @@ namespace WebUI.Controllers
             }
         }
 
-        
+
 
         //
         // GET: /Manage/Index
@@ -116,7 +119,7 @@ namespace WebUI.Controllers
                     }
 
                 }
-                else if(blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                else if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
                 {
                     StringBuilder labelBuilder = new StringBuilder();
                     StringBuilder dataBuilder = new StringBuilder();
@@ -433,6 +436,21 @@ namespace WebUI.Controllers
 
             return View();
         }
+        public ActionResult DeleteAlert(int id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.DeleteAlert(id);
+
+
+            List<Alert> alerts = accountManager.getAlleAlerts();
+            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
+           fillNamen();
+            return View("updatealerts", newalerts);
+        }
+    
+        
+     
+
 
         public ActionResult UpdateProfile()
         {
@@ -443,9 +461,79 @@ namespace WebUI.Controllers
 
         public ActionResult UpdateAlerts()
         {
-            return View();
+
+          fillNamen();
+            IAccountManager accountManager = new AccountManager();
+            List<Alert> alerts = accountManager.getAlleAlerts();
+
+            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
+
+
+            return View("UpdateAlerts", newalerts);
+        }
+        public ActionResult EditAlert(int id)
+        {
+           
+            IAccountManager accountManager = new AccountManager();
+            Alert alert = accountManager.GetAlert(id);
+            AlertViewModel avm = new AlertViewModel();
+            avm.alert = alert;
+            
+
+          fillNamen();
+            return View(avm);
         }
 
+        // POST: Alert/Edit/
+        [HttpPost]
+        public ActionResult EditAlert(int id, AlertViewModel modelalert)
+        {
+
+            IAccountManager accountManager = new AccountManager();
+            if (ModelState.IsValid)
+            {
+                //change
+               fillNamen();
+                Entiteit entiteit;
+                entiteit = NaamType.Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
+              modelalert.alert.Entiteit = entiteit;
+               modelalert. alert.AlertId = id;
+                accountManager.UpdateAlert(modelalert.alert);
+
+                List<Alert> alerts = accountManager.getAlleAlerts();
+                IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
+
+
+                return RedirectToAction("UpdateAlerts", newalerts);
+            }
+
+            return View();
+        }
+   
+        [HttpPost]
+        public ActionResult AddAlert(AlertViewModel model)
+        {
+            fillNamen();
+            AccountManager acm = new AccountManager();
+            //ent   iteit ID ophalen
+            string test = model.type;
+            int entiteitId = NaamType.Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
+  
+
+            //Account 
+            model.alert.Account = acm.getAccount(User.Identity.GetUserId());
+           
+            acm.AddAlert(model.alert, entiteitId, model.web, model.android, model.mail);
+            List<Alert> alerts = acm.getAlleAlerts();
+
+            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
+
+            return View("UpdateAlerts", newalerts);
+
+        }
+
+       
+      
         //POST /Manage/ManageAccount
         [HttpPost]
         public virtual async Task<ActionResult> ManageAccount(Models.ChangeProfileViewModel model)
@@ -490,6 +578,42 @@ namespace WebUI.Controllers
             return new HttpStatusCodeResult(200);
 
         }
+
+        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        private void fillNamen()
+        {
+
+            ArrayList namen = new ArrayList();
+
+            List<Entiteit> entiteits = new List<Entiteit>();
+
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.getAlleEntiteiten();
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+                    if (entiteit is Persoon)
+                    {
+                        NaamType.Add(entiteit, "Persoon");
+                    }
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+                    if (entiteit is Thema)
+                    {
+                        NaamType.Add(entiteit, "Thema");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
+            ViewBag.Namen = namen;
+        }
+
 
         #region Helpers
         // Used for XSRF protection when adding external logins

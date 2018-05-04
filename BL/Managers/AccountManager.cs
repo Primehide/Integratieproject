@@ -31,7 +31,7 @@ namespace BL
         {
             initNonExistingRepo();
             accountRepository.addUser(account);
-            uowManager.Save();
+           // uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
@@ -78,19 +78,63 @@ namespace BL
             }
             throw new NotImplementedException();
         }
-        public void AddAlert(Alert alert)
+        public Alert GetAlert(int alertID)
         {
-            initNonExistingRepo();
-            accountRepository.AddAlert(alert);
-           // uowManager.Save();
+            return repo.ReadAlert(alertID);
         }
+        public void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail)
+        {
+            initNonExistingRepo(true);
+        EntiteitManager emg = new EntiteitManager(uowManager);
+
+             alert.Entiteit = emg.getEntiteit(entiteitId);
+         
+            // var entiteit = emg.getEntiteit(1);
+             //entiteit.Alerts.Add(alert);
+
+
+
+            if (android == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.ANDROID;
+                repo.AddAlert(alert);
+
+            }
+
+            if (web == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.WEB;
+                repo.AddAlert(alert);
+
+            }
+
+            if (mail == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.EMAIL;
+                repo.AddAlert(alert);
+
+            }
+
+
+
+           
+             uowManager.Save();
+        }
+        
 
         public void UpdateAlert(Alert alert)
         {
+
             initNonExistingRepo();
             accountRepository.UpdateAlert(alert);
-        }
+            
 
+        }
+        public void DeleteAlert(int alertID)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteAlert(alertID);
+        }
         public void addUser(Alert alert)
         {
             initNonExistingRepo();

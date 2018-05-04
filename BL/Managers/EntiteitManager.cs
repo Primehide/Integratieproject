@@ -287,6 +287,11 @@ namespace BL
             //als we hier komen is er geen trend aanwezig.
             return false;
         }
+        public Entiteit getEntiteit(int entiteitID)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(entiteitID);
+        }
         #region
         public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
