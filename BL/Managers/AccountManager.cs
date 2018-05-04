@@ -29,14 +29,14 @@ namespace BL
 
         public void addUser(Account account)
         {
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             accountRepository.addUser(account);
             uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
          
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             Account oldaccount = new Account();
 
             oldaccount = accountRepository.ReadAccount(account.IdentityId);
@@ -49,6 +49,7 @@ namespace BL
 
         public Account getAccount(string ID)
         {
+            initNonExistingRepo();
             return repo.ReadAccount(ID);
         }
 

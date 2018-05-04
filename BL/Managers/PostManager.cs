@@ -52,11 +52,13 @@ namespace BL
 
         public void AddPost(Post post)
         {
+            initNonExistingRepo();
             postRepository.AddPost(post);
         }
 
         public List<Post> getAllPosts()
         {
+            initNonExistingRepo();
             return postRepository.getAllPosts();
         }
 

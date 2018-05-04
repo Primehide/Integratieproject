@@ -13,9 +13,16 @@ namespace DAL
     public class EntiteitRepository : IEntiteitRepository
     {
         private EFContext ctx;
+
         public EntiteitRepository()
         {
             ctx = new EFContext();
+        }
+
+        public EntiteitRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
@@ -213,16 +220,14 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+
         public Entiteit ReadEntiteit(int id)
         {
             return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
         }
 
-        public EntiteitRepository(UnitOfWork uow)
-        {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
-        }
+      
+
 
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
