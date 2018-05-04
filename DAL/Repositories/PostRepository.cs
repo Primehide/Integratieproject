@@ -18,6 +18,12 @@ namespace DAL
             ctx = new EFContext();
         }
 
+        public PostRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
+        }
+
         public void AddPosts(List<Post> posts)
         {
             foreach (var post in posts)
@@ -36,12 +42,6 @@ namespace DAL
         public List<Post> getAllPosts()
         {
             return ctx.Posts.ToList();
-        }
-
-        public PostRepository(UnitOfWork uow)
-        {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
         }
     }
 }

@@ -28,26 +28,31 @@ namespace BL
 
         public void AddDeelplatform(Deelplatform newPlatform)
         {
+            initNonExistingRepo();
             platformRepository.CreateDeelplatform(newPlatform);
         }
 
         public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
         {
+            initNonExistingRepo();
             return platformRepository.UpdateDeelplatform(changedDeelplatform);
         }
 
         public Deelplatform GetDeelplatform(int platformId)
         {
+            initNonExistingRepo();
             return platformRepository.ReadDeelplatform(platformId);
         }
 
         public void RemoveDeelplatform(int platformId)
         {
+            initNonExistingRepo();
             platformRepository.DeleteDeelplatform(platformId);
         }
 
         public IEnumerable<Deelplatform> GetAllDeelplatformen()
         {
+            initNonExistingRepo();
             return platformRepository.ReadAllDeelplatformen();
         }
 
@@ -79,6 +84,7 @@ namespace BL
       
         public StringBuilder ConvertToCSV(List<Account> accounts)
         {
+            initNonExistingRepo();
             var lstData = accounts;
             var sb = new StringBuilder();
             foreach (var data in lstData)
