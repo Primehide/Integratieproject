@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<Domain.Account.Alert>
+
+@{
     Layout = null;
 }
 
@@ -42,99 +44,90 @@
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped ">
                                         <thead>
+
                                             <tr>
+                                                <th class="text-center">
+                                                    Alertnaam
+                                                </th>
                                                 <th class="text-center">
                                                     Entiteit
                                                 </th>
                                                 <th class="text-center">
-                                                    Soort
+                                                    Type
                                                 </th>
                                                 <th class="text-center">
                                                     Voorwaarde
                                                 </th>
                                                 <th class="text-center">
+                                                    Minimum waarde
+                                                </th>
+                                                <th class="text-center">
                                                     Platform
+                                                </th>
+                                                <th class="text-center">
+                                                    Actie
                                                 </th>
                                             </tr>
                                         </thead>
                                         <tbody>
+
+
+                                            @foreach (Domain.Account.Alert item in Model)
+                                {
                                             <tr>
-                                                <td>Bart De Wever</td>
-                                                <td>AANTALVERMELDINGEN</td>
-                                                <td>20</td>
-                                                <td>EMAIL</td>
+                                                <td align="center">
+                                                    <div id="alertnaam">
+                                                        @Html.DisplayFor(modelItem => item.AlertNaam)
+                                                    </div>
+                                                    <div id="alertnaamInput" style="display:none">
+                                                        @Html.TextBoxFor(modelItem => item.AlertNaam)
+                                                    </div>
+                                                </td>
+                                                <td align="center">
+                                                    @Html.DisplayFor(modelItem => item.Entiteit.Naam)
+                                                </td>
+                                                <td align="center">
+                                                    @Html.DisplayFor(modelItem => item.TrendType)
+                                                </td>
+                                                <td align="center">
+                                                    @Html.DisplayFor(modelItem => item.Voorwaarde)
+                                                </td>
+                                                <td align="center">
+                                                    @Html.DisplayFor(modelItem => item.MinWaarde)
+                                                </td>
+                                                <td align="center">
+                                                    @Html.DisplayFor(modelItem => item.PlatformType)
+                                                </td>
+                                                <td align="center">
+                                                    @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
+                                                    @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
+
+
+
+
+                                                </td>
+
                                             </tr>
-                                            <tr>
-                                                <td>Bart De Wever</td>
-                                                <td>AANTALVERMELDINGEN</td>
-                                                <td>20</td>
-                                                <td>WEB</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Bart De Wever</td>
-                                                <td>TRENDING</td>
-                                                <td>N/A</td>
-                                                <td>ANDROID</td>
-                                            </tr>
+                    }
                                         </tbody>
                                     </table>
+                                    <input type="hidden" id="hiddenAlertId" />
+
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Alert toevoegen</h4>
-                                <form class="form-horizontal p-t-20">
-                                    <div class="form-group row">
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-user"></i></div>
-                                                <input type="text" class="form-control" id="exampleInputuname3" placeholder="Username">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-email"></i></div>
-                                                <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Enter email">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-world"></i></div>
-                                                <input type="text" class="form-control" id="web" placeholder="Enter Website Name">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-lock"></i></div>
-                                                <input type="password" class="form-control" id="exampleInputpwd4" placeholder="Enter pwd">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-lock"></i></div>
-                                                <input type="password" class="form-control" id="exampleInputpwd5" placeholder="Re Enter pwd">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row m-b-0">
-                                        <div class="offset-sm-3 col-sm-9">
-                                            <button type="submit" class="btn btn-success waves-effect waves-light">Sign in</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                <h4 class="card-title">Alert toevoegen.</h4>
+
+
+                                @Html.Partial("_AddAlert", new WebUI.Models.AlertViewModel());
+
                             </div>
-                        </div>
+                        </div>  
                     </div>
                 </div>
                 <!-- ============================================================== -->
@@ -146,9 +139,6 @@
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
     </div>
 </body>
-
-
-
 
 
 

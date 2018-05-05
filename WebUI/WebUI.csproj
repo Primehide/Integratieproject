@@ -210,6 +210,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AlertController.cs" />
     <Compile Include="Controllers\EntiteitController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -4306,6 +4307,8 @@
     <Content Include="Views\Shared\Dashboard\_AdminCpLeftBar.cshtml" />
     <Content Include="Views\Account\AdminBeheerGebruikers.cshtml" />
     <Content Include="Views\Account\AdminBeheerEntiteiten.cshtml" />
+    <Content Include="Views\Manage\_AddAlert.cshtml" />
+    <Content Include="Views\Manage\EditAlert.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
