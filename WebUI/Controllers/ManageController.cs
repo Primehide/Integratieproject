@@ -60,6 +60,7 @@ namespace WebUI.Controllers
         // GET: /Manage/Index
         public ActionResult Index()
         {
+            //test
             IAccountManager accountManager = new AccountManager();
 
             WebUI.Models.DashboardModel model = new DashboardModel()
