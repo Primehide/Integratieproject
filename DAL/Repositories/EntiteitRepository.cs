@@ -234,5 +234,11 @@ namespace DAL
         {
             ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
         }
+
+        public void addEntiteit(Entiteit entiteit)
+        {
+            ctx.Entiteiten.Add(entiteit);
+            ctx.SaveChanges();
+        }
     }
 }

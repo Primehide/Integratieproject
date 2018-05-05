@@ -220,6 +220,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Models\EntiteitViewModels.cs" />
     <Compile Include="Models\GrafiekModel.cs" />
@@ -274,6 +275,7 @@
     <Content Include="Content\Dashboard\assets\images\document\colors.jpg" />
     <Content Include="Content\Dashboard\assets\images\document\sidebar.jpg" />
     <Content Include="Content\Dashboard\assets\images\document\template-structure.jpg" />
+    <Content Include="Content\Dashboard\assets\images\egg.jpg" />
     <Content Include="Content\Dashboard\assets\images\favicon.png" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair.jpg" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair2.jpg" />

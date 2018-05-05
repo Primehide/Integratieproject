@@ -12,7 +12,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
-using System.Collections.Generic;
 using Microsoft.Owin.Security.DataProtection;
 
 namespace WebUI.Controllers
@@ -69,19 +68,35 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminCp()
         {
-            return View();
+            PostManager postManager = new PostManager();
+            EntiteitManager entiteitManager = new EntiteitManager();
+            Models.AdminViewModel model = new AdminViewModel()
+            {
+                RecentePosts = postManager.getRecentePosts(),
+            };
+            return View(model);
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerGebruikers()
         {
-            return View();
+            AccountManager accountManager = new AccountManager();
+            AdminViewModel model = new AdminViewModel()
+            {
+                Users = accountManager.GetAccounts()
+            };
+            return View(model);
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerEntiteiten()
         {
-            return View();
+            EntiteitManager entiteitManager = new EntiteitManager();
+            AdminViewModel model = new AdminViewModel()
+            {
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+            };
+            return View(model);
         }
 
         //

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Post;
+using System.Data.Entity;
 
 namespace DAL
 {
@@ -41,7 +42,16 @@ namespace DAL
 
         public List<Post> getAllPosts()
         {
-            return ctx.Posts.ToList();
+            return ctx.Posts
+                .Include(x => x.Entiteiten)
+                .Include(x => x.HashTags)
+                .Include(x => x.Mentions)
+                .Include(x => x.Persons)
+                .Include(x => x.Profile)
+                .Include(x => x.Sentiment)
+                .Include(x => x.Urls)
+                .Include(x => x.Words)
+                .ToList();
         }
     }
 }

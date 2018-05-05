@@ -44,5 +44,7 @@ namespace DAL
         IEnumerable<Thema> ReadThemas();
         IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id);
         void DeleteEntiteitenVanDeelplatform(int id);
+
+        void addEntiteit(Entiteit entiteit);
     }
 }

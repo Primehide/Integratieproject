@@ -1,4 +1,5 @@
-﻿@{
+﻿@model WebUI.Models.AdminViewModel
+@{
     Layout = null;
 }
 
@@ -52,31 +53,24 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Sander</td>
-                                                <td>Verschueren</td>
-                                                <td>sander.verschueren@student.kdg.be</td>
-                                                <td>
-                                                    <ul>
-                                                        <li>Bart De Wever</li>
-                                                        <li>Ben Weyts</li>
-                                                    </ul>
-                                                </td>
-                                                <td><button class="btn waves-effect waves-light btn-success">Edit</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Sander</td>
-                                                <td>Verschueren</td>
-                                                <td>sander.verschueren@student.kdg.be</td>
-                                                <td>
-                                                    <ul>
-                                                        <li>Bart De Wever</li>
-                                                    </ul>
-                                                </td>
-                                                <td><button class="btn waves-effect waves-light btn-success">Edit</button></td>
-                                            </tr>
+                                            @foreach (var user in Model.Users)
+                                            {
+                                                <tr>
+                                                    <td>@user.IdentityId</td>
+                                                    <td>@user.Voornaam</td>
+                                                    <td>@user.Achternaam</td>
+                                                    <td>@user.Email</td>
+                                                    <td>
+                                                        <ul>
+                                                            @foreach (var item in user.Items)
+                                                            {
+                                                            <li>@item.EntiteitId</li>
+                                                            }
+                                                        </ul>
+                                                    </td>
+                                                    <td><button class="btn waves-effect waves-light btn-success">Edit</button></td>
+                                                </tr>
+                                            }
                                         </tbody>
                                     </table>
                                     <a href="/platform/DownloadReport" class="btn waves-effect waves-light btn-primary">Export</a>
