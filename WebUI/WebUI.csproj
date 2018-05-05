@@ -4300,8 +4300,6 @@
     <Content Include="Views\Account\CreateUser.cshtml" />
     <Content Include="Views\Account\IndexUsers.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
-    <Content Include="Views\Account\FollowEntiteit.cshtml" />
-    <Content Include="Views\Account\UnfollowEntiteit.cshtml" />
     <Content Include="Views\Manage\UpdateProfile.cshtml" />
     <Content Include="Views\Manage\UpdateAlerts.cshtml" />
   </ItemGroup>

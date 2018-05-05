@@ -225,11 +225,6 @@ namespace DAL
             return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
         }
 
-        public EntiteitRepository(UnitOfWork uow)
-        {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
-        }
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
             return ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();

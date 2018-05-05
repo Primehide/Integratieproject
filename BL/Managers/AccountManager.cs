@@ -31,7 +31,6 @@ namespace BL
         {
             initNonExistingRepo();
             accountRepository.addUser(account);
-            uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
@@ -44,7 +43,6 @@ namespace BL
          
 
             accountRepository.updateUser(account);
-            uowManager.Save();
         }
 
         public Account getAccount(string ID)
