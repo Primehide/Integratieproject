@@ -559,7 +559,7 @@ namespace WebUI.Controllers
         private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
         {
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
-            var callbackUrl = Url.Action("ConfirmEmailNew", "Account",
+            var callbackUrl = Url.Action("ConfirmEmail", "Account",
                new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject,
                "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -629,6 +629,24 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
             accountManager.UpdateUser(account);
             return RedirectToAction("IndexUsers");
+        }
+
+        public ActionResult FollowEntiteit(int id)
+        {
+            string entityID = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+       
+            accountManager.FollowEntity(entityID, id);
+            return View();
+        }
+
+        public ActionResult UnfollowEntiteit(int id)
+        {
+            string entityID = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+
+            accountManager.UnfollowEntity(entityID, id);
+            return View();
         }
 
     }
