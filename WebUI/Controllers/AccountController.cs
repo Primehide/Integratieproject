@@ -97,7 +97,7 @@ namespace WebUI.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("LoginNew", model);
+                return RedirectToAction("Login", model);
             }
 
             // Require the user to have a confirmed email before they can log on.
@@ -127,7 +127,7 @@ namespace WebUI.Controllers
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
-                    return View("LoginNew", model);
+                    return View("Login", model);
             }
         }
 
@@ -227,7 +227,7 @@ namespace WebUI.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View("RegisterNew", model);
+            return View("Register", model);
         }
 
         //

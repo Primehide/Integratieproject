@@ -4285,7 +4285,6 @@
     <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
-    <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Account\RegisterNew.cshtml" />
     <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
     <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
@@ -4303,6 +4302,8 @@
     <Content Include="Views\Account\EditUser.cshtml" />
     <Content Include="Views\Account\FollowEntiteit.cshtml" />
     <Content Include="Views\Account\UnfollowEntiteit.cshtml" />
+    <Content Include="Views\Manage\UpdateProfile.cshtml" />
+    <Content Include="Views\Manage\UpdateAlerts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
