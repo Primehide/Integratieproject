@@ -56,9 +56,7 @@ namespace DAL
 
         public Account ReadAccount(string ID)
         {           
-            Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
-
-       /* {
+            //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
                 .Include("Alerts")
@@ -67,7 +65,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.IdentityId == ID).First();*/
+                .Where(a => a.IdentityId == ID).First();
             return account;
         }
 
