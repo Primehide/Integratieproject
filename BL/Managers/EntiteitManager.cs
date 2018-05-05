@@ -114,6 +114,12 @@ namespace BL
             return entiteitRepository.getAlleEntiteiten();
         }
 
+        public Entiteit GetEntiteit(int id)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(id);
+        }
+
         public void updateEntiteit(Entiteit entiteit)
         {
             initNonExistingRepo();
@@ -581,6 +587,11 @@ namespace BL
         {
             initNonExistingRepo();
             entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
+        }
+
+        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

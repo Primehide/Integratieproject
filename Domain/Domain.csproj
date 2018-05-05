@@ -73,6 +73,7 @@
     <Compile Include="Account\DashboardBlok.cs" />
     <Compile Include="Account\DashboardConfiguratie.cs" />
     <Compile Include="Entiteit\Entiteit.cs" />
+    <Compile Include="Entiteit\Item.cs" />
     <Compile Include="Entiteit\Organisatie.cs" />
     <Compile Include="Entiteit\Persoon.cs" />
     <Compile Include="Entiteit\Sleutelwoord.cs" />

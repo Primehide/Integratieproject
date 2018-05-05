@@ -32,6 +32,8 @@
             <td>
                 @Html.ActionLink("Edit", "EditThema", new { id = item.EntiteitId }) |
                 @Html.ActionLink("Delete", "DeleteThema", new { id = item.EntiteitId })
+                @Html.ActionLink("Follow", "FollowEntiteit", "Account", new { id = item.EntiteitId }, null)
+                @Html.ActionLink("Unfollow", "UnfollowEntiteit", "Account", new { id = item.EntiteitId }, null)
             </td>
         </tr>
     }

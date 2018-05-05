@@ -31,7 +31,6 @@ namespace BL
         {
             initNonExistingRepo();
             accountRepository.addUser(account);
-            uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
@@ -44,7 +43,6 @@ namespace BL
          
 
             accountRepository.updateUser(account);
-            uowManager.Save();
         }
 
         public Account getAccount(string ID)
@@ -118,6 +116,18 @@ namespace BL
             accountRepository.DeleteUser(accountId);
         }
 
+        public void FollowEntity(string identityID, int entiteitID)
+        {
+
+            initNonExistingRepo();
+            accountRepository.FollowEntiteit(identityID, entiteitID);
+        }
+
+        public void UnfollowEntity(string identityID, int entiteitID)
+        {
+            initNonExistingRepo();
+            accountRepository.UnFollowEntiteit(identityID, entiteitID);
+        }
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);

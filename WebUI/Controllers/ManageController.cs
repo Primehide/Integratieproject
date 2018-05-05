@@ -116,7 +116,7 @@ namespace WebUI.Controllers
                     }
 
                 }
-                else if(blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                else if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
                 {
                     StringBuilder labelBuilder = new StringBuilder();
                     StringBuilder dataBuilder = new StringBuilder();
@@ -133,6 +133,7 @@ namespace WebUI.Controllers
             }
 
             return View(model);
+            //return View();
         }
 
         //
