@@ -234,9 +234,5 @@ namespace DAL
         {
             ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
         }
-       public Entiteit ReadEntiteit(int id)
-        {
-            return ctx.Entiteiten.Where(x => x.EntiteitId == id).FirstOrDefault();
-        }
     }
 }
