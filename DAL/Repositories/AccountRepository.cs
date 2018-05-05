@@ -32,18 +32,45 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
-
+        public Alert ReadAlert(int alertID)
+        {
+            Alert alert = ctx.Alerts.Find(alertID);
+            return alert;
+        }
         public List<Alert> getAlleAlerts()
         {
-            return ctx.Alerts.ToList();
+            return ctx.Alerts.Include(x => x.Account)
+                               .Include(x => x.Entiteit)
+                
+                .ToList();
+        }
+
+        public void AddAlert(Alert alert)
+        {
+            ctx.Alerts.Add(alert);
+            ctx.Entry(alert.Entiteit).State = EntityState.Unchanged;
+            ctx.SaveChanges();
         }
 
         public void UpdateAlert(Alert alert)
         {
+
+            ctx.Entry(alert.Entiteit).State = System.Data.Entity.EntityState.Modified;
             ctx.Entry(alert).State = System.Data.Entity.EntityState.Modified;
             ctx.SaveChanges();
+            
         }
+        public void DeleteAlert(int alertID)
+        {
+            Alert alert = ReadAlert(alertID);
+         
+   
+                    ctx.Alerts.Remove(alert);
+            
+            ctx.SaveChanges();
+    
 
+        }
         public void updateUser(Account account)
         {
             Account updated = ctx.Accounts.Find(account.AccountId);

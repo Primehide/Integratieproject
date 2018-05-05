@@ -131,6 +131,8 @@ namespace WebUI.Controllers
             }
         }
 
+
+
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -185,7 +187,7 @@ namespace WebUI.Controllers
         public virtual ActionResult Register()
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+           var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
             UserManager = new ApplicationUserManager(userstore);
             return View();
         }
@@ -433,7 +435,7 @@ namespace WebUI.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform };
+                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email /*, TenantId = PlatformController.currentPlatform */ };
                 var result = await UserManager.CreateAsync(user);
                 CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
                 if (result.Succeeded)
