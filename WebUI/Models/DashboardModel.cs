@@ -15,5 +15,7 @@ namespace WebUI.Models
         public Dictionary<string, string> GrafiekDataSets { get; set; }
         public int DataSetTeller { get; set; }
         public List<string> ColorCodes { get; set; }
+
+        public virtual IEnumerable<Domain.Account.Alert> alerts { get; set; }
     }
 }

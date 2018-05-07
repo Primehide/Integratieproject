@@ -12,8 +12,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
-using System.Collections.Generic;
+
 using Microsoft.Owin.Security.DataProtection;
+using System.Data.SqlClient;
+using System.Configuration;
+using System.Data;
+
 
 namespace WebUI.Controllers
 {
@@ -23,6 +27,8 @@ namespace WebUI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+      
+
 
         public AccountController()
         {
@@ -630,6 +636,10 @@ namespace WebUI.Controllers
             accountManager.UpdateUser(account);
             return RedirectToAction("IndexUsers");
         }
+
+        //push notifications
+
+
 
     }
 

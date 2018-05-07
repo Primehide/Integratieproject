@@ -19,7 +19,17 @@ namespace WebUI.Controllers
     {
 
 
+        public ActionResult Notifications()
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<Alert> alerts = accountManager.getAlleAlerts();
 
-      
+            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId() && x.Triggered == true);
+
+            return PartialView("~/Views/Shared/Dashboard/_DashboardAlerts.cshtml", newalerts);
+
+
+        }
+
     }
 }

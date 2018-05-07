@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Domain.Account.Alert>
+
+    @if (!Model.Any())
+    {
+        @Html.Action("Notifications", "Alert")
+    }
+
+    @foreach (Domain.Account.Alert item in Model)
+    {
+
+        <a href="#">
+            <div class="btn btn-info btn-circle"><i class="fa fa-link"></i></div>
+            <div class="mail-contnet">
+              
+                <b>   @Html.DisplayFor(modelItem => item.AlertNaam)</b>:
+                @Html.DisplayFor(modelItem => item.Entiteit.Naam)
+                <i>
+                    @Html.DisplayFor(modelItem => item.TrendType)
+                    @Html.DisplayFor(modelItem => item.Voorwaarde)
+                </i>
+
+            </div>
+        </a>
+    }

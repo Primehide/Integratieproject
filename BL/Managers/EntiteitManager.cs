@@ -162,9 +162,9 @@ namespace BL
             //PRESET voor berekening juist zetten
             switch (type)
             {
-                case TrendType.STERKOPWAARDS:
+                case TrendType.STERKOPWAARTS:
                     trendVerandering = 1.3;
-                    newTrend.Type = TrendType.STERKOPWAARDS;
+                    newTrend.Type = TrendType.STERKOPWAARTS;
                     break;
                 case TrendType.MATIGOPWAARDS:
                     trendVerandering = 1.1;
@@ -235,7 +235,7 @@ namespace BL
                             return true;
                         }
                     }
-                    if(type == TrendType.STERKOPWAARDS)
+                    if(type == TrendType.STERKOPWAARTS)
                     {
                         if ((AantalVandaag / AantalGisteren) >= trendVerandering)
                         {

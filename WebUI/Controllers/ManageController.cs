@@ -471,6 +471,8 @@ namespace WebUI.Controllers
 
             return View("UpdateAlerts", newalerts);
         }
+      
+       
         public ActionResult EditAlert(int id)
         {
            
