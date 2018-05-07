@@ -1,0 +1,147 @@
+﻿@model WebUI.Models.AdminViewModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_AdminCpLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Admin Control Panel</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Starter kit</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex no-block">
+                                    <div class="m-r-20 align-self-center"><span class="lstick m-r-20"></span><img src="~/Content/Dashboard/assets/images/icon/staff.png" alt="Staff"></div>
+                                    <div class="align-self-center">
+                                        <h6 class="text-muted m-t-10 m-b-0">gebruikers</h6>
+                                        <h2 class="m-t-0">1280</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="card-title">Gebruikers beheren</h4>
+                                <p class="card-text">Beheer gebruikers van jou platform.</p>
+                                <a href="/Account/AdminBeheerGebruikers" class="btn btn-primary">Go</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="card-title">Entiteiten beheren</h4>
+                                <p class="card-text">Beheer entiteiten voor jou platform.</p>
+                                <a href="/Account/AdminBeheerEntiteiten" class="btn btn-primary">Go</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h4 class="card-title">Platform parameters beheren</h4>
+                                <p class="card-text">Beheer basis parameters van jou platform</p>
+                                <a href="#" class="btn btn-primary">Go</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <h4 class="card-title"><span class="lstick"></span>Recente tweets</h4>
+                                    <!-- <span class="badge badge-success">9</span> -->
+                                </div>
+                            </div>
+                            <div class="activity-box">
+                                <div class="card-body">
+                                    <!-- Activity item-->
+                                    @foreach (var post in Model.RecentePosts)
+                            {
+                                <div class="activity-item">
+                                    <div class="round m-r-20"><img src="~/Content/Dashboard/assets/images/egg.jpg" alt="user" width="50"></div>
+                                    <div class="m-t-10">
+                                        <h5 class="m-b-5 font-medium">@post.Entiteiten.First().Naam <span class="text-muted font-14 m-l-10">| &nbsp; 6:30 PM</span></h5>
+                                        <h6 class="text-muted">Tweeted</h6>
+                                        <p class="m-b-0">
+                                            <b>Urls:</b>
+                                            @foreach (var url in post.Urls)
+                                    {
+                                        @Html.Raw(url.Link + ", ")
+                            }
+                                        </p>
+                                        <p class="m-b-0">
+                                            <b>Words:</b>
+                                            @foreach (var word in post.Words)
+                                    {
+                                        @Html.Raw(word.word + ", ")
+                            }
+                                        </p>
+                                        <p class="m-b-0">
+                                            <b>Mentions:</b>
+                                            @foreach (var mention in post.Mentions)
+                                    {
+                                        @Html.Raw(mention.mention + ", ")
+                            }
+                                        </p>
+                                    </div>
+                                </div>
+                    }
+                                    <!-- Activity item-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+

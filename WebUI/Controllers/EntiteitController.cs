@@ -39,6 +39,13 @@ namespace WebUI.Controllers
             return View();
         }
 
+        public ActionResult AddEntiteit(Entiteit entiteit)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.addEntiteit(entiteit);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
         // This region is for adding a person to the database and persisting.
         #region
         public virtual ActionResult AddPerson(int platformId)

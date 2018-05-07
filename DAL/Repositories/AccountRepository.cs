@@ -98,7 +98,10 @@ namespace DAL
 
         public List<Account> readAccounts()
         {
-            return ctx.Accounts.ToList();
+            return ctx.Accounts
+                .Include(x => x.Alerts)
+                .Include(x => x.Items)
+                .ToList();
         }
 
         public void DeleteUser(string accountId)

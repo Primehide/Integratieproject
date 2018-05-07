@@ -183,7 +183,6 @@
         </div>
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
-        
         @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
     {
         Model.DataSetTeller = 0;

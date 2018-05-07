@@ -1,0 +1,129 @@
+﻿@model WebUI.Models.AdminViewModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_AdminCpLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Admin Control Panel</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Admin Cp</a></li>
+                            <li class="breadcrumb-item">Entiteit beheer</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-body">
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>1 Entiteit aanmaken</h3>
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    <form action="/Entiteit/AddEntiteit">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Naam</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">Email address</label>
+                                            <select class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                                <option>Soort</option>
+                                                <option value="AK">Persoon</option>
+                                                <option value="HI">Organisatie</option>
+                                                <option value="HI">Thema</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title"><span class="lstick"></span>Entiteiten uploaden</h4>
+                                <label for="input-file-max-fs">Upload json van entiteiten</label>
+                                <input type="file" id="input-file-max-fs" class="dropify" data-max-file-size="2M" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <div>
+                                        <h4 class="card-title"><span class="lstick"></span>Entiteiten platform</h4>
+                                    </div>
+                                </div>
+                                <div class="table-responsive m-t-20">
+                                    <table class="table vm no-th-brd no-wrap pro-of-month">
+                                        <thead>
+                                            <tr>
+                                                <th>Naam</th>
+                                                <th>Organisatie</th>
+                                                <th>Actie</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var e in Model.AlleEntiteiten)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @e.Naam
+                                                    </td>
+                                                    <td>
+                                                        @e.GetType().Name
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn waves-effect waves-light btn-success">Edit</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+

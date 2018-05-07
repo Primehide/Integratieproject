@@ -298,6 +298,13 @@ namespace BL
             initNonExistingRepo();
             return entiteitRepository.ReadEntiteit(entiteitID);
         }
+
+        public void addEntiteit(Entiteit entiteit)
+        {
+            initNonExistingRepo();
+            entiteitRepository.AddEntiteit(entiteit);
+        }
+
         #region
         public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
