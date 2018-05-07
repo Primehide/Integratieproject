@@ -692,7 +692,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
        
             accountManager.FollowEntity(entityID, id);
-            return View();
+            return RedirectToAction("VolgItems", "Manage");
         }
 
         public ActionResult UnfollowEntiteit(int id)
@@ -701,7 +701,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
 
             accountManager.UnfollowEntity(entityID, id);
-            return View();
+            return RedirectToAction("VolgItems", "Manage");
         }
 
     }

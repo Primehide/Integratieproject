@@ -36,152 +36,67 @@
                 <!-- ============================================================== -->
                 <div class="row">
                     @foreach (var blok in Model.Configuratie.DashboardBlokken)
+            {
+                if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
                 {
-                    if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
-                    {
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-striped ">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th class="text-center">
-                                                        Waarde
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var waarde in blok.Grafiek.Waardes)
-                                            {
-                                                <tr>
-                                                    <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                                    @if (waarde.Naam.ToLower().Contains("trend"))
-                                                {
-                                                    <td>Aanwezig</td>
-                                            }
-                                            else
-                                            {
-                                                <td>@waarde.Waarde</td>
-                                        }
-                                                </tr>
-                                        }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                }
-                else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                {
-                    <div class="col-md-4" style="overflow:hidden;">
+                    <div class="col-md-4">
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                                <div>
-                                    <canvas id="chart @Model.CanvasCounter"></canvas>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped ">
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th class="text-center">
+                                                    Waarde
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var waarde in blok.Grafiek.Waardes)
+                                    {
+                                        <tr>
+                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                            @if (waarde.Naam.ToLower().Contains("trend"))
+                                    {
+                                        <td>Aanwezig</td>
+                            }
+                            else
+                            {
+                                <td>@waarde.Waarde</td>
+                    }
+                                        </tr>
+                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                Model.CanvasCounter++;
-            }
         }
+        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+        {
+            <div class="col-md-4" style="overflow:hidden;">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                        <div>
+                            <canvas id="chart @Model.CanvasCounter"></canvas>
+                        </div>
+                    </div>
                 </div>
-                <div class="row page-titles">
-                    <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Meest actieve personen</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-5 col-xlg-4">
-                        <div class="card">
-                            <div class="card-body little-profile text-center">
-                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_bart.jpg" alt="user"></div>
-                                <h3 class="m-b-0">Bart De Wever</h3>
-                                <h6 class="text-muted">N-VA</h6>
-                                <ul class="list-inline soc-pro m-t-30">
-                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="text-center bg-light">
-                                <div class="row">
-                                    <div class="col-12  p-20 b-r">
-                                        <h4 class="m-b-0 font-medium">1099</h4><small>Tweets</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body text-center">
-                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-xlg-4">
-                        <div class="card">
-                            <div class="card-body little-profile text-center">
-                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_maggie.jpg" alt="user"></div>
-                                <h3 class="m-b-0">Maggie De Block</h3>
-                                <h6 class="text-muted">Open-Vld</h6>
-                                <ul class="list-inline soc-pro m-t-30">
-                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="text-center bg-light">
-                                <div class="row">
-                                    <div class="col-12  p-20 b-r">
-                                        <h4 class="m-b-0 font-medium">876</h4><small>Tweets</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body text-center">
-                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-5 col-xlg-4">
-                        <div class="card">
-                            <div class="card-body little-profile text-center">
-                                <div class="pro-img m-t-20"><img src="~/Content/Dashboard/assets/images/users/avatar_kris.jpg" alt="user"></div>
-                                <h3 class="m-b-0">Kris Peeters</h3>
-                                <h6 class="text-muted">CD&V</h6>
-                                <ul class="list-inline soc-pro m-t-30">
-                                    <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-facebook-square"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-google-plus"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-youtube-play"></i></a></li>
-                                    <li><a href="javascript:void(0)"><i class="fa fa-instagram"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class="text-center bg-light">
-                                <div class="row">
-                                    <div class="col-12  p-20 b-r">
-                                        <h4 class="m-b-0 font-medium">767</h4><small>Tweets</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body text-center">
-                                <a href="javascript:void(0)" class="m-t-10 m-b-20 waves-effect waves-dark btn btn-success btn-md btn-rounded">Unfollow</a>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+    Model.CanvasCounter++;
+}
+}
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
             </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         </div>
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
     {
