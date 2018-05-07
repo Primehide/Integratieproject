@@ -8,7 +8,7 @@
         <nav class="sidebar-nav active">
             <ul id="sidebarnav" class="in">
                 <li class="user-profile">
-                    <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><img src="~/Content/Dashboard/assets/images/users/profile.png" alt="user"><span class="hide-menu">Steave Jobs </span></a>
+                    <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><span class="hide-menu">@User.Identity.Name </span></a>
                     <ul aria-expanded="false" class="collapse">
                         <li><a href="/manage/updateprofile">Account Setting</a></li>
                         @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
