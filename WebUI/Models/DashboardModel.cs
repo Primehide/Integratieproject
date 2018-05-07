@@ -15,5 +15,9 @@ namespace WebUI.Models
         public Dictionary<string, string> GrafiekDataSets { get; set; }
         public int DataSetTeller { get; set; }
         public List<string> ColorCodes { get; set; }
+
+        public List<Domain.Entiteit.Item> GevolgdeItems { get; set; }
+        public List<Domain.Entiteit.Entiteit> AlleEntiteiten { get; set; }
+
     }
 }

@@ -57,7 +57,17 @@ namespace WebUI.Controllers
             }
         }
 
-
+        public ActionResult VolgItems()
+        {
+            IAccountManager accountManager = new AccountManager();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            Models.DashboardModel model = new DashboardModel()
+            {
+                GevolgdeItems = accountManager.getAccount(User.Identity.GetUserId()).Items.ToList(),
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+            };
+            return View(model);
+        }
 
         //
         // GET: /Manage/Index

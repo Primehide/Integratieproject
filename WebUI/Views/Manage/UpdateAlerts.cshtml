@@ -73,42 +73,42 @@
 
 
                                             @foreach (Domain.Account.Alert item in Model)
-                                {
-                                            <tr>
-                                                <td align="center">
-                                                    <div id="alertnaam">
-                                                        @Html.DisplayFor(modelItem => item.AlertNaam)
-                                                    </div>
-                                                    <div id="alertnaamInput" style="display:none">
-                                                        @Html.TextBoxFor(modelItem => item.AlertNaam)
-                                                    </div>
-                                                </td>
-                                                <td align="center">
-                                                    @Html.DisplayFor(modelItem => item.Entiteit.Naam)
-                                                </td>
-                                                <td align="center">
-                                                    @Html.DisplayFor(modelItem => item.TrendType)
-                                                </td>
-                                                <td align="center">
-                                                    @Html.DisplayFor(modelItem => item.Voorwaarde)
-                                                </td>
-                                                <td align="center">
-                                                    @Html.DisplayFor(modelItem => item.MinWaarde)
-                                                </td>
-                                                <td align="center">
-                                                    @Html.DisplayFor(modelItem => item.PlatformType)
-                                                </td>
-                                                <td align="center">
-                                                    @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
-                                                    @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
+                                    {
+                                        <tr>
+                                            <td align="center">
+                                                <div id="alertnaam">
+                                                    @Html.DisplayFor(modelItem => item.AlertNaam)
+                                                </div>
+                                                <div id="alertnaamInput" style="display:none">
+                                                    @Html.TextBoxFor(modelItem => item.AlertNaam)
+                                                </div>
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.Entiteit.Naam)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.TrendType)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.Voorwaarde)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.MinWaarde)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.PlatformType)
+                                            </td>
+                                            <td align="center">
+                                                @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
+                                                @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
 
 
 
 
-                                                </td>
+                                            </td>
 
-                                            </tr>
-                    }
+                                        </tr>
+                            }
                                         </tbody>
                                     </table>
                                     <input type="hidden" id="hiddenAlertId" />
@@ -127,15 +127,15 @@
                                 @Html.Partial("_AddAlert", new WebUI.Models.AlertViewModel());
 
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
             </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         </div>
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
     </div>
 </body>

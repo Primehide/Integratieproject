@@ -36,23 +36,21 @@
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card card-body">
-                            <h3 class="box-title m-b-0"><span class="lstick"></span>1 Entiteit aanmaken</h3>
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    <form action="/Entiteit/AddEntiteit">
+                                    <form action="/Entiteit/AddPersoon" method="post">
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Naam</label>
+                                            <label>Voornaam</label>
                                             <input type="text" class="form-control" placeholder="Naam" name="Naam">
                                         </div>
                                         <div class="form-group">
-                                            <label for="exampleInputEmail1">Email address</label>
-                                            <select class="select2 form-control custom-select" style="width: 100%; height:36px;">
-                                                <option>Soort</option>
-                                                <option value="AK">Persoon</option>
-                                                <option value="HI">Organisatie</option>
-                                                <option value="HI">Thema</option>
+                                            <select class="select2 form-control custom-select" name="organisationId">
+                                                <option>Selecteer organisatie</option>
+                                                <option value="1">N-VA</option>
+                                                <option value="2">Open-VLD</option>
                                             </select>
                                         </div>
                                         <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
@@ -61,7 +59,47 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6 col-md-6">
+                    <div class="col-md-12">
+                        <div class="card card-body">
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>Organisatie aanmaken</h3>
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    <form action="/Entiteit/AddOrganisatie" method="post">
+                                        <div class="form-group">
+                                            <label>Naam</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gemeente</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Gemeente">
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card card-body">
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>Thema aanmaken</h3>
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    <form action="/Entiteit/AddThema" method="post">
+                                        <div class="form-group">
+                                            <label>Naam</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Woorden (splitst op komma)</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="woorden">
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
                                 <h4 class="card-title"><span class="lstick"></span>Entiteiten uploaden</h4>
@@ -85,7 +123,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Naam</th>
-                                                <th>Organisatie</th>
+                                                <th>Type</th>
                                                 <th>Actie</th>
                                             </tr>
                                         </thead>
