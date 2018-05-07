@@ -5913,6 +5913,7 @@
     <Content Include="Views\Account\AdminBeheerEntiteiten.cshtml" />
     <Content Include="Views\Manage\_AddAlert.cshtml" />
     <Content Include="Views\Manage\EditAlert.cshtml" />
+    <Content Include="Views\Account\EditUserAdmin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

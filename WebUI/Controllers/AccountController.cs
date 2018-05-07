@@ -470,7 +470,7 @@ namespace WebUI.Controllers
                 }
                 var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email /*, TenantId = PlatformController.currentPlatform */ };
                 var result = await UserManager.CreateAsync(user);
-                CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
+                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -625,6 +625,27 @@ namespace WebUI.Controllers
             return View(accounts);
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult EditUserAdmin(string id)
+        {
+            AccountManager accountManager = new AccountManager();
+            Account model = accountManager.getAccount(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditUserAdmin(Domain.Account.Account model)
+        {
+            AccountManager accountManager = new AccountManager();
+            Account accountToUpdate = accountManager.getAccount(model.IdentityId);
+            accountToUpdate.Achternaam = model.Achternaam;
+            accountToUpdate.Voornaam = model.Voornaam;
+            accountToUpdate.Email = model.Email;
+            //accountToUpdate.GeboorteDatum = model.GeboorteDatum.Date;
+            accountManager.updateUser(accountToUpdate);
+            return RedirectToAction("AdminBeheerGebruikers");
+        }
+
         //Aanmaken van een user door admin
         public ActionResult CreateUser()
         {
@@ -645,7 +666,8 @@ namespace WebUI.Controllers
         {
             IAccountManager accountManager = new AccountManager();
             accountManager.DeleteUser(id);
-            return RedirectToAction("IndexUsers");
+            UserManager.Delete(UserManager.FindById(id));
+            return RedirectToAction("Index","Home");
         }
 
 
