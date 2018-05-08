@@ -1,0 +1,217 @@
+﻿@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Persoon pagina</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="m-t-30">
+                                    <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" class="img-circle" width="150" />
+                                    <h4 class="card-title m-t-10">Bart De Wever</h4>
+                                    <h6 class="card-subtitle">N-VA</h6>
+                                </center>
+                            </div>
+                            <div>
+                                <hr>
+                            </div>
+                            <div class="card-body">
+                                <small class="text-muted p-t-30 db">Phone</small>
+                                <h6>+91 654 784 547</h6><small class="text-muted p-t-30 db">Social Profile</small>
+                                <br />
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                    <!-- Column -->
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs profile-tab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Data</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Over</a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!--second tab-->
+                                <div class="tab-pane active" id="profile" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                        </div>
+                                        <hr>
+                                        <p class="m-t-30">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    Personen meest positief/negatief
+                                                    <canvas id="myChart" width="150" height="150"></canvas>
+                                                </div>
+                                                <div class="col-md4">
+                                                    Trending personen<br />
+                                                    (aantal vermeldingen laatste 24 uur)
+                                                    <canvas id="myChart2" width="150" height="150"></canvas>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    Organisaties meest positief/negatief
+                                                    <canvas id="myChart3" width="150" height="150"></canvas>
+                                                </div>
+                                            </div>
+                                            
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="settings" role="tabpanel">
+                                    <div class="card-body">
+                                        <h2>Biografie</h2>
+                                        <p>
+                                            De Wever behaalde een licentiaat in de geschiedenis aan de KU Leuven en UFSIA en het aggregaat aan de KU Leuven. Hij heeft eerst twee jaar rechten geprobeerd, maar zonder succes.[4][5]
+
+                                            Bart De Wever stamt uit een Vlaams-nationalistische familie. Zijn grootvader was lid van de Vlaams-nationalistische partij VNV.[6] Als middelbaar scholier liep hij school in het Onze-Lieve-Vrouw-van-Lourdescollege in Edegem[7] en was hij lid van het Vlaams Nationaal Jeugdverbond (VNJ) waar zijn vader een kaderfunctie vervulde.[8][9] Tot 1980 woonde hij in Kontich, waarna hij verhuisde naar Mortsel [10].De Wever studeerde eerst rechten aan de universiteit van Antwerpen, maar haakte af om vervolgens geschiedenis te studeren aan de universiteit van Leuven. Als student was Bart De Wever lid van het Liberaal Vlaams Studentenverbond (LVSV), KVHV Antwerpen en KVHV Leuven en hij is oud-hoofdredacteur van Tegenstroom en Ons Leven. Hij was een tijd verbonden aan de K.U.Leuven als wetenschappelijk medewerker en werkte daar mee aan de Nieuwe Encyclopedie van de Vlaamse Beweging. Hij schreef toen ook als doctorandus een bijdrage over de controversiële politieke figuur Joris Van Severen voor het in 2001 uitgegeven jaarboek van de Stichting Joris Van Severen. Aan de K.U.Leuven was hij begonnen aan een proefschrift over de naoorlogse Vlaams-nationale partijvorming, toen hij besloot zich volledig aan de politiek te wijden. Na zijn studies vestigde hij zich in Antwerpen (Berchem) waar hij voor het eerst politiek verkozen geraakte als districtsraadslid.
+                                        </p>
+                                        <h2>Politieke carrière</h2>
+                                        <p>
+                                            De Wever werd lid van de Volksunie (VU). Voor deze partij nam hij deel aan de gemeenteraadsverkiezingen te Antwerpen in 1994 en stond op de kartellijst Antwerpen 94 van CVP en VU. Na het uiteenvallen van de VU ging De Wever naar de N-VA, waarvan hij een van de medeoprichters was.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        <script>
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.5, 0.7, -0.2],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+            var ctx2 = document.getElementById("myChart2").getContext('2d');
+            var myChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [10, 20],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                    }],
+                    labels: [
+                        'Maggie De Block',
+                        'Theo Francken',
+                    ]
+                },
+            });
+
+            var ctx3 = document.getElementById("myChart3").getContext('2d');
+            var myChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ["N-VA", "Vlaams belang", "CD&V"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.9, -0.7, -0.6],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+

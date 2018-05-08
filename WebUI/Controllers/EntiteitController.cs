@@ -64,6 +64,11 @@ namespace WebUI.Controllers
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
+        public ActionResult PersoonPagina()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult AddThema(Thema t, string woorden)
         {
