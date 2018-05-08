@@ -119,8 +119,7 @@ namespace BL
                         var byteContent = new ByteArrayContent(buffer);
                         byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                         var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
-                        File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\Data.json", JsonConvert.SerializeObject(result));
-
+                        File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\Data.json", result);
                         posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
