@@ -272,6 +272,7 @@
     <Content Include="Content\Dashboard\assets\images\browser\safari-logo.png" />
     <Content Include="Content\Dashboard\assets\images\browser\sketch.jpg" />
     <Content Include="Content\Dashboard\assets\images\custom-select.png" />
+    <Content Include="Content\Dashboard\assets\images\default_profile_pic.gif" />
     <Content Include="Content\Dashboard\assets\images\document\colors.jpg" />
     <Content Include="Content\Dashboard\assets\images\document\sidebar.jpg" />
     <Content Include="Content\Dashboard\assets\images\document\template-structure.jpg" />
@@ -5915,6 +5916,7 @@
     <Content Include="Views\Manage\EditAlert.cshtml" />
     <Content Include="Views\Account\EditUserAdmin.cshtml" />
     <Content Include="Views\Manage\VolgItems.cshtml" />
+    <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
