@@ -69,11 +69,11 @@ namespace WebUI
                 ClientSecret = "ie7cI7TBgnVFQqx2nlppAbMo"
             });
 
-            createRoles();
+            createRolesAsync();
             createSuperAdmin();
         }
 
-        private void createRoles()
+        private void createRolesAsync()
         {
             var roleMan = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>()));
             if (!roleMan.RoleExists("Admin"))

@@ -1,4 +1,5 @@
 ﻿@model Domain.Account.Account
+@using Microsoft.AspNet.Identity;
 @{
     Layout = null;
 }
@@ -70,6 +71,19 @@
                                             <button class="btn btn-success">Update Profile</button>
                                         </div>
                                     </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h3 class="card-title">Profiel verwijderen</h3>
+                                <p class="card-text">Verwijder jou profiel van dit platform.</p>
+                                <form method="post" action="/Account/DeleteUser?id=@User.Identity.GetUserId()">
+                                    <button type="submit" class="btn btn-danger">Delete profiel</button>
                                 </form>
                             </div>
                         </div>

@@ -12,7 +12,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
-using System.Collections.Generic;
 using Microsoft.Owin.Security.DataProtection;
 
 namespace WebUI.Controllers
@@ -64,6 +63,40 @@ namespace WebUI.Controllers
             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
             ApplicationUserManager uM = new ApplicationUserManager(userstore);
             return uM;
+        }
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminCp()
+        {
+            PostManager postManager = new PostManager();
+            EntiteitManager entiteitManager = new EntiteitManager();
+            Models.AdminViewModel model = new AdminViewModel()
+            {
+                RecentePosts = postManager.getRecentePosts(),
+            };
+            return View(model);
+        }
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerGebruikers()
+        {
+            AccountManager accountManager = new AccountManager();
+            AdminViewModel model = new AdminViewModel()
+            {
+                Users = accountManager.GetAccounts()
+            };
+            return View(model);
+        }
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerEntiteiten()
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            AdminViewModel model = new AdminViewModel()
+            {
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+            };
+            return View(model);
         }
 
         //
@@ -131,6 +164,8 @@ namespace WebUI.Controllers
             }
         }
 
+
+
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -185,7 +220,7 @@ namespace WebUI.Controllers
         public virtual ActionResult Register()
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+           var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
             UserManager = new ApplicationUserManager(userstore);
             return View();
         }
@@ -433,9 +468,9 @@ namespace WebUI.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform };
+                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email /*, TenantId = PlatformController.currentPlatform */ };
                 var result = await UserManager.CreateAsync(user);
-                CreateDomainUser(user.Id, user.Email, "Joske", "Janssens", DateTime.Now);
+                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -557,7 +592,7 @@ namespace WebUI.Controllers
         private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject)
         {
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
-            var callbackUrl = Url.Action("ConfirmEmailNew", "Account",
+            var callbackUrl = Url.Action("ConfirmEmail", "Account",
                new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject,
                "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -590,6 +625,27 @@ namespace WebUI.Controllers
             return View(accounts);
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult EditUserAdmin(string id)
+        {
+            AccountManager accountManager = new AccountManager();
+            Account model = accountManager.getAccount(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditUserAdmin(Domain.Account.Account model)
+        {
+            AccountManager accountManager = new AccountManager();
+            Account accountToUpdate = accountManager.getAccount(model.IdentityId);
+            accountToUpdate.Achternaam = model.Achternaam;
+            accountToUpdate.Voornaam = model.Voornaam;
+            accountToUpdate.Email = model.Email;
+            //accountToUpdate.GeboorteDatum = model.GeboorteDatum.Date;
+            accountManager.updateUser(accountToUpdate);
+            return RedirectToAction("AdminBeheerGebruikers");
+        }
+
         //Aanmaken van een user door admin
         public ActionResult CreateUser()
         {
@@ -610,7 +666,8 @@ namespace WebUI.Controllers
         {
             IAccountManager accountManager = new AccountManager();
             accountManager.DeleteUser(id);
-            return RedirectToAction("IndexUsers");
+            UserManager.Delete(UserManager.FindById(id));
+            return RedirectToAction("Index","Home");
         }
 
 
@@ -635,7 +692,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
        
             accountManager.FollowEntity(entityID, id);
-            return View();
+            return RedirectToAction("VolgItems", "Manage");
         }
 
         public ActionResult UnfollowEntiteit(int id)
@@ -644,7 +701,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
 
             accountManager.UnfollowEntity(entityID, id);
-            return View();
+            return RedirectToAction("VolgItems", "Manage");
         }
 
     }

@@ -248,5 +248,10 @@ namespace BL
             }
             return grafiekMap;
         }
+
+        public List<Post> getRecentePosts()
+        {
+            return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
+        }
     }
 }
