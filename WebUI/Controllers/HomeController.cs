@@ -11,9 +11,15 @@ namespace WebUI.Controllers
     {
         public virtual ActionResult Index()
         {
-            ViewBag.platId = PlatformController.currentPlatform;
-
-            return View();
+            try
+            {
+                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                return View();
+            } catch ( NullReferenceException e )
+            {
+                return RedirectToAction("Index", "Platform", null);
+            }
+            
         }
 
         public virtual ActionResult About()

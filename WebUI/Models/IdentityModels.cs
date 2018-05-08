@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Infrastructure.Annotations;
 using System.Linq;
+using System;
 
 namespace WebUI.Models
 {
@@ -21,6 +22,13 @@ namespace WebUI.Models
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            // Add custom user claims here
+            return userIdentity;
+        }
+        //alternate method to generate a UserIdentity (ClaimsIdentity)
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
+        {
+            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
             // Add custom user claims here
             return userIdentity;
         }
