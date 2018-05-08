@@ -1,0 +1,145 @@
+﻿@model IEnumerable<Domain.Account.Alert>
+
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Update Alerts</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">Alerts Updaten</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Jou Alerts</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped ">
+                                        <thead>
+
+                                            <tr>
+                                                <th class="text-center">
+                                                    Alertnaam
+                                                </th>
+                                                <th class="text-center">
+                                                    Entiteit
+                                                </th>
+                                                <th class="text-center">
+                                                    Type
+                                                </th>
+                                                <th class="text-center">
+                                                    Voorwaarde
+                                                </th>
+                                                <th class="text-center">
+                                                    Minimum waarde
+                                                </th>
+                                                <th class="text-center">
+                                                    Platform
+                                                </th>
+                                                <th class="text-center">
+                                                    Actie
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+
+                                            @foreach (Domain.Account.Alert item in Model)
+                                    {
+                                        <tr>
+                                            <td align="center">
+                                                <div id="alertnaam">
+                                                    @Html.DisplayFor(modelItem => item.AlertNaam)
+                                                </div>
+                                                <div id="alertnaamInput" style="display:none">
+                                                    @Html.TextBoxFor(modelItem => item.AlertNaam)
+                                                </div>
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.Entiteit.Naam)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.TrendType)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.Voorwaarde)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.MinWaarde)
+                                            </td>
+                                            <td align="center">
+                                                @Html.DisplayFor(modelItem => item.PlatformType)
+                                            </td>
+                                            <td align="center">
+                                                @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
+                                                @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
+
+
+
+
+                                            </td>
+
+                                        </tr>
+                            }
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" id="hiddenAlertId" />
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Alert toevoegen.</h4>
+
+
+                                @Html.Partial("_AddAlert", new WebUI.Models.AlertViewModel());
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+

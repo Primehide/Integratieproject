@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Post;
+using System.Data.Entity;
 
 namespace DAL
 {
@@ -16,6 +17,12 @@ namespace DAL
         public PostRepository()
         {
             ctx = new EFContext();
+        }
+
+        public PostRepository(UnitOfWork uow)
+        {
+            ctx = uow.Context;
+            ctx.SetUoWBool(true);
         }
 
         public void AddPosts(List<Post> posts)
@@ -35,13 +42,16 @@ namespace DAL
 
         public List<Post> getAllPosts()
         {
-            return ctx.Posts.ToList();
-        }
-
-        public PostRepository(UnitOfWork uow)
-        {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
+            return ctx.Posts
+                .Include(x => x.Entiteiten)
+                .Include(x => x.HashTags)
+                .Include(x => x.Mentions)
+                .Include(x => x.Persons)
+                .Include(x => x.Profile)
+                .Include(x => x.Sentiment)
+                .Include(x => x.Urls)
+                .Include(x => x.Words)
+                .ToList();
         }
     }
 }

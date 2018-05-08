@@ -156,7 +156,7 @@ namespace WebUI
         public override Task<TUser> FindByNameAsync(string userName)
         {
             return this.GetUserAggregateAsync(u => u.UserName.ToUpper() == userName.ToUpper()
-                && u.TenantId == this.TenantId);
+                 /* && u.TenantId == this.TenantId */);
         }
     }
         // Configure the application sign-in manager which is used in this application.

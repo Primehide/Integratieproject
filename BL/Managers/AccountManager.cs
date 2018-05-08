@@ -29,14 +29,13 @@ namespace BL
 
         public void addUser(Account account)
         {
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             accountRepository.addUser(account);
-            uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
          
-            initNonExistingRepo(true);
+            initNonExistingRepo();
             Account oldaccount = new Account();
 
             oldaccount = accountRepository.ReadAccount(account.IdentityId);
@@ -44,11 +43,11 @@ namespace BL
          
 
             accountRepository.updateUser(account);
-            uowManager.Save();
         }
 
         public Account getAccount(string ID)
         {
+            initNonExistingRepo();
             return repo.ReadAccount(ID);
         }
 
@@ -77,11 +76,68 @@ namespace BL
             }
             throw new NotImplementedException();
         }
+        public Alert GetAlert(int alertID)
+        {
+            return repo.ReadAlert(alertID);
+        }
+        public void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail)
+        {
+            initNonExistingRepo(true);
+        EntiteitManager emg = new EntiteitManager(uowManager);
+
+             alert.Entiteit = emg.getEntiteit(entiteitId);
+         
+            // var entiteit = emg.getEntiteit(1);
+             //entiteit.Alerts.Add(alert);
+
+
+
+            if (android == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.ANDROID;
+                repo.AddAlert(alert);
+
+            }
+
+            if (web == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.WEB;
+                repo.AddAlert(alert);
+
+            }
+
+            if (mail == true)
+            {
+                alert.PlatformType = Domain.Enum.PlatformType.EMAIL;
+                repo.AddAlert(alert);
+
+            }
+
+
+
+           
+             uowManager.Save();
+        }
+        
 
         public void UpdateAlert(Alert alert)
         {
+
             initNonExistingRepo();
             accountRepository.UpdateAlert(alert);
+            
+
+        }
+        public void DeleteAlert(int alertID)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteAlert(alertID);
+        }
+        public void addUser(Alert alert)
+        {
+            initNonExistingRepo();
+            accountRepository.AddAlert(alert);
+            uowManager.Save();
         }
 
         public List<Alert> getAlleAlerts()
@@ -117,6 +173,18 @@ namespace BL
             accountRepository.DeleteUser(accountId);
         }
 
+        public void FollowEntity(string identityID, int entiteitID)
+        {
+
+            initNonExistingRepo();
+            accountRepository.FollowEntiteit(identityID, entiteitID);
+        }
+
+        public void UnfollowEntity(string identityID, int entiteitID)
+        {
+            initNonExistingRepo();
+            accountRepository.UnFollowEntiteit(identityID, entiteitID);
+        }
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);

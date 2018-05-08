@@ -31,6 +31,7 @@ namespace DAL
         public DbSet<Thema> Themas { get; set; }
         public DbSet<Sleutelwoord> SleutelWoorden { get; set; }
         public DbSet<Trend> Trends { get; set; }
+        public DbSet<Item> Items { get; set; }
 
         //POST//
         public DbSet<Post> Posts { get; set; }

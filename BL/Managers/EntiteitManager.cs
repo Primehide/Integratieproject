@@ -48,7 +48,7 @@ namespace BL
 
         public void CreateTestData()
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             Domain.Entiteit.Organisatie NVA = new Domain.Entiteit.Organisatie()
             {
                 Leden = new List<Domain.Entiteit.Persoon>(),
@@ -110,13 +110,19 @@ namespace BL
 
         public List<Entiteit> getAlleEntiteiten()
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             return entiteitRepository.getAlleEntiteiten();
+        }
+
+        public Entiteit GetEntiteit(int id)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(id);
         }
 
         public void updateEntiteit(Entiteit entiteit)
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             entiteitRepository.updateEntiteit(entiteit);
         }
 
@@ -287,9 +293,22 @@ namespace BL
             //als we hier komen is er geen trend aanwezig.
             return false;
         }
+        public Entiteit getEntiteit(int entiteitID)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(entiteitID);
+        }
+
+        public void addEntiteit(Entiteit entiteit)
+        {
+            initNonExistingRepo();
+            entiteitRepository.AddEntiteit(entiteit);
+        }
+
         #region
         public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
+            initNonExistingRepo();
             Thema thema = new Thema()
             {
                 Naam = nieuwThema.Naam,
@@ -302,21 +321,25 @@ namespace BL
 
         public void UpdateThema(Thema thema)
         {
+            initNonExistingRepo();
             entiteitRepository.UpdateThema(thema);
         }
 
         public void DeleteThema(int entiteitsId)
         {
+            initNonExistingRepo();
             entiteitRepository.DeleteThema(entiteitsId);
         }
 
         public IEnumerable<Thema> GetThemas()
         {
+            initNonExistingRepo();
             return entiteitRepository.ReadThemas();
         }
 
         public Thema GetThema(int entiteitsId)
         {
+            initNonExistingRepo();
             return entiteitRepository.ReadThema(entiteitsId);
         }
 
@@ -400,7 +423,7 @@ namespace BL
         #region
         public void AddPerson(Persoon p, HttpPostedFileBase ImageFile)
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             if (ImageFile != null)
             {
                 entiteitRepository.CreatePersonWithPhoto(p, ImageFile);
@@ -556,22 +579,31 @@ namespace BL
 
         public void DeleteSleutelwoord(int sleutelId)
         {
+            initNonExistingRepo();
             entiteitRepository.DeleteSleutelwoord(sleutelId);
         }
 
         public Sleutelwoord GetSleutelwoord(int sleutelId)
         {
+            initNonExistingRepo();
             return entiteitRepository.readSleutelwoord(sleutelId);
         }
 
         public List<Entiteit> GetEntiteitenVanDeelplatform(int id)
         {
+            initNonExistingRepo();
             return entiteitRepository.ReadEntiteitenVanDeelplatform(id).ToList();
         }
 
         public void DeleteEntiteitenVanDeelplatform(int id)
         {
+            initNonExistingRepo();
             entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
+        }
+
+        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

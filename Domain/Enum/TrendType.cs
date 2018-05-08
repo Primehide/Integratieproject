@@ -13,6 +13,6 @@ namespace Domain.Enum
         MATIGOPWAARDS,
         MATIGDALEND,
         DALEND,
-        STERKDALEND,
+        STERKDALEND
     }
 }

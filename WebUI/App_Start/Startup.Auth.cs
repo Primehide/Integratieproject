@@ -76,7 +76,6 @@ namespace WebUI
                 ClientId = "347863212605-3nqdgoa8lb8o3u635mhtrn1qfvakebq9.apps.googleusercontent.com",
                 ClientSecret = "ie7cI7TBgnVFQqx2nlppAbMo"
             });
-
             createRoles();
             ConfigureOAuthTokenGeneration(app);
             ConfigureOAuthTokenConsumption(app);

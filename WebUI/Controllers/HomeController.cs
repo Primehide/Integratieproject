@@ -9,7 +9,15 @@ namespace WebUI.Controllers
     [RequireHttps]
     public partial class HomeController : Controller
     {
+
+        public ActionResult HomePagina()
+        {
+            return View();
+        }
+       
+
         public virtual ActionResult Index()
+
         {
             try
             {
