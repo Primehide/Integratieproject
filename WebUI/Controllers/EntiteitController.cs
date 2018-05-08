@@ -69,6 +69,13 @@ namespace WebUI.Controllers
             return View();
         }
 
+        public ActionResult Zoeken(string zoekwoord)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            List<Entiteit> entiteiten = entiteitManager.ZoekEntiteiten(zoekwoord);
+            return View(entiteiten);
+        }
+
         [HttpPost]
         public ActionResult AddThema(Thema t, string woorden)
         {

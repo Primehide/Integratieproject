@@ -605,8 +605,21 @@ namespace BL
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
-
+        public List<Entiteit> ZoekEntiteiten(string zoek)
+        {
+            initNonExistingRepo();
+            List<Entiteit> gevondeEntiteiten = new List<Entiteit>();
+            foreach (var e in entiteitRepository.getAlleEntiteiten())
+            {
+                if (e.Naam.ToLower().Contains(zoek.ToLower()))
+                {
+                    gevondeEntiteiten.Add(e);
+                }
+            }
+            return gevondeEntiteiten;
+        }
     }
 }

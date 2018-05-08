@@ -5917,6 +5917,7 @@
     <Content Include="Views\Account\EditUserAdmin.cshtml" />
     <Content Include="Views\Manage\VolgItems.cshtml" />
     <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
+    <Content Include="Views\Entiteit\Zoeken.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -45,5 +45,7 @@ namespace BL
 
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie);
 
+        List<Entiteit> ZoekEntiteiten(string zoek);
+
     }
 }
