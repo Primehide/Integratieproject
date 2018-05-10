@@ -101,6 +101,7 @@
     <Compile Include="Post\GrafiekWaarde.cs" />
     <Compile Include="Post\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextGain\JsonEntiteit.cs" />
     <Compile Include="TextGain\PostRequest.cs" />
     <Compile Include="TextGain\Profile.cs" />
     <Compile Include="TextGain\TextGainResponse.cs" />
