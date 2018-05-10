@@ -82,22 +82,19 @@ namespace WebUI.Controllers
         [HttpPost]
         public ActionResult Upload()
         {
+            EntiteitManager entiteitManager = new EntiteitManager();
             if (Request.Files.Count > 0)
             {
                 var file = Request.Files[0];
 
                 if (file != null && file.ContentLength > 0)
                 {
-                    var test = JsonConvert.DeserializeObject<List<JsonEntiteit>>(file.InputStream.ToString());
-                    List<JsonEntiteit> movie2 = (List<JsonEntiteit>)serializer.Deserialize(file, typeof(List<JsonEntiteit>));
-                    using (StreamReader f = file)
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        Movie movie2 = (Movie)serializer.Deserialize(file, typeof(Movie));
-                    }
+                    string str = (new StreamReader(file.InputStream)).ReadToEnd();
+                    List<Domain.TextGain.JsonEntiteit> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.TextGain.JsonEntiteit>>(str);
+                    entiteitManager.ConvertJsonToEntiteit(JsonEntiteiten);
                 }
             }
-            return View();
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
         [HttpPost]

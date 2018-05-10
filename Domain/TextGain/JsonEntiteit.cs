@@ -21,5 +21,6 @@ namespace Domain.TextGain
         public string full_name { get; set; }
         public string position { get; set; }
         public string town { get; set; }
+        public string organisation { get; set; }
     }
 }

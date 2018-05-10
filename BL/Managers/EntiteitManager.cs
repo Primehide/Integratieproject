@@ -8,6 +8,7 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using System.Web;
+using Domain.TextGain;
 
 namespace BL
 {
@@ -620,6 +621,37 @@ namespace BL
                 }
             }
             return gevondeEntiteiten;
+        }
+
+        public void ConvertJsonToEntiteit(List<JsonEntiteit> jsonEntiteiten)
+        {
+            foreach (var jsonE in jsonEntiteiten)
+            {
+                Persoon newPersoon = new Persoon()
+                {
+                    Naam = jsonE.full_name,
+                    Organisations = new List<Organisatie>()
+                };
+
+                if(GetAllOrganisaties().FirstOrDefault(x => x.Naam.ToLower() == jsonE.organisation.ToLower()) == null)
+                {
+                    Organisatie organisatie = new Organisatie()
+                    {
+                        Naam = jsonE.organisation,
+                        Gemeente = jsonE.district
+                    };
+                    AddOrganisatie(organisatie, null);
+                }
+
+                foreach (var o in GetAllOrganisaties())
+                {
+                    if(o.Naam.ToLower() == jsonE.organisation.ToLower())
+                    {
+                        newPersoon.Organisations.Add(o);
+                    }
+                }
+                AddPerson(newPersoon, null);
+            }
         }
     }
 }
