@@ -1,8 +1,11 @@
 ﻿using BL;
 using Domain.Entiteit;
+using Domain.TextGain;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -74,6 +77,27 @@ namespace WebUI.Controllers
             EntiteitManager entiteitManager = new EntiteitManager();
             List<Entiteit> entiteiten = entiteitManager.ZoekEntiteiten(zoekwoord);
             return View(entiteiten);
+        }
+
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    var test = JsonConvert.DeserializeObject<List<JsonEntiteit>>(file.InputStream.ToString());
+                    List<JsonEntiteit> movie2 = (List<JsonEntiteit>)serializer.Deserialize(file, typeof(List<JsonEntiteit>));
+                    using (StreamReader f = file)
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        Movie movie2 = (Movie)serializer.Deserialize(file, typeof(Movie));
+                    }
+                }
+            }
+            return View();
         }
 
         [HttpPost]

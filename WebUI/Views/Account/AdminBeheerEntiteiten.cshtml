@@ -102,9 +102,12 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title"><span class="lstick"></span>Entiteiten uploaden</h4>
-                                <label for="input-file-max-fs">Upload json van entiteiten</label>
-                                <input type="file" id="input-file-max-fs" class="dropify" data-max-file-size="2M" />
+                                <form action="/Entiteit/Upload" method="post" enctype="multipart/form-data">
+                                    <h4 class="card-title"><span class="lstick"></span>Entiteiten uploaden</h4>
+                                    <label for="input-file-max-fs">Upload json van entiteiten</label>
+                                    <input type="file" id="input-file-max-fs" name="file" class="dropify" data-max-file-size="2M" />
+                                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                </form>
                             </div>
                         </div>
                     </div>
