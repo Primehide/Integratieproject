@@ -39,6 +39,52 @@ namespace WebUI.Controllers
             return View();
         }
 
+        public ActionResult AddEntiteit(Entiteit entiteit)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.addEntiteit(entiteit);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
+        [HttpPost]
+        public ActionResult AddPersoon(Persoon p, int organisationId)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            p.Organisations = new List<Organisatie>();
+            p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
+            entiteitManager.AddPerson(p,null);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
+        public ActionResult AddOrganisatie(Organisatie o)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            o.Leden = new List<Persoon>();
+            entiteitManager.AddOrganisatie(o, null);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
+        public ActionResult PersoonPagina()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddThema(Thema t, string woorden)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            string[] split = woorden.Split(',');
+            List<Sleutelwoord> sleutelWoorden = new List<Sleutelwoord>();
+            foreach (var woord in split)
+            {
+                Sleutelwoord sleutelwoord = new Sleutelwoord();
+                sleutelwoord.woord = woord;
+                sleutelWoorden.Add(sleutelwoord);
+            }
+            entiteitManager.AddThema(t, sleutelWoorden);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
         // This region is for adding a person to the database and persisting.
         #region
         public virtual ActionResult AddPerson(int platformId)

@@ -51,11 +51,13 @@ namespace BL
 
         public void AddPost(Post post)
         {
+            initNonExistingRepo();
             postRepository.AddPost(post);
         }
 
         public List<Post> getAllPosts()
         {
+            initNonExistingRepo();
             return postRepository.getAllPosts();
         }
 
@@ -218,6 +220,11 @@ namespace BL
                     break;
             }
             return grafiekMap;
+        }
+
+        public List<Post> getRecentePosts()
+        {
+            return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
         }
     }
 }

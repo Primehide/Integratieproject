@@ -1,10 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 
 namespace WebUI.Models
 {
+
+    public class AlertViewModel
+    {
+        public Domain.Account.Alert alert { get; set; }
+        public string type { get; set; }
+       
+        public bool android { get; set; }
+        public bool web { get; set; }
+        public bool mail { get; set; }
+    }
     public class IndexViewModel
     {
         public bool HasPassword { get; set; }
@@ -37,6 +48,15 @@ namespace WebUI.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ChangeProfileViewModel
+    {
+        public string Email { get; set; }
+        public string IdentityId { get; set; }
+        public string Voornaam { get; set; }
+        public string Achternaam { get; set; }
+        public DateTime Geboortedatum { get; set; }
     }
 
     public class ChangePasswordViewModel

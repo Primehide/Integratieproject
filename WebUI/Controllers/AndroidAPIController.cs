@@ -1,4 +1,5 @@
 ﻿using BL;
+using Domain.Account;
 using Domain.Platform;
 using Microsoft.Owin.Security.OAuth;
 using System;
@@ -15,6 +16,8 @@ namespace WebUI.Controllers
     public class AndroidAPIController : ApiController
     {
         PlatformManager pM;
+        AccountManager aM;
+
         //Get all deelplatformen for android app
         [Route("api/deelplatformen")]
         [HttpGet]
@@ -28,14 +31,17 @@ namespace WebUI.Controllers
         [Route("api/Blokken")]
         [HttpGet]
         [Authorize]
-        public String Get()
+        public DashboardBlok[] Get()
         {
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
 
             string userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            return userId;
+            aM = new AccountManager();
 
+            var acc = aM.getAccount(userId);
+            DashboardBlok[] dbs = acc.Dashboard.Configuratie.DashboardBlokken.ToArray();
+            return dbs;
         }
 
         //Change on which platform you are

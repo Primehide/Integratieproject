@@ -97,6 +97,7 @@
     <Compile Include="Account\DashboardBlok.cs" />
     <Compile Include="Account\DashboardConfiguratie.cs" />
     <Compile Include="Entiteit\Entiteit.cs" />
+    <Compile Include="Entiteit\Item.cs" />
     <Compile Include="Entiteit\Organisatie.cs" />
     <Compile Include="Entiteit\Persoon.cs" />
     <Compile Include="Entiteit\Sleutelwoord.cs" />
@@ -129,7 +130,9 @@
     <Compile Include="TextGain\TextGainResponse.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Content\bootstrap-grid.css.map" />
     <None Include="Content\bootstrap-grid.min.css.map" />
     <None Include="Content\bootstrap-reboot.css.map" />
