@@ -18,6 +18,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using WebUI.Models;
 using WebUI.Controllers;
+using System.Data.Entity.SqlServer.Utilities;
 
 namespace WebUI
 {
@@ -54,25 +55,23 @@ namespace WebUI
     // Configure the application user manager used in this application. UserManager is defined in ASP.NET Identity and is used by the application.
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
+        private static IOwinContext cont;
+        private static IdentityFactoryOptions<ApplicationUserManager> opt;
+
+
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
-        }
-
-
-
-        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
-        {
-            var manager = new ApplicationUserManager(new ApplicationUserStore<ApplicationUser>(context.Get<ApplicationDbContext<ApplicationUser>>()) { TenantId = PlatformController.currentPlatform });
+            //var manager = new ApplicationUserManager(new ApplicationUserStore<ApplicationUser>(new ApplicationDbContext<ApplicationUser>()) { TenantId = 0 });
             // Configure validation logic for usernames
-            manager.UserValidator = new UserValidator<ApplicationUser>(manager)
+            this.UserValidator = new UserValidator<ApplicationUser>(this)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = false //makes it possible to link multipe external logins
             };
 
             // Configure validation logic for passwords
-            manager.PasswordValidator = new PasswordValidator
+            this.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 6,
                 RequireNonLetterOrDigit = false,
@@ -82,30 +81,48 @@ namespace WebUI
             };
 
             // Configure user lockout defaults
-            manager.UserLockoutEnabledByDefault = true;
-            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
-            manager.MaxFailedAccessAttemptsBeforeLockout = 5;
+            this.UserLockoutEnabledByDefault = true;
+            this.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            this.MaxFailedAccessAttemptsBeforeLockout = 5;
 
             // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
             // You can write your own provider and plug it in here.
-            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<ApplicationUser>
+            this.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<ApplicationUser>
             {
                 MessageFormat = "Your security code is {0}"
             });
-            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
+            this.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
             {
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
             });
-            manager.EmailService = new EmailService();
-            manager.SmsService = new SmsService();
-            var dataProtectionProvider = options.DataProtectionProvider;
-            if (dataProtectionProvider != null)
+            this.EmailService = new EmailService();
+            this.SmsService = new SmsService();
+            try
             {
-                manager.UserTokenProvider = 
-                    new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+                if (opt.DataProtectionProvider != null)
+                {
+                    var dataProtectionProvider = opt.DataProtectionProvider;
+
+                    this.UserTokenProvider =
+                        new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+                }
+            } catch (Exception e)
+            {
+                
             }
-            return manager;
+        }
+
+
+
+        public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context) 
+        {
+            cont = context;
+            opt = options;
+            ApplicationDbContext<ApplicationUser> pp = new ApplicationDbContext<ApplicationUser>();
+            ApplicationUserStore<ApplicationUser> userStore = new ApplicationUserStore<ApplicationUser>(pp);
+
+            return new ApplicationUserManager(userStore);
         }
     }
 
@@ -145,6 +162,9 @@ namespace WebUI
         // Configure the application sign-in manager which is used in this application.
         public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
+        private static IOwinContext cont;
+        private static IdentityFactoryOptions<ApplicationUserManager> opt;
+
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager)
         {
@@ -155,9 +175,9 @@ namespace WebUI
             return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }
 
-        public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
-        {
-            return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
-        }
+        //public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
+        //{
+        //    return new ApplicationSignInManager(new ApplicationUserManager(new ApplicationUserStore<ApplicationUser>(context.Get<ApplicationDbContext())), context.Authentication);
+        //}
     }
 }

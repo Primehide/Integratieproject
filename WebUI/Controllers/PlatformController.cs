@@ -19,7 +19,7 @@ namespace WebUI.Controllers
     {
         PlatformManager pM = new PlatformManager();
         EntiteitManager eM = new EntiteitManager();
-        public static int currentPlatform;
+        
 
         // GET: Platform
         public  ActionResult Index()
@@ -134,7 +134,8 @@ namespace WebUI.Controllers
 
             //I have to be able to direct the user to the homepage of the selected Platform (Implementation)
             #region
-            currentPlatform = id;
+
+            System.Web.HttpContext.Current.Session["PlatformID"] = id;
             HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home", new { platId = id });
 
