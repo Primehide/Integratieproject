@@ -70,15 +70,15 @@ namespace BL
             DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
             
-            foreach (var Entiteit in TestEntiteiten)
+            foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
-                    name = Entiteit.Naam,
+                    name = Persoon.Naam,
                     //since = new DateTime(2018, 04, 01),
                     //until = new DateTime(2018, 04, 09)
                     since = gisteren,
@@ -96,12 +96,17 @@ namespace BL
                     var byteContent = new ByteArrayContent(buffer);
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
-                    posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
-                    if (posts.Count != 0)
+                    try
                     {
-                        ConvertAndSaveToDb(posts, Entiteit.EntiteitId);
-                    }
-                    
+                        posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                        if (posts.Count != 0)
+                        {
+                            ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                        }
+                    } catch (Newtonsoft.Json.JsonReaderException)
+                    {
+
+                    } 
                 }
             }
         }
