@@ -52,9 +52,10 @@ namespace DAL
             if (toChange != null)
             {
                 toChange.Naam = uDeelplatform.Naam;
+                toChange.Tagline = uDeelplatform.Tagline;
                 toChange.Entiteiten = uDeelplatform.Entiteiten;
+                ctx.Entry(toChange).State = System.Data.Entity.EntityState.Modified;
             }
-            ctx.Entry(toChange).State = System.Data.Entity.EntityState.Modified;
             ctx.SaveChanges();
             return toChange;
         }
