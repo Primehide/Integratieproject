@@ -605,6 +605,11 @@ namespace BL
         {
             throw new NotImplementedException();
         }
+
+        public List<Entiteit> GetEntiteiten(string naam)
+        {
+            return entiteitRepository.ReadEntiteiten(naam);
+        }
         #endregion
 
 

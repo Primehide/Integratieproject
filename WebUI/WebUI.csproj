@@ -228,6 +228,7 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
+    <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -5906,13 +5907,10 @@
     <Content Include="Views\Account\CreateUser.cshtml" />
     <Content Include="Views\Account\IndexUsers.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
-<<<<<<< HEAD
     <Content Include="Views\Account\FollowEntiteit.cshtml" />
     <Content Include="Views\Account\UnfollowEntiteit.cshtml" />
-
     <Content Include="Views\Manage\UpdateProfile.cshtml" />
     <Content Include="Views\Manage\UpdateAlerts.cshtml" />
-=======
     <Content Include="Views\Manage\UpdateProfile.cshtml" />
     <Content Include="Views\Manage\UpdateAlerts.cshtml" />
     <Content Include="Views\Account\AdminCp.cshtml" />
@@ -5924,7 +5922,7 @@
     <Content Include="Views\Account\EditUserAdmin.cshtml" />
     <Content Include="Views\Manage\VolgItems.cshtml" />
     <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
->>>>>>> 6eddf9aac6525aa1247e2d2b62cff3bcd8134c94
+    <Content Include="Views\Entiteit\ShowEntiteiten.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

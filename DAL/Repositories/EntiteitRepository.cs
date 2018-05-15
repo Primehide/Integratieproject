@@ -220,21 +220,13 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 6eddf9aac6525aa1247e2d2b62cff3bcd8134c94
         public Entiteit ReadEntiteit(int id)
         {
             return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
         }
 
-<<<<<<< HEAD
-      
 
-
-=======
->>>>>>> 6eddf9aac6525aa1247e2d2b62cff3bcd8134c94
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
             return ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();
@@ -249,6 +241,13 @@ namespace DAL
         {
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
+        }
+
+
+
+        List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
+        {
+            return ctx.Entiteiten.Where(x => x.Naam.Contains(naam)).ToList();
         }
     }
 }

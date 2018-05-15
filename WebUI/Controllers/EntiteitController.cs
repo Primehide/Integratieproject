@@ -475,5 +475,51 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexThema");
             // return View();
         }
+
+
+        public ActionResult ZoekEntiteit(string naam)
+        {
+            List<Entiteit> entiteiten = eM.GetEntiteiten(naam);
+            TempData["myList"] = entiteiten.ToList();
+            return RedirectToAction("ShowEntiteiten");
+
+        }
+
+        public ActionResult ShowEntiteiten()
+        {
+            List<Persoon> deelplatformPersonen = new List<Persoon>();
+            List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
+            List<Thema> deelplatformThemas = new List<Thema>();
+
+            var model = TempData["myList"] as List<Entiteit>;
+
+
+            foreach (Entiteit e in model)
+            {
+                if (e is Persoon)
+                {
+                    deelplatformPersonen.Add((Persoon)e);
+                }
+                else
+                if (e is Organisatie)
+                {
+                    deelplatformOrganisaties.Add((Organisatie)e);
+                }
+                else
+                if (e is Thema)
+                {
+                    deelplatformThemas.Add((Thema)e);
+                }
+                
+            }
+            ZoekModel zoekModel = new ZoekModel()
+            {
+                Themas = deelplatformThemas,
+                Personen = deelplatformPersonen,
+                Organisaties = deelplatformOrganisaties
+            };
+            return View(zoekModel);
+        }
+
     }
 }
