@@ -1,8 +1,11 @@
 ﻿using BL;
 using Domain.Entiteit;
+using Domain.TextGain;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -67,6 +70,31 @@ namespace WebUI.Controllers
         public ActionResult PersoonPagina()
         {
             return View();
+        }
+
+        public ActionResult Zoeken(string zoekwoord)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            List<Entiteit> entiteiten = entiteitManager.ZoekEntiteiten(zoekwoord);
+            return View(entiteiten);
+        }
+
+        [HttpPost]
+        public ActionResult Upload()
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    string str = (new StreamReader(file.InputStream)).ReadToEnd();
+                    List<Domain.TextGain.JsonEntiteit> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.TextGain.JsonEntiteit>>(str);
+                    entiteitManager.ConvertJsonToEntiteit(JsonEntiteiten);
+                }
+            }
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
         [HttpPost]

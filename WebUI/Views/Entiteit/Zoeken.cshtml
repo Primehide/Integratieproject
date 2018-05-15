@@ -1,4 +1,4 @@
-﻿
+﻿@model List<Domain.Entiteit.Entiteit>
 @{
     Layout = null;
 }
@@ -22,7 +22,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                             <li class="breadcrumb-item">pages</li>
-                            <li class="breadcrumb-item active">Home</li>
+                            <li class="breadcrumb-item active">Starter kit</li>
                         </ol>
                     </div>
                     <div>
@@ -40,8 +40,16 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                           
-
+                                <h4 class="card-title">Search Results</h4>
+                                <ul class="search-listing">
+                                    @foreach (var e in Model)
+                                    {
+                                        <li>
+                                            <h3><a href="javacript:void(0)">@e.Naam</a></h3>
+                                            <p>Entiteit @e.Naam @e.GetType().Name</p>
+                                        </li>
+                                    }
+                                </ul>
                             </div>
                         </div>
                     </div>

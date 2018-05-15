@@ -71,13 +71,22 @@ namespace BL
             DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Entiteit> TestEntiteiten = entiteitManager.getAlleEntiteiten();
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
+<<<<<<< HEAD
             if (AllPosts)
             {
                 PostRequest postRequest = new PostRequest()
                 {
+=======
+            
+            foreach (var Persoon in AllePersonen)
+            {
+                PostRequest postRequest = new PostRequest()
+                {
+                    name = Persoon.Naam,
+>>>>>>> 804abfb08c38c3b23eefe411e31fda243912bc95
                     //since = new DateTime(2018, 04, 01),
                     //until = new DateTime(2018, 04, 09)
                     since = gisteren,
@@ -93,6 +102,7 @@ namespace BL
                     var byteContent = new ByteArrayContent(buffer);
                     byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
+<<<<<<< HEAD
                     File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\Data.json", JsonConvert.SerializeObject(result));
                 }
             } else
@@ -127,6 +137,19 @@ namespace BL
                         }
 
                     }
+=======
+                    try
+                    {
+                        posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                        if (posts.Count != 0)
+                        {
+                            ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                        }
+                    } catch (Newtonsoft.Json.JsonReaderException)
+                    {
+
+                    } 
+>>>>>>> 804abfb08c38c3b23eefe411e31fda243912bc95
                 }
             }
             
