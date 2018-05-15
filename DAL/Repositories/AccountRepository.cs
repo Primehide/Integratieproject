@@ -33,7 +33,10 @@ namespace DAL
         }
         public Alert ReadAlert(int alertID)
         {
-            Alert alert = ctx.Alerts.Find(alertID);
+            Alert alert = ctx.Alerts.Where(x => x.AlertId == alertID)
+                .Include(x => x.Entiteit)
+                .FirstOrDefault();
+            
             return alert;
         }
         public List<Alert> getAlleAlerts()

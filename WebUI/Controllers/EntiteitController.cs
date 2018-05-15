@@ -429,5 +429,17 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexThema");
             // return View();
         }
+
+        public ActionResult OrganisatiePagina(Organisatie organisatie)
+        {
+         
+            Organisatie org = new Organisatie();
+            org.EntiteitId = 999;
+            org.AantalLeden = 50;
+            org.Gemeente = "Antwerpen";
+            org.Naam = "NVA";
+
+            return View(org);
+        }
     }
 }

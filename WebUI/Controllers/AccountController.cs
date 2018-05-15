@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.Web;
 using System.Web.Mvc;
 using BL;
@@ -638,7 +640,19 @@ namespace WebUI.Controllers
         }
 
         //push notifications
+        // GET: Notification
+        public ActionResult Alerts()
+        {
+            return View();
+        }
 
+        public JsonResult GetNotification()
+        {
+
+
+            return Json(NotificaionService.GetNotification(), JsonRequestBehavior.AllowGet);
+
+        }
 
 
     }

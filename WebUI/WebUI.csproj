@@ -225,6 +225,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\MyHub.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DashboardModel.cs" />
     <Compile Include="Models\EntiteitViewModels.cs" />
@@ -232,6 +233,7 @@
     <Compile Include="Models\GrafiekViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -4315,6 +4317,8 @@
     <Content Include="Views\Manage\_AddAlert.cshtml" />
     <Content Include="Views\Manage\EditAlert.cshtml" />
     <Content Include="Views\Shared\Dashboard\_DashboardAlerts.cshtml" />
+    <Content Include="Views\Entiteit\OrganisatiePagina.cshtml" />
+    <Content Include="Views\Account\Alerts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

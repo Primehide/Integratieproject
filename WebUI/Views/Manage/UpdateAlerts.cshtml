@@ -44,7 +44,6 @@
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped ">
                                         <thead>
-
                                             <tr>
                                                 <th class="text-center">
                                                     Alertnaam
@@ -70,8 +69,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
-
                                             @foreach (Domain.Account.Alert item in Model)
                                             {
                                                 <tr>
@@ -101,10 +98,6 @@
                                                     <td align="center">
                                                         @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
                                                         @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
-
-
-
-
                                                     </td>
 
                                                 </tr>
@@ -124,7 +117,7 @@
                                 <h4 class="card-title">Alert toevoegen.</h4>
 
 
-                                @Html.Partial("_AddAlert", new WebUI.Models.AlertViewModel());
+                                @Html.Partial("~/Views/Manage/_AddAlert.cshtml", new WebUI.Models.AlertViewModel());
 
                             </div>
                         </div>

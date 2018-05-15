@@ -1,11 +1,15 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using DAL;
 
 using Domain.Account;
 using Domain.Entiteit;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace BL
 {
@@ -31,17 +35,17 @@ namespace BL
         {
             initNonExistingRepo();
             accountRepository.addUser(account);
-           // uowManager.Save();
+            // uowManager.Save();
         }
         public void UpdateUser(Account account)
         {
-         
+
             initNonExistingRepo();
             Account oldaccount = new Account();
 
             oldaccount = accountRepository.ReadAccount(account.IdentityId);
             account.AccountId = oldaccount.AccountId;
-         
+
 
             accountRepository.updateUser(account);
             uowManager.Save();
@@ -64,6 +68,7 @@ namespace BL
             initNonExistingRepo(true);
             EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
             List<Alert> Alerts = getAlleAlerts();
+            List<Alert> mailAlerts = new List<Alert>();
             Entiteit e;
             //1 keer alle trends resetten om vandaag te kunnen kijken of er een trend aanwezig is
             entiteitMgr.ResetTrends();
@@ -74,9 +79,35 @@ namespace BL
                 {
                     alert.Triggered = true;
                     UpdateAlert(alert);
+                    if(alert.PlatformType == Domain.Enum.PlatformType.EMAIL)
+                    {
+                        mailAlerts.Add(alert);  
+                    }
                 }
             }
+            if(mailAlerts.Count > 0)
+            {
+             //   sendMailAlerts(mailAlerts);
+            }
             throw new NotImplementedException();
+        }
+       public void sendMailAlerts(List<Alert> mailalerts)
+        {
+
+
+         
+
+
+
+
+            /*
+
+            foreach (Alert alert in mailalerts)
+            {
+                alert.Triggered = false;
+                acm.UpdateAlert(alert);
+            } */
+      
         }
         public Alert GetAlert(int alertID)
         {
