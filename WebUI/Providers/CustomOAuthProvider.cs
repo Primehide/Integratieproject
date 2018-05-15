@@ -20,6 +20,8 @@ namespace WebUI.Providers
         {
             string platformId = context.Parameters.Where(f => f.Key == "platId").Select(f => f.Value).SingleOrDefault()[0];
             context.OwinContext.Set<string>("platformId", platformId);
+            string deviceId = context.Parameters.Where(f => f.Key == "device").Select(f => f.Value).SingleOrDefault()[0];
+            context.OwinContext.Set<string>("device", deviceId);
             context.Validated();
             return Task.FromResult<object>(null);
         }
@@ -38,12 +40,16 @@ namespace WebUI.Providers
             var allowedOrigin = "*";
 
             string platformId = context.OwinContext.Get<string>("platformId");
+            string deviceId = context.OwinContext.Get<string>("device");
+
 
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { allowedOrigin });
 
             var userManager = makeManager(context, Int32.Parse(platformId));
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
 
+            AccountManager aM = new AccountManager();
+            aM.addDeviceId(user.Id, deviceId);
 
             if (user == null)
             {

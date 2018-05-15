@@ -76,6 +76,12 @@ namespace BL
             }
             throw new NotImplementedException();
         }
+
+        public void addDeviceId(string userId,string device)
+        {
+            repo.addDeviceId(userId, device);
+        }
+
         public Alert GetAlert(int alertID)
         {
             return repo.ReadAlert(alertID);
