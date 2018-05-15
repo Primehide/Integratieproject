@@ -69,7 +69,9 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                     
                                             @foreach (Domain.Account.Alert item in Model)
+
                                             {
                                                 <tr>
                                                     <td align="center">
@@ -102,6 +104,12 @@
 
                                                 </tr>
                                             }
+
+                                    
+                             
+                                      
+                            
+
                                         </tbody>
                                     </table>
                                     <input type="hidden" id="hiddenAlertId" />
@@ -127,8 +135,8 @@
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
             </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         </div>
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
     </div>
 

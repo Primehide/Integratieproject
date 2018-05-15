@@ -220,6 +220,11 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+        public Entiteit ReadEntiteit(int id)
+        {
+            return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
+        }
+
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
             return ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();
@@ -229,9 +234,11 @@ namespace DAL
         {
             ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
         }
-       public Entiteit ReadEntiteit(int id)
+
+        public void addEntiteit(Entiteit entiteit)
         {
-            return ctx.Entiteiten.Where(x => x.EntiteitId == id).FirstOrDefault();
+            ctx.Entiteiten.Add(entiteit);
+            ctx.SaveChanges();
         }
     }
 }

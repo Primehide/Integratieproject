@@ -57,7 +57,17 @@ namespace WebUI.Controllers
             }
         }
 
-
+        public ActionResult VolgItems()
+        {
+            IAccountManager accountManager = new AccountManager();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            Models.DashboardModel model = new DashboardModel()
+            {
+                GevolgdeItems = accountManager.getAccount(User.Identity.GetUserId()).Items.ToList(),
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+            };
+            return View(model);
+        }
 
         //
         // GET: /Manage/Index
@@ -136,6 +146,7 @@ namespace WebUI.Controllers
             }
 
             return View(model);
+            //return View();
         }
 
         //
@@ -165,12 +176,12 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = entiteitManager.GetAllPeople(),
-                Organisaties = entiteitManager.GetAllOrganisaties(),
-                Themas = entiteitManager.GetThemas().ToList()
+                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
             };
             return View(model);
         }
@@ -179,12 +190,12 @@ namespace WebUI.Controllers
         public ActionResult Sandbox()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = entiteitManager.GetAllPeople(),
-                Organisaties = entiteitManager.GetAllOrganisaties(),
-                Themas = entiteitManager.GetThemas().ToList()
+                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
             };
             return View(model);
         }

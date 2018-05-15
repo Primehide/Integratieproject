@@ -52,27 +52,31 @@ namespace BL
             Domain.Entiteit.Organisatie NVA = new Domain.Entiteit.Organisatie()
             {
                 Leden = new List<Domain.Entiteit.Persoon>(),
-                Naam = "N-VA"
+                Naam = "N-VA",
+                PlatformId = 1
             };
 
             Domain.Entiteit.Organisatie OpenVLD = new Domain.Entiteit.Organisatie()
             {
                 Leden = new List<Domain.Entiteit.Persoon>(),
-                Naam = "Open-VLD"
+                Naam = "Open-VLD",
+                PlatformId = 1
             };
 
             Domain.Entiteit.Persoon BenWeyts = new Domain.Entiteit.Persoon()
             {
                 Naam = "Ben Weyts",
                 Organisations = new List<Domain.Entiteit.Organisatie>(),
-                Trends = new List<Trend>()
+                Trends = new List<Trend>(),
+                PlatformId = 1
             };
 
             Domain.Entiteit.Persoon Maggie = new Domain.Entiteit.Persoon()
             {
                 Naam = "Maggie De Block",
                 Organisations = new List<Domain.Entiteit.Organisatie>(),
-                Trends = new List<Trend>()
+                Trends = new List<Trend>(),
+                PlatformId = 1
             };
 
 
@@ -91,7 +95,8 @@ namespace BL
             {
                 Naam = "Bart De Wever",
                 Organisations = new List<Domain.Entiteit.Organisatie>(),
-                Trends = new List<Trend>()
+                Trends = new List<Trend>(),
+                PlatformId = 1
             };
             Bartje.Trends.Add(trend2);
 
@@ -112,6 +117,12 @@ namespace BL
         {
             initNonExistingRepo();
             return entiteitRepository.getAlleEntiteiten();
+        }
+
+        public Entiteit GetEntiteit(int id)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteit(id);
         }
 
         public void updateEntiteit(Entiteit entiteit)
@@ -292,6 +303,13 @@ namespace BL
             initNonExistingRepo();
             return entiteitRepository.ReadEntiteit(entiteitID);
         }
+
+        public void addEntiteit(Entiteit entiteit)
+        {
+            initNonExistingRepo();
+            entiteitRepository.AddEntiteit(entiteit);
+        }
+
         #region
         public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
         {
@@ -318,10 +336,10 @@ namespace BL
             entiteitRepository.DeleteThema(entiteitsId);
         }
 
-        public IEnumerable<Thema> GetThemas()
+        public IEnumerable<Thema> GetThemas(int platId)
         {
             initNonExistingRepo();
-            return entiteitRepository.ReadThemas();
+            return entiteitRepository.ReadThemas().Where(x => x.PlatformId == platId).ToList();
         }
 
         public Thema GetThema(int entiteitsId)
@@ -434,10 +452,10 @@ namespace BL
             return entiteitRepository.UpdatePerson(toUpdated);
         }
 
-        public List<Persoon> GetAllPeople()
+        public List<Persoon> GetAllPeople(int platId)
         {
             initNonExistingRepo(false);
-            return entiteitRepository.ReadAllPeople().ToList();
+            return entiteitRepository.ReadAllPeople().Where(x => x.PlatformId == platId).ToList();
         }
 
         public Persoon GetPerson(int id)
@@ -478,10 +496,10 @@ namespace BL
             return entiteitRepository.UpdateOrganisatie(ChangedOrganisatie);
         }
 
-        public List<Organisatie> GetAllOrganisaties()
+        public List<Organisatie> GetAllOrganisaties(int platId)
         {
             initNonExistingRepo(false);
-            return entiteitRepository.ReadAllOrganisaties().ToList();
+            return entiteitRepository.ReadAllOrganisaties().Where(x => x.PlatformId == platId).ToList();
         }
 
         public Organisatie GetOrganisatie(int id)
@@ -586,6 +604,11 @@ namespace BL
         {
             initNonExistingRepo();
             entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
+        }
+
+        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
+        {
+            throw new NotImplementedException();
         }
         #endregion
 

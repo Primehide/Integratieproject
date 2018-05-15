@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Account;
+using Domain.Entiteit;
 using System.Data.Entity;
 
 namespace DAL
@@ -31,6 +32,14 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
+
+        public void addDeviceId(string userId,string device)
+        {
+            Account acc = ctx.Accounts.Where(m => m.IdentityId == userId).FirstOrDefault();
+            acc.DeviceId = device;
+            ctx.SaveChanges();
+        }
+
         public Alert ReadAlert(int alertID)
         {
             Alert alert = ctx.Alerts.Where(x => x.AlertId == alertID)
@@ -84,9 +93,12 @@ namespace DAL
         }
 
         public Account ReadAccount(string ID)
-        {
+        {           
+            //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
+                .Include("Alerts")
+                .Include("Items")
                 .Include(x => x.Dashboard.Configuratie)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
@@ -97,16 +109,17 @@ namespace DAL
 
         public List<Account> readAccounts()
         {
-            return ctx.Accounts.ToList();
+            return ctx.Accounts
+                .Include(x => x.Alerts)
+                .Include(x => x.Items)
+                .ToList();
         }
 
         public void DeleteUser(string accountId)
         {
             Account account = ReadAccount(accountId);
-            if (account.Dashboard != null) {
-                ctx.Dashboards.Remove(account.Dashboard);
-            }
-
+            ctx.Dashboards.Remove(account.Dashboard);
+ 
             if (account.Alerts != null)
             {
                 foreach (Alert alert in account.Alerts.ToList())
@@ -121,5 +134,31 @@ namespace DAL
 
         }
 
+        public void FollowEntiteit(string accountId, int entiteitID)
+        {
+            Account updated = ReadAccount(accountId);
+            Item item = new Item(entiteitID);
+            updated.Items.Add(item);
+            ctx.Items.Add(item);
+            ctx.SaveChanges();
+        }
+
+        public void UnFollowEntiteit(string accountId, int EntiteitID)
+        {
+            int ItemId = 0;
+            Account updated = ReadAccount(accountId);
+            List<Item> items = updated.Items;
+            foreach(Item item in items)
+            {
+               if(item.EntiteitId == EntiteitID)
+                {
+                    ItemId = item.ItemId;
+                }
+            }
+            Item ItemToUnfollow = ctx.Items.SingleOrDefault(p => p.ItemId == ItemId);          
+            updated.Items.Remove(ItemToUnfollow);
+            ctx.Items.Remove(ItemToUnfollow);
+            ctx.SaveChanges();
+        }
     }
 }

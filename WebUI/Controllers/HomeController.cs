@@ -1,5 +1,6 @@
-﻿
-using Microsoft.AspNet.SignalR;
+
+﻿using Domain.Platform;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,20 @@ namespace WebUI.Controllers
         }
        
 
-        public virtual ActionResult Index()
+        public virtual ActionResult Index(string gekozenplatform,string tagline)
 
         {
-            ViewBag.platId = PlatformController.currentPlatform;
-
-            return View();
+            try
+            {
+                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                ViewBag.dpnaam = gekozenplatform;
+                ViewBag.tagline = tagline;
+                return View();
+            } catch ( NullReferenceException e )
+            {
+                return RedirectToAction("Index", "Platform", null);
+            }
+            
         }
 
         public virtual ActionResult About()

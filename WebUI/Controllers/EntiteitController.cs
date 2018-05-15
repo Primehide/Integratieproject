@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -23,20 +24,57 @@ namespace WebUI.Controllers
             //AllEntities.AddRange(eM.GetAllOrganisaties());
             OverviewVM overview = new OverviewVM
             {
-                People = eM.GetAllPeople(),
-                Organisations = eM.GetAllOrganisaties()
+                People = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisations = eM.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"])
             };
             return View(overview);
         }
 
-        // Index Page for all Entities.
-        public virtual ActionResult Test()
+        public ActionResult AddEntiteit(Entiteit entiteit)
         {
-            //List<Entiteit> AllEntities = new List<Entiteit>();
-            //AllEntities.AddRange(eM.GetAllPeople());
-            //AllEntities.AddRange(eM.GetAllOrganisaties());
+            EntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.addEntiteit(entiteit);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
 
+        [HttpPost]
+        public ActionResult AddPersoon(Persoon p, int organisationId)
+        {
+            p.Naam = p.FirstName + " " + p.LastName;
+            EntiteitManager entiteitManager = new EntiteitManager();
+            p.Organisations = new List<Organisatie>();
+            p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
+            entiteitManager.AddPerson(p,null);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
+        public ActionResult AddOrganisatie(Organisatie o)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            o.Leden = new List<Persoon>();
+            entiteitManager.AddOrganisatie(o, null);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
+        }
+
+        public ActionResult PersoonPagina()
+        {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddThema(Thema t, string woorden)
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            string[] split = woorden.Split(',');
+            List<Sleutelwoord> sleutelWoorden = new List<Sleutelwoord>();
+            foreach (var woord in split)
+            {
+                Sleutelwoord sleutelwoord = new Sleutelwoord();
+                sleutelwoord.woord = woord;
+                sleutelWoorden.Add(sleutelwoord);
+            }
+            entiteitManager.AddThema(t, sleutelWoorden);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
         // This region is for adding a person to the database and persisting.
@@ -45,7 +83,7 @@ namespace WebUI.Controllers
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
-            List<Organisatie> AllOrganisations = eM.GetAllOrganisaties();
+            List<Organisatie> AllOrganisations = eM.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             foreach (Organisatie o in AllOrganisations)
             {
                 SelectListItem Organisation = new SelectListItem()
@@ -85,7 +123,8 @@ namespace WebUI.Controllers
                 LastName = pvm.Ln,
                 Organisations = new List<Organisatie>(),
                 FirstName = pvm.Fn,
-                PlatformId = pvm.platId
+                PlatformId = pvm.platId,
+                Naam = pvm.Fn + " " + pvm.Ln
             };
 
             if (SelectedOrganisations != null)
@@ -108,7 +147,7 @@ namespace WebUI.Controllers
 
             eM.AddPerson(AddedPerson, file);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
 
         }
         #endregion
@@ -118,7 +157,14 @@ namespace WebUI.Controllers
         public virtual ActionResult DisplayPerson(int EntityId)
         {
             Persoon ToDisplay = eM.GetPerson(EntityId);
-            return View(ToDisplay);
+            if ((int)System.Web.HttpContext.Current.Session["PlatformID"] == ToDisplay.PlatformId)
+            {
+                return View(ToDisplay);
+            } else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+            
         }
         #endregion
 
@@ -129,7 +175,7 @@ namespace WebUI.Controllers
 
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
-            List<Organisatie> AllOrganisations = eM.GetAllOrganisaties();
+            List<Organisatie> AllOrganisations = eM.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             foreach (Organisatie o in AllOrganisations)
             {
                 SelectListItem Organisation = new SelectListItem()
@@ -217,7 +263,7 @@ namespace WebUI.Controllers
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
-            List<Persoon> AllPeople = eM.GetAllPeople();
+            List<Persoon> AllPeople = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             foreach (Persoon p in AllPeople)
             {
                 SelectListItem Person = new SelectListItem()
@@ -266,7 +312,7 @@ namespace WebUI.Controllers
 
             eM.AddOrganisatie(AddedOrganisation, file);
 
-            return View("DisplayOrganisation", AddedOrganisation);
+            return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         #endregion
 
@@ -274,19 +320,26 @@ namespace WebUI.Controllers
         #region
         public virtual ActionResult DisplayOrganisation(int EntityId)
         {
+
             Organisatie ToDisplay = eM.GetOrganisatie(EntityId);
-            return View(ToDisplay);
+            if ((int)System.Web.HttpContext.Current.Session["PlatformID"] == ToDisplay.PlatformId)
+            {
+                return View(ToDisplay);
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
         }
         #endregion
 
         // This region will handle the updating of a certain Organisation. After the update you will be redirected to the Display page of the updated organisation;
-        // TODO : Application of UOW to prevent double creation of an Organisatie Object
         #region
         public virtual ActionResult UpdateOrganisation(int EntityId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
 
-            List<Persoon> AllPeople = eM.GetAllPeople();
+            List<Persoon> AllPeople = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             foreach (Persoon p in AllPeople)
             {
                 SelectListItem Person = new SelectListItem()
@@ -345,7 +398,7 @@ namespace WebUI.Controllers
 
         public virtual ActionResult IndexThema()
         {
-            IEnumerable<Thema> themas = eM.GetThemas();
+            IEnumerable<Thema> themas = eM.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(themas);
         }
 

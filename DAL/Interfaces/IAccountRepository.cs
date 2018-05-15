@@ -1,4 +1,5 @@
 ﻿using Domain.Account;
+using Domain.Entiteit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,9 @@ namespace DAL
         void updateUser(Domain.Account.Account account);
         Account ReadAccount(string ID);
         List<Account> readAccounts();
+        void addDeviceId(string userId, string device);
         void DeleteUser(string accountId);
-
+        void FollowEntiteit(string accountId, int entiteitID);
+        void UnFollowEntiteit(string accountId, int EntiteitID);
     }
 }

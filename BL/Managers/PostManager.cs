@@ -89,7 +89,7 @@ namespace BL
 
                 using (HttpClient http = new HttpClient())
                 {
-                    string uri = "http://kdg.textgain.com/query";
+                    string uri = "https://kdg.textgain.com/query";
                     http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
                     var myContent = JsonConvert.SerializeObject(postRequest);
                     var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
@@ -220,6 +220,11 @@ namespace BL
                     break;
             }
             return grafiekMap;
+        }
+
+        public List<Post> getRecentePosts()
+        {
+            return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
         }
     }
 }
