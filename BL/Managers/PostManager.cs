@@ -70,7 +70,7 @@ namespace BL
             DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
             
