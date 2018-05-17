@@ -609,6 +609,7 @@ namespace BL
 
         public List<Entiteit> GetEntiteiten(string naam)
         {
+            initNonExistingRepo();
             return entiteitRepository.ReadEntiteiten(naam);
         }
         #endregion

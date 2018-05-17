@@ -510,7 +510,6 @@ namespace WebUI.Controllers
             List<Entiteit> entiteiten = eM.GetEntiteiten(naam);
             TempData["myList"] = entiteiten.ToList();
             return RedirectToAction("ShowEntiteiten");
-
         }
 
         public ActionResult ShowEntiteiten()

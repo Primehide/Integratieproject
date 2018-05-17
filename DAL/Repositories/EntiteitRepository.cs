@@ -247,7 +247,18 @@ namespace DAL
 
         List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
         {
-            return ctx.Entiteiten.Where(x => x.Naam.Contains(naam)).ToList();
+            List<Entiteit> entiteiten = ctx.Entiteiten.Where(x => x.Naam.ToUpper().Contains(naam.ToUpper())).ToList();
+            List<Thema> themas = ctx.Themas.Include(p => p.SleutenWoorden).ToList();
+            foreach(Thema thema in themas)
+            {
+                foreach(Sleutelwoord sl in thema.SleutenWoorden)
+                {
+                    if (sl.woord.ToUpper().Contains(naam.ToUpper())) {
+                        entiteiten.Add(ReadEntiteit(thema.EntiteitId));
+                    }
+                }
+            }
+            return entiteiten;
         }
     }
 }
