@@ -400,5 +400,13 @@ namespace BL
             initNonExistingRepo();
             repo.updateUser(account);
         }
+
+        public void UpdateAlert(int id)
+        {
+            initNonExistingRepo();
+            Alert alertToUpdate = GetAlert(id);
+            alertToUpdate.Triggered = false;
+            repo.UpdateAlert(alertToUpdate);
+        }
     }
 }

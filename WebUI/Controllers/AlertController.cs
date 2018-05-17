@@ -29,42 +29,27 @@ namespace WebUI.Controllers
     {
 
 
-        public  ActionResult Notifications()
+        public ActionResult Notifications()
         {
             IAccountManager accountManager = new AccountManager();
             List<Alert> allAlerts = accountManager.getAlleAlerts();
-            List <Alert> webalerts = new List<Alert>();
-   
-
-             allAlerts = allAlerts.Where(x => x.Triggered == true && x.Account.IdentityId == User.Identity.GetUserId()).ToList();
-             webalerts = allAlerts.Where(x =>  x.PlatformType == PlatformType.WEB ).ToList();
-          
-
-          
-       
-         
-            return PartialView( "~/Views/Shared/Dashboard/_DashboardAlerts.cshtml", webalerts.AsEnumerable());
+            List<Alert> webalerts = new List<Alert>();
+            allAlerts = allAlerts.Where(x => x.Triggered == true && x.Account.IdentityId == User.Identity.GetUserId()).ToList();
+            webalerts = allAlerts.Where(x => x.PlatformType == PlatformType.WEB).ToList();
+            return PartialView("~/Views/Shared/Dashboard/_DashboardAlerts.cshtml", webalerts.AsEnumerable());
         }
 
         public ActionResult ReadAlert(int id)
         {
             AccountManager mgr = new AccountManager();
-           Alert alert =  mgr.GetAlert(id);
-            alert.Triggered = false;
-            mgr.UpdateAlert(alert);
-            AccountManager acm = new AccountManager();
-            List<Alert> alerts = acm.getAlleAlerts();
-
+            mgr.UpdateAlert(id);
+            List<Alert> alerts = mgr.getAlleAlerts();
             IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
-
             return RedirectToAction("UpdateAlerts", "Manage");
 
         }
-     
+    }
+}
 
-        }
-  
-        }
 
-    
-    
+
