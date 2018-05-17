@@ -11,7 +11,7 @@ namespace BL
 {
     public interface IPostManager
     {
-        Task SyncDataAsync(bool AllPosts = false);
+        Task SyncDataAsync();
         void AddPost(Post post);
         List<Post> getAllPosts();
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten);

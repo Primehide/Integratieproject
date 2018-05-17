@@ -15,10 +15,10 @@ namespace WebUI.Controllers
             return View();
         }
 
-        public async System.Threading.Tasks.Task SyncDataAsync(bool AllPosts = false)
+        public async System.Threading.Tasks.Task SyncDataAsync()
         {
             IPostManager postManager = new PostManager();
-            await postManager.SyncDataAsync(AllPosts);
+            await postManager.SyncDataAsync();
         }
 
         [HttpPost]

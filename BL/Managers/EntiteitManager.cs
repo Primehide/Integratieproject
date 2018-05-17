@@ -607,13 +607,10 @@ namespace BL
             throw new NotImplementedException();
         }
 
-<<<<<<< HEAD
         public List<Entiteit> GetEntiteiten(string naam)
         {
             return entiteitRepository.ReadEntiteiten(naam);
         }
-=======
->>>>>>> 804abfb08c38c3b23eefe411e31fda243912bc95
         #endregion
 
         public List<Entiteit> ZoekEntiteiten(string zoek)
