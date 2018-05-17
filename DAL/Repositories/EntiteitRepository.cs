@@ -155,7 +155,7 @@ namespace DAL
 
         public List<Entiteit> getAlleEntiteiten()
         {
-            return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
+                return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
         }
 
         public void updateEntiteit(Entiteit entiteit)

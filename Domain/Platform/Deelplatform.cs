@@ -10,7 +10,7 @@ namespace Domain.Platform
     {
         public int DeelplatformId { get; set; }
         public string Naam { get; set; }
+        public string Tagline { get; set; }
         public List<Domain.Entiteit.Entiteit> Entiteiten { get; set; }
-        public List<Pagina> Paginas { get; set; }
     }
 }

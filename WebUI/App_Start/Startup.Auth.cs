@@ -11,6 +11,13 @@ using System.Web;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Owin.Security.OAuth;
+using WebUI.Providers;
+using Microsoft.Owin.Security.DataHandler.Encoder;
+using Microsoft.Owin.Security.Jwt;
+using System.Configuration;
+using Microsoft.Owin.Security;
+using System.Web.Configuration;
 
 namespace WebUI
 {
@@ -19,10 +26,11 @@ namespace WebUI
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
+
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext<ApplicationUser>.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
-            app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
+            //app.CreatePerOwinContext<ApplicationSignInManager>(ApplicationSignInManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
             // and to use a cookie to temporarily store information about a user logging in with a third party login provider
@@ -69,11 +77,15 @@ namespace WebUI
                 ClientSecret = "ie7cI7TBgnVFQqx2nlppAbMo"
             });
 
-            createRolesAsync();
+            createRoles();
+            ConfigureOAuthTokenGeneration(app);
+            ConfigureOAuthTokenConsumption(app);
             createSuperAdmin();
         }
 
-        private void createRolesAsync()
+
+
+        private void createRoles()
         {
             var roleMan = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext<ApplicationUser>()));
             if (!roleMan.RoleExists("Admin"))
@@ -90,14 +102,53 @@ namespace WebUI
             }
         }
 
-        private void createSuperAdmin()
+        private void ConfigureOAuthTokenGeneration(IAppBuilder app)
         {
-            var user = new ApplicationUser { UserName = "admin@admin.com" /* + PlatformController.currentPlatform */, Email = "admin@admin.com", TenantId = 0, EmailConfirmed = true };
+            // Configure the db context and user manager to use a single instance per request
+            app.CreatePerOwinContext(ApplicationDbContext<ApplicationUser>.Create);
+            app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
+
+            OAuthAuthorizationServerOptions OAuthServerOptions = new OAuthAuthorizationServerOptions()
+            {
+                //For Dev enviroment only (on production should be AllowInsecureHttp = false)
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/oauth/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
+                Provider = new CustomOAuthProvider(),
+                AccessTokenFormat = new CustomJwtFormat("http://localhost:44365")
+            };
+
+            // OAuth 2.0 Bearer Access Token Generation
+            app.UseOAuthAuthorizationServer(OAuthServerOptions);
+        }
+
+        private void ConfigureOAuthTokenConsumption(IAppBuilder app)
+        {
+
+            var issuer = "http://localhost:44365";
+            string audienceId = ConfigurationManager.AppSettings["as:AudienceId"];
+            byte[] audienceSecret = TextEncodings.Base64Url.Decode(ConfigurationManager.AppSettings["as:AudienceSecret"]);
+
+            // Api controllers with an [Authorize] attribute will be validated with JWT
+            app.UseJwtBearerAuthentication(
+                new JwtBearerAuthenticationOptions
+                {
+                    AuthenticationMode = Microsoft.Owin.Security.AuthenticationMode.Active,
+                    AllowedAudiences = new[] { audienceId },
+                    IssuerSecurityTokenProviders = new IIssuerSecurityTokenProvider[]
+                    {
+                        new SymmetricKeyIssuerSecurityTokenProvider(issuer, audienceSecret)
+                    }
+                });
+        }
+
+        private async void createSuperAdmin()
+        {
+            var user = new ApplicationUser { UserName = "admin@admin.com", Email = "admin@admin.com", TenantId = 0, EmailConfirmed = true };
             ApplicationDbContext<ApplicationUser> context = new ApplicationDbContext<ApplicationUser>();
             ApplicationUserStore<ApplicationUser> userStore = new ApplicationUserStore<ApplicationUser>(context);
 
             ApplicationUserManager aUM = new ApplicationUserManager(userStore);
-
             var roleStore = new RoleStore<IdentityRole>(context);
             var roleMngr = new RoleManager<IdentityRole>(roleStore);
 
@@ -107,11 +158,13 @@ namespace WebUI
             {
                 roleStrings.Add(ir.Name.ToString());
             }
+            if (aUM.FindByEmail("admin@admin.com") == null)
+            {
+                var result = await aUM.CreateAsync(user, "Admin123");
+                await aUM.AddToRoleAsync(user.Id.ToString(), "Admin");
+                await aUM.AddToRoleAsync(user.Id.ToString(), "SuperAdmin");
 
-            var result = aUM.CreateAsync(user, "admin");
-            aUM.AddToRoleAsync(user.Id.ToString(), "Admin");
-            aUM.AddToRoleAsync(user.Id.ToString(), "SuperAdmin");
-            //var Iresult = aUM.AddToRolesAsync(user.Id,roleStrings.ToArray());
+            }
         }
     }
 }

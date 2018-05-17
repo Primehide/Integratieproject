@@ -16,8 +16,12 @@ namespace WebUI.Models
         public int DataSetTeller { get; set; }
         public List<string> ColorCodes { get; set; }
 
+
+        public virtual IEnumerable<Domain.Account.Alert> alerts { get; set; }
+
         public List<Domain.Entiteit.Item> GevolgdeItems { get; set; }
         public List<Domain.Entiteit.Entiteit> AlleEntiteiten { get; set; }
+
 
     }
 }
