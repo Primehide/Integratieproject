@@ -1,50 +1,167 @@
-﻿@model Domain.Entiteit.Organisatie
-
+﻿
+@model Domain.Entiteit.Organisatie
 @{
-    ViewBag.Title = "DisplayOrganisation";
+    Layout = null;
 }
 
-<h2>DisplayOrganisation</h2>
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
 
-<div>
-    <h4>Organisatie</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Naam)
-        </dt>
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Organisatie</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li ="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Starter kit</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="m-t-30">
+                               @if (Model.Image != null)
+                               {
+                                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
+                               }
+                               else
+                                {
+                                <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" , width="150" , height="150" , class="img-circle" />
+                                }
 
-        <dd>
-            @Html.DisplayFor(model => model.Naam)
-        </dd>
+                                    <h4> Organisatie: @Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" }) </h4>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.AantalLeden)
-        </dt>
+                                    <div class="row text-center justify-content-md-center">
 
-        <dd>
-            @Html.DisplayFor(model => model.AantalLeden)
-        </dd>
+                                        <i class="icon-people"></i> <font class="font-medium">
+                                            Aantal leden:
+                                            @Html.DisplayFor(m => m.AantalLeden, new { @class = "control-label col-md-6" })
+                                        </font>
+                                </center>
+                            </div>
+                            <div>
+                                <hr>
+                            </div>
+                            <div class="card-body">
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Gemeente)
-        </dt>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                    <!-- Column -->
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs profile-tab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#grafieken" role="tab">Grafieken</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#over" role="tab">Over</a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!-- first tab-->
+                                <div class="tab-pane active" id="grafieken" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                Personen meest positief/negatief
+                                                <canvas id="myChart" width="150" height="150"></canvas>
+                                            </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Gemeente)
-        </dd>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="over" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            De Nieuw-Vlaamse Alliantie, afgekort als N-VA, is een Vlaams-nationalistische en liberaal-conservatieve politieke partij met eind 2014 meer dan 41.000 leden. De N-VA is de grootste partij in de Kamer, de Senaat en het Vlaams Parlement. In het Europees Parlement bezet ze vier zetels, in het Brussels Hoofdstedelijk Parlement drie. De N-VA levert met Geert Bourgeois de minister-president van Vlaanderen en is vertegenwoordigd in de federale regering-Michel. Ze behoort tot de meerderheid in de provincie Antwerpen en in tal van steden en gemeenten.
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Leden)
-        </dt>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-        <dd>
-            @Html.DisplayFor(m => m.Leden, "People")
-        </dd>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.PlatformId }, null)
-</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page Content -->
+        <!-- ============================================================== -->
+    </div>
+    </div>
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+<script>
+
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+            datasets: [{
+                label: 'Sentiment',
+                data: [0.5, 0.7, -0.2],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+
+
+
+
+

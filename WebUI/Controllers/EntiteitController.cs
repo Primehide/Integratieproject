@@ -112,6 +112,14 @@ namespace WebUI.Controllers
             entiteitManager.AddThema(t, sleutelWoorden);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
+        // this region is for displaying a certain theme
+        #region
+        public virtual ActionResult DisplayTheme(int EntityId)
+        {
+            Thema ToDisplay = eM.GetThema(EntityId);
+            return View(ToDisplay);
+        }
+        #endregion
 
         // This region is for adding a person to the database and persisting.
         #region

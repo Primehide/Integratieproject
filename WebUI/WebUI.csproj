@@ -5926,6 +5926,7 @@
     <Content Include="Views\Entiteit\Zoeken.cshtml" />
     <Content Include="Views\Entiteit\OrganisatiePagina.cshtml" />
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
+    <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

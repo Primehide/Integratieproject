@@ -1,1 +1,163 @@
 ﻿
+@model Domain.Entiteit.Organisatie
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Organisatie</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li ="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Starter kit</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="m-t-30">
+
+
+                                    <img src="data:image/png;base64,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" class="img-circle" width="150" />
+
+                                    <h4> Organisatie: @Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" }) </h4>
+
+
+                                    <div class="row text-center justify-content-md-center">
+
+                                        <i class="icon-people"></i> <font class="font-medium">
+                                            Aantal leden:
+                                            @Html.DisplayFor(m => m.AantalLeden, new { @class = "control-label col-md-6" })
+                                        </font>
+                                </center>
+                            </div>
+                            <div>
+                                <hr>
+                            </div>
+                            <div class="card-body">
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                    <!-- Column -->
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs profile-tab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#grafieken" role="tab">Grafieken</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#over" role="tab">Over</a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!-- first tab-->
+                                <div class="tab-pane active" id="grafieken" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                Personen meest positief/negatief
+                                                <canvas id="myChart" width="150" height="150"></canvas>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="over" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            De Nieuw-Vlaamse Alliantie, afgekort als N-VA, is een Vlaams-nationalistische en liberaal-conservatieve politieke partij met eind 2014 meer dan 41.000 leden. De N-VA is de grootste partij in de Kamer, de Senaat en het Vlaams Parlement. In het Europees Parlement bezet ze vier zetels, in het Brussels Hoofdstedelijk Parlement drie. De N-VA levert met Geert Bourgeois de minister-president van Vlaanderen en is vertegenwoordigd in de federale regering-Michel. Ze behoort tot de meerderheid in de provincie Antwerpen en in tal van steden en gemeenten.
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-- Column -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page Content -->
+        <!-- ============================================================== -->
+    </div>
+    </div>
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+<script>
+
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+            datasets: [{
+                label: 'Sentiment',
+                data: [0.5, 0.7, -0.2],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+</script>
+
+
+
+
+
+
