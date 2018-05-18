@@ -628,34 +628,35 @@ namespace BL
             return gevondeEntiteiten;
         }
 
-        public void ConvertJsonToEntiteit(List<JsonEntiteit> jsonEntiteiten)
+        public void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten)
         {
             foreach (var jsonE in jsonEntiteiten)
             {
-                Persoon newPersoon = new Persoon()
+                if(jsonE.Organisations == null)
                 {
-                    Naam = jsonE.full_name,
-                    Organisations = new List<Organisatie>()
-                };
+                    jsonE.Organisations = new List<Organisatie>();
+                }
 
-                if(GetAllOrganisaties().FirstOrDefault(x => x.Naam.ToLower() == jsonE.organisation.ToLower()) == null)
+                if(GetAllOrganisaties().FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
                 {
+
                     Organisatie organisatie = new Organisatie()
                     {
-                        Naam = jsonE.organisation,
-                        Gemeente = jsonE.district
+                        Naam = jsonE.Organisation,
+                        Gemeente = jsonE.Disctrict
                     };
                     AddOrganisatie(organisatie, null);
                 }
 
                 foreach (var o in GetAllOrganisaties())
                 {
-                    if(o.Naam.ToLower() == jsonE.organisation.ToLower())
+                    if(o.Naam.ToLower() == jsonE.Organisation.ToLower())
                     {
-                        newPersoon.Organisations.Add(o);
+                        jsonE.Organisations.Add(o);
                     }
                 }
-                AddPerson(newPersoon, null);
+                jsonE.Naam = jsonE.Full_name;
+                AddPerson(jsonE, null);
             }
         }
     }
