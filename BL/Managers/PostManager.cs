@@ -335,5 +335,17 @@ namespace BL
             Grafiek grafiekToUpdate = postRepository.GetAllGrafieken().Single(x => x.GrafiekId == id);
             BerekenGrafiekWaarde(grafiekToUpdate.Type, null);
         }
+
+        public Grafiek GetGrafiek(int id)
+        {
+            initNonExistingRepo();
+            return postRepository.ReadGrafiek(id);
+        }
+
+        public void UpdateGrafiek(Grafiek grafiekToUpdate)
+        {
+            initNonExistingRepo();
+            postRepository.UpdateGrafiek(grafiekToUpdate);
+        }
     }
 }

@@ -331,9 +331,21 @@ namespace WebUI.Controllers
             return View("Register", model);
         }
 
-        public ActionResult EditGrafiek()
+        [HttpGet]
+        public ActionResult EditGrafiek(int id)
         {
-            return View();
+            PostManager postManager = new PostManager();
+            return View(postManager.GetGrafiek(id));
+        }
+
+        [HttpPost]
+        public ActionResult EditGrafiek(Domain.Post.Grafiek grafiek)
+        {
+            PostManager postManager = new PostManager();
+            Domain.Post.Grafiek grafiekToUpdate = postManager.GetGrafiek(grafiek.GrafiekId);
+            grafiekToUpdate.Naam = grafiek.Naam;
+            postManager.UpdateGrafiek(grafiekToUpdate);
+            return RedirectToAction("Index", "Manage");
         }
 
         //

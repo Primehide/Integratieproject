@@ -491,7 +491,8 @@ namespace WebUI.Controllers
 
         public void updateGrafieken()
         {
-
+            PostManager postManager = new PostManager();
+            
         }
 
         Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();

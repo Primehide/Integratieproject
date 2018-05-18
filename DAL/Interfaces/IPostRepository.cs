@@ -18,6 +18,7 @@ namespace DAL
         void AddGrafiek(Grafiek grafiek);
         List<Word> GetAllWords();
         List<Grafiek> AlleGrafieken();
-
+        Grafiek ReadGrafiek(int id);
+        void UpdateGrafiek(Grafiek grafiekToUpdate);
     }
 }

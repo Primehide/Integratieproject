@@ -75,5 +75,18 @@ namespace DAL
             return ctx.Grafieken.Include(x => x.Waardes).ToList();
 
         }
+
+        public Grafiek ReadGrafiek(int id)
+        {
+            return ctx.Grafieken
+                .Include(x => x.Waardes)
+                .Single(x => x.GrafiekId == id);
+        }
+
+        public void UpdateGrafiek(Grafiek grafiekToUpdate)
+        {
+            ctx.Entry(grafiekToUpdate).State = EntityState.Modified;
+            ctx.SaveChanges();
+        }
     }
 }
