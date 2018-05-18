@@ -32,9 +32,20 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
+
+        public void addDeviceId(string userId,string device)
+        {
+            Account acc = ctx.Accounts.Where(m => m.IdentityId == userId).FirstOrDefault();
+            acc.DeviceId = device;
+            ctx.SaveChanges();
+        }
+
         public Alert ReadAlert(int alertID)
         {
-            Alert alert = ctx.Alerts.Find(alertID);
+            Alert alert = ctx.Alerts.Where(x => x.AlertId == alertID)
+                .Include(x => x.Entiteit)
+                .FirstOrDefault();
+            
             return alert;
         }
         public List<Alert> getAlleAlerts()

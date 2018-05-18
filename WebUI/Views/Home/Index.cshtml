@@ -10,7 +10,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>Politieke Barometer - Home</title>
+    <title>@ViewBag.dpnaam - Home</title>
 
     <meta name="keywords" content="HTML5 Template" />
     <meta name="description" content="Porto - Responsive HTML5 Template">
@@ -67,7 +67,7 @@
                             <div class="header-row">
                                 <div class="header-logo">
                                     <a href="index.html">
-                                        <img alt="Politieke Barometer" width="150" height="50" src="~/Content/Homepagina/img/gallery/logo.png">
+                                        <img alt=@ViewBag.dpnaam width="150" height="50" src="~/Content/Homepagina/img/gallery/logo.png">
                                     </a>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@
                                  data-y="center" data-voffset="-95"
                                  data-start="500"
                                  style="z-index: 5"
-                                 data-transform_in="y:[-300%];opacity:0;s:500;">Ontdek wat er leeft in de politiek.</div>
+                                 data-transform_in="y:[-300%];opacity:0;s:500;">@ViewBag.tagline</div>
 
                             <div class="tp-caption"
                                  data-x="center" data-hoffset="220"
@@ -143,7 +143,7 @@
                                  data-transform_in="y:[100%];s:500;"
                                  data-transform_out="opacity:0;s:500;"
                                  style="z-index: 5"
-                                 data-mask_in="x:0px;y:0px;">Politieke Barometer</div>
+                                 data-mask_in="x:0px;y:0px;">@ViewBag.dpnaam</div>
 
                             <div class="tp-caption bottom-label"
                                  data-x="center" data-hoffset="0"
