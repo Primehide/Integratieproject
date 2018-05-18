@@ -10,6 +10,7 @@ namespace Domain.Enum
     {
         KRUISING,
         VERGELIJKING,
-        CIJFERS
+        CIJFERS,
+        VASTE
     }
 }

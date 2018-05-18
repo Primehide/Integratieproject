@@ -658,5 +658,32 @@ namespace BL
                 AddPerson(newPersoon, null);
             }
         }
+
+        public void BerekenVasteGrafiekenAlleEntiteiten()
+        {
+            initNonExistingRepo();
+            List<Entiteit> alleEntiteiten = entiteitRepository.getAlleEntiteiten();
+            DateTime vandaag = new DateTime(2018, 04, 01);
+            foreach (var e in alleEntiteiten)
+            {
+                Grafiek postFrequentie = new Grafiek()
+                {
+                    Naam = "Post Frequentie - " + e.Naam,
+                    Waardes = new List<GrafiekWaarde>()
+                };
+                vandaag = new DateTime(2018, 04, 01);
+                for (int i=0; i < 30; i++)
+                {
+                    GrafiekWaarde waarde = new GrafiekWaarde();
+                    waarde.Naam = vandaag.ToShortDateString();
+                    waarde.Waarde = e.Posts.Where(x => x.Date.Date == vandaag.Date).Count();
+                    vandaag = vandaag.AddDays(1);
+                    postFrequentie.Waardes.Add(waarde);
+                }
+                e.Grafieken.Clear();
+                e.Grafieken.Add(postFrequentie);
+                entiteitRepository.updateEntiteit(e);
+            }
+        }
     }
 }

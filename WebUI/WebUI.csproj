@@ -3591,6 +3591,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <Content Include="Content\Dashboard\assets\images\background\Thumbs.db" />
     <Content Include="Content\Dashboard\assets\images\big\Thumbs.db" />
     <Content Include="Content\Dashboard\assets\plugins\bootstrap-material-datetimepicker\bower.json" />

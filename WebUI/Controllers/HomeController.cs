@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BL;
 
 namespace WebUI.Controllers
 {
@@ -32,7 +33,6 @@ namespace WebUI.Controllers
             {
                 return RedirectToAction("Index", "Platform", null);
             }
-            
         }
 
         public virtual ActionResult About()

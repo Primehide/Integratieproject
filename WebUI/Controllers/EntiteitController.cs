@@ -33,6 +33,25 @@ namespace WebUI.Controllers
             return View(overview);
         }
 
+<<<<<<< HEAD
+=======
+        // Index Page for all Entities.
+        public virtual ActionResult Test()
+        {
+            //List<Entiteit> AllEntities = new List<Entiteit>();
+            //AllEntities.AddRange(eM.GetAllPeople());
+            //AllEntities.AddRange(eM.GetAllOrganisaties());
+
+            return View();
+        }
+
+        public void BerekenVasteGrafiekenAlleEntiteiten()
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.BerekenVasteGrafiekenAlleEntiteiten();
+        }
+
+>>>>>>> 401f8fbc28cc003d791bbd03f30de4f019561747
         public ActionResult AddEntiteit(Entiteit entiteit)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
@@ -59,9 +78,10 @@ namespace WebUI.Controllers
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
-        public ActionResult PersoonPagina()
+        public ActionResult PersoonPagina(int id)
         {
-            return View();
+            EntiteitManager entiteitManager = new EntiteitManager();
+            return View(entiteitManager.GetPerson(id));
         }
 
         public ActionResult Zoeken(string zoekwoord)
