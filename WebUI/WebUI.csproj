@@ -4936,6 +4936,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.eot" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.ttf" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
+    <Content Include="Controllers\DataTextGain4.json" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Content\Dashboard\assets\images\background\Thumbs.db" />
     <Content Include="Content\Dashboard\assets\images\big\Thumbs.db" />
@@ -5927,6 +5928,7 @@
     <Content Include="Views\Entiteit\OrganisatiePagina.cshtml" />
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
+    <Content Include="Views\Shared\DataTextGain4.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -68,31 +68,33 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-100).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-30).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
 
-            PostRequest postRequest1 = new PostRequest()
+           PostRequest postRequest1 = new PostRequest()
             {
-                since = gisteren,
-                until = vandaag
-            };
+               since = gisteren,
+               until = vandaag
+           };
 
             using (HttpClient http = new HttpClient())
             {
                 string uri = "https://kdg.textgain.com/query";
                 http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
-                var myContent = JsonConvert.SerializeObject(postRequest1);
-                var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
-                var byteContent = new ByteArrayContent(buffer);
-                byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
+               // var myContent = JsonConvert.SerializeObject(postRequest1);
+                //var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                //var byteContent = new ByteArrayContent(buffer);
+                //byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var result = await http.PostAsync(uri,null).Result.Content.ReadAsStringAsync();
                 try
                 {
                     var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                     if (posts.Count != 0)
                     {
+                       // ConvertAndSaveToDb(posts);
+
                         System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
                     }
                 }
@@ -103,7 +105,7 @@ namespace BL
             }
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
-        /*foreach (var Persoon in AllePersonen)
+        foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
@@ -130,8 +132,8 @@ namespace BL
                         var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                              ConvertAndSaveToDb(posts, Persoon.EntiteitId);
-                            //System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\json\DataTextGain.json", result);
+                              //ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                            System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
                     }
                     catch (Newtonsoft.Json.JsonReaderException)
@@ -139,7 +141,7 @@ namespace BL
 
                     }
                 }
-            }*/
+            }
         }
 
        

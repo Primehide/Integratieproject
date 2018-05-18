@@ -63,6 +63,7 @@ else
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                             </div>
+                                            
                         </div>
                     </div>
                     <!-- Column -->
@@ -98,6 +99,47 @@ else
                                                     <canvas id="myChart3" width="150" height="150"></canvas>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <canvas id="c" width="700" height="300"></canvas>
+
+                                               
+
+                                                <!-- A link to the NodeBox JavaScript API  -->
+                                                <script src="https://nodebox.live/api/v1/ndbx.js"></script>
+
+                                                <!-- Your custom initialization code -->
+                                                <script>
+                                                    // Again, replace these with your own userId / projectId / functionId / canvasId
+                                                    var options = {
+                                                        userId: 'Zeger',
+                                                        projectId: 'tutorial',
+                                                        functionId: 'count_tweets',
+                                                        canvasId: 'c',
+                                                        autoplay: true
+                                                    };
+
+                                                    // Initialize the NodeBox player object
+                                                    ndbx.embed(options, function (err, player) {
+                                                        if (err) {
+                                                            throw new Error(err);
+                                                        } else {
+                                                            window.player = player;
+                                                            window.player.setValue('import1', 'file', 'DataTextGain4.json')
+                                                        }
+                                                    });
+
+                                                    // This function is called when the size slider is dragged.
+                                                    function changeSize(e) {
+                                                        window.player.setValue('rect1', 'width', e.value);
+                                                        window.player.setValue('rect1', 'height', e.value);
+                                                    }
+
+                                                    // This function is called when the hue slider is dragged.
+                                                    function changeHue(e) {
+                                                        window.player.setValue('hslColor1', 'hue', e.value);
+                                                    }
+                                                </script>
+                                            </div>
 
 
                                         </p>
@@ -130,91 +172,91 @@ else
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-        <script>
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [0.5, 0.7, -0.2],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+                                <script>
+                                    var ctx = document.getElementById("myChart").getContext('2d');
+                                    var myChart = new Chart(ctx, {
+                                        type: 'bar',
+                                        data: {
+                                        labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+                                            datasets: [{
+                                        label: 'Sentiment',
+                                                data: [0.5, 0.7, -0.2],
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 0.2)',
+                                                    'rgba(54, 162, 235, 0.2)',
+                                                    'rgba(255, 206, 86, 0.2)',
+                                                ],
+                                                borderColor: [
+                                                    'rgba(255,99,132,1)',
+                                                    'rgba(54, 162, 235, 1)',
+                                                    'rgba(255, 206, 86, 1)',
+                                                ],
+                                                borderWidth: 1
+                                            }]
+                                        },
+                                        options: {
+                                        scales: {
+                                        yAxes: [{
+                                        ticks: {
+                                        beginAtZero: true
+                                                    }
+                                                }]
+                                            }
+                                        }
+                                    });
 
-            var ctx2 = document.getElementById("myChart2").getContext('2d');
-            var myChart = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [10, 20],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                        ],
-                    }],
-                    labels: [
-                        'Maggie De Block',
-                        'Theo Francken',
-                    ]
-                },
-            });
+                                    var ctx2 = document.getElementById("myChart2").getContext('2d');
+                                    var myChart = new Chart(ctx2, {
+                                        type: 'doughnut',
+                                        data: {
+                                        datasets: [{
+                                        data: [10, 20],
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 0.2)',
+                                                    'rgba(54, 162, 235, 0.2)',
+                                                ],
+                                            }],
+                                            labels: [
+                                                'Maggie De Block',
+                                                'Theo Francken',
+                                            ]
+                                        },
+                                    });
 
-            var ctx3 = document.getElementById("myChart3").getContext('2d');
-            var myChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ["N-VA", "Vlaams belang", "CD&V"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [0.9, -0.7, -0.6],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
-        </script>
-    </div>
+                                    var ctx3 = document.getElementById("myChart3").getContext('2d');
+                                    var myChart = new Chart(ctx3, {
+                                        type: 'bar',
+                                        data: {
+                                        labels: ["N-VA", "Vlaams belang", "CD&V"],
+                                            datasets: [{
+                                        label: 'Sentiment',
+                                                data: [0.9, -0.7, -0.6],
+                                                backgroundColor: [
+                                                    'rgba(255, 99, 132, 0.2)',
+                                                    'rgba(54, 162, 235, 0.2)',
+                                                    'rgba(255, 206, 86, 0.2)',
+                                                ],
+                                                borderColor: [
+                                                    'rgba(255,99,132,1)',
+                                                    'rgba(54, 162, 235, 1)',
+                                                    'rgba(255, 206, 86, 1)',
+                                                ],
+                                                borderWidth: 1
+                                            }]
+                                        },
+                                        options: {
+                                        scales: {
+                                        yAxes: [{
+                                        ticks: {
+                                        beginAtZero: true
+                                                    }
+                                                }]
+                                            }
+                                        }
+                                    });
+                                </script>
+                            </div>
 </body>
 
 
