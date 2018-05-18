@@ -17,6 +17,7 @@ namespace DAL
         void AddAlert(Alert alert);
         void DeleteAlert(int alertID);
         void updateUser(Domain.Account.Account account);
+        void DeleteGrafiekWaardes(int grafiekID);
         Account ReadAccount(string ID);
         List<Account> readAccounts();
         void addDeviceId(string userId, string device);

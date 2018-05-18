@@ -53,5 +53,10 @@ namespace DAL
                 .Include(x => x.Words)
                 .ToList();
         }
+
+        public IEnumerable<Domain.Post.Grafiek> GetAllGrafieken()
+        {
+            return ctx.Grafieken.Include(ctx => ctx.Entiteiten).Include(mbox => mbox.Waardes).ToList();
+        }
     }
 }

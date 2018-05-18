@@ -12,5 +12,6 @@ namespace DAL
         void AddPosts(List<Post> posts);
         void AddPost(Post post);
         List<Post> getAllPosts();
+        IEnumerable<Grafiek> GetAllGrafieken();
     }
 }

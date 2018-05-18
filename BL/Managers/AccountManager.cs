@@ -6,6 +6,8 @@ using DAL;
 
 using Domain.Account;
 using Domain.Entiteit;
+using Domain.Enum;
+using Domain.Post;
 
 namespace BL
 {
@@ -186,11 +188,16 @@ namespace BL
             accountRepository.FollowEntiteit(identityID, entiteitID);
         }
 
+
+
         public void UnfollowEntity(string identityID, int entiteitID)
         {
             initNonExistingRepo();
             accountRepository.UnFollowEntiteit(identityID, entiteitID);
         }
+
+
+
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
@@ -198,14 +205,15 @@ namespace BL
             IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
             Domain.Account.Account user = accountRepository.ReadAccount(IdentityId);
             Domain.Post.Grafiek grafiek = new Domain.Post.Grafiek();
-
+            grafiek.Entiteiten = new List<Entiteit>();
             List<Entiteit> entiteiten = new List<Entiteit>();
+
             foreach (var i in entiteitInts)
             {
                 var e = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == i);
                 entiteiten.Add(e);
+                grafiek.Entiteiten.Add(e);
             }
-
             Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten,CijferOpties, VergelijkOptie);
             List<Domain.Post.GrafiekWaarde> grafiekWaardes = new List<Domain.Post.GrafiekWaarde>();
             
@@ -218,7 +226,34 @@ namespace BL
                 };
                 grafiekWaardes.Add(w);
             }
-
+            if (CijferOpties != null)
+            {
+                grafiek.CijferOpties = new List<Domain.Post.CijferOpties>();
+                foreach (var opt in CijferOpties)
+                {
+                    if (opt.ToLower() == "aantalposts")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                    if (opt.ToLower() == "aantalretweets")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                    if (opt.ToLower() == "aanwezigetrends")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                }
+            }
             grafiek.Type = TypeGrafiek;
             grafiek.Waardes = grafiekWaardes;
             grafiek.GrafiekSoort = grafiekSoort;
@@ -247,7 +282,10 @@ namespace BL
                     }
                     break;
             }
-
+            foreach (Entiteit e in grafiek.Entiteiten)
+            {
+                e.Posts = null;
+            }
             Domain.Account.DashboardBlok dashboardBlok = new Domain.Account.DashboardBlok()
             {
                 Grafiek = grafiek
@@ -263,7 +301,12 @@ namespace BL
         public void updateUser(Account account)
         {
             initNonExistingRepo();
-            repo.updateUser(account);
+            accountRepository.updateUser(account);
+        }
+
+        public void DeleteGrafiekWaardes(int grafiekID)
+        {
+            accountRepository.DeleteGrafiekWaardes(grafiekID);
         }
     }
 }

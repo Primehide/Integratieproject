@@ -21,11 +21,12 @@ namespace BL
 
         public PostManager()
         {
-
+            postRepository = new PostRepository();
         }
 
         public PostManager(UnitOfWorkManager uofMgr)
         {
+            postRepository = new PostRepository();
             uowManager = uofMgr;
         }
 
@@ -225,6 +226,11 @@ namespace BL
         public List<Post> getRecentePosts()
         {
             return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
+        }
+
+        public List<Grafiek> getAllGrafieken()
+        {
+            return postRepository.GetAllGrafieken().ToList();
         }
     }
 }

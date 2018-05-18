@@ -14,11 +14,21 @@ namespace WebUI.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async System.Threading.Tasks.Task SyncDataAsync()
         {
             IPostManager postManager = new PostManager();
             await postManager.SyncDataAsync();
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
 
         [HttpPost]

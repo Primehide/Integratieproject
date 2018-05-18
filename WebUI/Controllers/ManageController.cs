@@ -10,6 +10,7 @@ using BL;
 using Domain.Account;
 using Domain.Entiteit;
 using Domain.Enum;
+using Domain.Post;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -200,118 +201,14 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Manage/AddPhoneNumber
-        public virtual ActionResult AddPhoneNumber()
+        protected override void OnException(ExceptionContext filterContext)
         {
-            return View();
-        }
+            filterContext.ExceptionHandled = true;
 
-        //
-        // POST: /Manage/AddPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
-        {
-            if (!ModelState.IsValid)
+            filterContext.Result = new ViewResult
             {
-                return View(model);
-            }
-            // Generate the token and send it
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
-            if (UserManager.SmsService != null)
-            {
-                var message = new IdentityMessage
-                {
-                    Destination = model.Number,
-                    Body = "Your security code is: " + code
-                };
-                await UserManager.SmsService.SendAsync(message);
-            }
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
-        }
-
-        //
-        // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> EnableTwoFactorAuthentication()
-        {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", "Manage");
-        }
-
-        //
-        // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> DisableTwoFactorAuthentication()
-        {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), false);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", "Manage");
-        }
-
-        //
-        // GET: /Manage/VerifyPhoneNumber
-        public virtual async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
-        {
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
-            // Send an SMS through the SMS provider to verify the phone number
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
-        }
-
-        //
-        // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
-            if (result.Succeeded)
-            {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                if (user != null)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                }
-                return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
-            }
-            // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "Failed to verify phone");
-            return View(model);
-        }
-
-        //
-        // POST: /Manage/RemovePhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> RemovePhoneNumber()
-        {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
-            if (!result.Succeeded)
-            {
-                return RedirectToAction("Index", new { Message = ManageMessageId.Error });
-            }
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
 
         //
@@ -588,6 +485,66 @@ namespace WebUI.Controllers
             //ManageAccount();
             return new HttpStatusCodeResult(200);
 
+        }
+
+        public void updateGrafieken()
+        {
+            EntiteitManager eM = new EntiteitManager();
+            AccountManager aM = new AccountManager();
+            PostManager pM = new PostManager();
+
+            foreach (Account acc in aM.GetAccounts())
+            {
+                List<Grafiek> grafieken = new List<Grafiek>();
+                foreach (DashboardBlok db in acc.Dashboard.Configuratie.DashboardBlokken)
+                {
+                    grafieken.Add(db.Grafiek);
+                }
+
+                foreach (Grafiek g in grafieken)
+                {
+
+                    List<Entiteit> grafiekEntiteiten = new List<Entiteit>();
+                    foreach (Entiteit iD in g.Entiteiten)
+                    {
+                        grafiekEntiteiten.Add(eM.getEntiteit(iD.EntiteitId));
+                    }
+
+                    Dictionary<string, double> nieuweWaardes = new Dictionary<string, double>();
+                    switch (g.Type)
+                    {
+                        case GrafiekType.CIJFERS:
+                            List<string> opties = new List<string>();
+                            foreach (CijferOpties c in g.CijferOpties)
+                            {
+                                opties.Add(c.optie.ToString());
+                            }
+
+                            nieuweWaardes = eM.BerekenGrafiekWaarde(g.Type, grafiekEntiteiten, opties, null);
+                            break;
+                        case GrafiekType.VERGELIJKING:
+                            nieuweWaardes = eM.BerekenGrafiekWaarde(g.Type, grafiekEntiteiten, null, g.soortGegevens.ToString());
+                            break;
+                    }
+
+                    aM.DeleteGrafiekWaardes(g.GrafiekId);
+
+
+
+                    foreach (var item in nieuweWaardes)
+                    {
+                        Domain.Post.GrafiekWaarde w = new Domain.Post.GrafiekWaarde()
+                        {
+                            Naam = item.Key,
+                            Waarde = item.Value
+                        };
+
+                        g.Waardes.Add(w);
+                    }
+
+                    aM.updateUser(acc);
+                }
+            }
         }
 
         Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();

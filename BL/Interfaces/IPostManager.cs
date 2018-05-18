@@ -14,6 +14,7 @@ namespace BL
         Task SyncDataAsync();
         void AddPost(Post post);
         List<Post> getAllPosts();
+        List<Grafiek> getAllGrafieken();
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten);
         List<Post> getRecentePosts();
     }

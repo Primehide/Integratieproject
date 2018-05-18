@@ -147,6 +147,16 @@ namespace WebUI.Controllers
             }
         }
 
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
@@ -336,7 +346,6 @@ namespace WebUI.Controllers
 
         //
         // GET: /Account/ForgotPassword
-        [Authorize(Roles = "Admin")]
         public virtual ActionResult ForgotPassword()
         {
             return View();
@@ -682,6 +691,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUserAdmin(Domain.Account.Account model)
         {
             AccountManager accountManager = new AccountManager();
@@ -695,13 +705,14 @@ namespace WebUI.Controllers
         }
 
         //Aanmaken van een user door admin
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult CreateUser()
         {
             return View();
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async Task<ActionResult> CreateUser(RegisterViewModel model)
         {
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
@@ -709,7 +720,7 @@ namespace WebUI.Controllers
             CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
             return RedirectToAction("IndexUsers");
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult DeleteUser(string id)
         {
             IAccountManager accountManager = new AccountManager();
@@ -718,7 +729,7 @@ namespace WebUI.Controllers
             return RedirectToAction("Index","Home");
         }
 
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUser(string id)
         {
             IAccountManager accountManager = new AccountManager();
@@ -726,6 +737,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUser(Account account)
         {
            

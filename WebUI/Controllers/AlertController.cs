@@ -17,9 +17,17 @@ namespace WebUI.Controllers
 
     public class AlertController : Controller
     {
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
 
 
 
-      
     }
 }

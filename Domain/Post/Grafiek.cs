@@ -15,10 +15,11 @@ namespace Domain.Post
         //public double limietwaarde { get; set; }
         public Domain.Enum.GrafiekType Type { get; set; }
         //public List<Post> Posts { get; set; }
-        //public List<Entiteit.Entiteit> Entiteiten { get; set; }
+        public List<Entiteit.Entiteit> Entiteiten { get; set; }
         public List<GrafiekWaarde> Waardes { get; set; }
         public string Naam { get; set; }
         public Domain.Enum.GrafiekSoort GrafiekSoort { get; set; }
         public Domain.Enum.SoortGegevens soortGegevens { get; set; }
+        public List<CijferOpties> CijferOpties { get; set; }
     }
 }
