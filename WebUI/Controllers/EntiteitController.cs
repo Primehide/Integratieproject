@@ -33,8 +33,6 @@ namespace WebUI.Controllers
             return View(overview);
         }
 
-<<<<<<< HEAD
-=======
         // Index Page for all Entities.
         public virtual ActionResult Test()
         {
@@ -51,7 +49,6 @@ namespace WebUI.Controllers
             entiteitManager.BerekenVasteGrafiekenAlleEntiteiten();
         }
 
->>>>>>> 401f8fbc28cc003d791bbd03f30de4f019561747
         public ActionResult AddEntiteit(Entiteit entiteit)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
