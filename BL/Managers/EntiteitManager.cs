@@ -636,8 +636,7 @@ namespace BL
                 {
                     jsonE.Organisations = new List<Organisatie>();
                 }
-
-                if(GetAllOrganisaties().FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
+                if(GetAllOrganisaties(1).FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
                 {
 
                     Organisatie organisatie = new Organisatie()
@@ -648,7 +647,7 @@ namespace BL
                     AddOrganisatie(organisatie, null);
                 }
 
-                foreach (var o in GetAllOrganisaties())
+                foreach (var o in GetAllOrganisaties(1))
                 {
                     if(o.Naam.ToLower() == jsonE.Organisation.ToLower())
                     {
@@ -657,6 +656,33 @@ namespace BL
                 }
                 jsonE.Naam = jsonE.Full_name;
                 AddPerson(jsonE, null);
+            }
+        }
+
+        public void BerekenVasteGrafiekenAlleEntiteiten()
+        {
+            initNonExistingRepo();
+            List<Entiteit> alleEntiteiten = entiteitRepository.getAlleEntiteiten();
+            DateTime vandaag = new DateTime(2018, 04, 01);
+            foreach (var e in alleEntiteiten)
+            {
+                Grafiek postFrequentie = new Grafiek()
+                {
+                    Naam = "Post Frequentie - " + e.Naam,
+                    Waardes = new List<GrafiekWaarde>()
+                };
+                vandaag = new DateTime(2018, 04, 01);
+                for (int i=0; i < 30; i++)
+                {
+                    GrafiekWaarde waarde = new GrafiekWaarde();
+                    waarde.Naam = vandaag.ToShortDateString();
+                    waarde.Waarde = e.Posts.Where(x => x.Date.Date == vandaag.Date).Count();
+                    vandaag = vandaag.AddDays(1);
+                    postFrequentie.Waardes.Add(waarde);
+                }
+                e.Grafieken.Clear();
+                e.Grafieken.Add(postFrequentie);
+                entiteitRepository.updateEntiteit(e);
             }
         }
     }

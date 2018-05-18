@@ -48,5 +48,7 @@ namespace BL
         List<Entiteit> ZoekEntiteiten(string zoek);
         void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
 
+        void BerekenVasteGrafiekenAlleEntiteiten();
+
     }
 }
