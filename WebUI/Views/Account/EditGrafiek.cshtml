@@ -41,7 +41,8 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    <form action="/#" method="post">
+                                    <form action="/Account/EditGrafiek" method="post">
+                                        <input type="hidden" name="GrafiekId" value="@Model.GrafiekId" />
                                         <div class="form-group">
                                             <label>Grafiek naam</label>
                                             <input type="text" class="form-control" placeholder="@Model.Naam" name="Naam">

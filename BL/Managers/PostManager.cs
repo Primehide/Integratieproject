@@ -319,5 +319,17 @@ namespace BL
             initNonExistingRepo();
             return postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
         }
+
+        public Grafiek GetGrafiek(int id)
+        {
+            initNonExistingRepo();
+            return postRepository.ReadGrafiek(id);
+        }
+
+        public void UpdateGrafiek(Grafiek grafiekToUpdate)
+        {
+            initNonExistingRepo();
+            postRepository.UpdateGrafiek(grafiekToUpdate);
+        }
     }
 }
