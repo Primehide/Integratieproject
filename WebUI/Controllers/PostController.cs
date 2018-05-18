@@ -38,6 +38,13 @@ namespace WebUI.Controllers
             accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
             return RedirectToAction("Index","Manage");
         }
+
+        public ActionResult berekenVasteGrafieken()
+        {
+            IPostManager postManager = new PostManager();
+            postManager.maakVasteGrafieken();
+            return View();
+        }
     }
 
 

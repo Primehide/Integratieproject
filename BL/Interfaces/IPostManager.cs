@@ -17,5 +17,8 @@ namespace BL
         List<Grafiek> getAllGrafieken();
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten);
         List<Post> getRecentePosts();
+        void maakVasteGrafieken();
+        void addGrafiek(Grafiek grafiek);
+        List<Grafiek> GetVasteGrafieken();
     }
 }

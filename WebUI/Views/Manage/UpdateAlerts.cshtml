@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Domain.Account.Alert>
-
+@using System.Linq
 @{
     Layout = null;
 }
 
-@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
 
 <body class="fix-header card-no-border fix-sidebar mini-sidebar">
     <div id="main-wrapper">
@@ -44,7 +44,6 @@
                                 <div class="table-responsive">
                                     <table class="table table-bordered table-striped ">
                                         <thead>
-
                                             <tr>
                                                 <th class="text-center">
                                                     Alertnaam
@@ -70,45 +69,47 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
-
+                                     
                                             @foreach (Domain.Account.Alert item in Model)
-                                    {
-                                        <tr>
-                                            <td align="center">
-                                                <div id="alertnaam">
-                                                    @Html.DisplayFor(modelItem => item.AlertNaam)
-                                                </div>
-                                                <div id="alertnaamInput" style="display:none">
-                                                    @Html.TextBoxFor(modelItem => item.AlertNaam)
-                                                </div>
-                                            </td>
-                                            <td align="center">
-                                                @Html.DisplayFor(modelItem => item.Entiteit.Naam)
-                                            </td>
-                                            <td align="center">
-                                                @Html.DisplayFor(modelItem => item.TrendType)
-                                            </td>
-                                            <td align="center">
-                                                @Html.DisplayFor(modelItem => item.Voorwaarde)
-                                            </td>
-                                            <td align="center">
-                                                @Html.DisplayFor(modelItem => item.MinWaarde)
-                                            </td>
-                                            <td align="center">
-                                                @Html.DisplayFor(modelItem => item.PlatformType)
-                                            </td>
-                                            <td align="center">
-                                                @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
-                                                @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
 
+                                            {
+                                                <tr>
+                                                    <td align="center">
+                                                        <div id="alertnaam">
+                                                            @Html.DisplayFor(modelItem => item.AlertNaam)
+                                                        </div>
+                                                        <div id="alertnaamInput" style="display:none">
+                                                            @Html.TextBoxFor(modelItem => item.AlertNaam)
+                                                        </div>
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.DisplayFor(modelItem => item.Entiteit.Naam)
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.DisplayFor(modelItem => item.TrendType)
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.DisplayFor(modelItem => item.Voorwaarde)
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.DisplayFor(modelItem => item.MinWaarde)
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.DisplayFor(modelItem => item.PlatformType)
+                                                    </td>
+                                                    <td align="center">
+                                                        @Html.ActionLink("Edit", "EditAlert", new { id = item.AlertId }) |
+                                                        @Html.ActionLink("Delete", "DeleteAlert", "Manage", new { id = item.AlertId }, new { onclick = "return confirm('Weet je zeker dat je deze alert wil verwijderen?');" })
+                                                    </td>
 
+                                                </tr>
+                                            }
 
+                                    
+                             
+                                      
+                            
 
-                                            </td>
-
-                                        </tr>
-                            }
                                         </tbody>
                                     </table>
                                     <input type="hidden" id="hiddenAlertId" />
@@ -124,7 +125,7 @@
                                 <h4 class="card-title">Alert toevoegen.</h4>
 
 
-                                @Html.Partial("_AddAlert", new WebUI.Models.AlertViewModel());
+                                @Html.Partial("~/Views/Manage/_AddAlert.cshtml", new WebUI.Models.AlertViewModel());
 
                             </div>
                         </div>
@@ -138,6 +139,8 @@
         </div>
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
     </div>
+
+
 </body>
 
 

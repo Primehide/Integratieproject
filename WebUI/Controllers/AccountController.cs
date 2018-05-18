@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.Web;
 using System.Web.Mvc;
 using BL;
@@ -12,9 +14,16 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
+
+
+
+using System.Data;
+
+
 using Microsoft.Owin.Security.DataProtection;
 using System.Configuration;
 using System.Web.Configuration;
+
 
 namespace WebUI.Controllers
 {
@@ -24,6 +33,8 @@ namespace WebUI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+      
+
 
         public AccountController()
         {
@@ -318,6 +329,11 @@ namespace WebUI.Controllers
 
             // If we got this far, something failed, redisplay form
             return View("Register", model);
+        }
+
+        public ActionResult EditGrafiek()
+        {
+            return View();
         }
 
         //
@@ -746,6 +762,24 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexUsers");
         }
 
+
+        //push notifications
+        // GET: Notification
+        public ActionResult Alerts()
+        {
+            return View();
+        }
+
+        public JsonResult GetNotification()
+        {
+
+
+            return Json(NotificaionService.GetNotification(), JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
         public ActionResult FollowEntiteit(int id)
         {
             string entityID = User.Identity.GetUserId();
@@ -763,6 +797,7 @@ namespace WebUI.Controllers
             accountManager.UnfollowEntity(entityID, id);
             return RedirectToAction("VolgItems", "Manage");
         }
+
 
     }
 

@@ -8,7 +8,11 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using System.Web;
+
 using Domain.Account;
+
+using Domain.TextGain;
+
 
 namespace BL
 {
@@ -174,9 +178,9 @@ namespace BL
             //PRESET voor berekening juist zetten
             switch (type)
             {
-                case TrendType.STERKOPWAARDS:
+                case TrendType.STERKOPWAARTS:
                     trendVerandering = 1.3;
-                    newTrend.Type = TrendType.STERKOPWAARDS;
+                    newTrend.Type = TrendType.STERKOPWAARTS;
                     break;
                 case TrendType.MATIGOPWAARDS:
                     trendVerandering = 1.1;
@@ -247,7 +251,7 @@ namespace BL
                             return true;
                         }
                     }
-                    if(type == TrendType.STERKOPWAARDS)
+                    if(type == TrendType.STERKOPWAARTS)
                     {
                         if ((AantalVandaag / AantalGisteren) >= trendVerandering)
                         {
@@ -460,7 +464,7 @@ namespace BL
 
         public List<Persoon> GetAllPeople(int platId)
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             return entiteitRepository.ReadAllPeople().Where(x => x.PlatformId == platId).ToList();
         }
 
@@ -616,8 +620,80 @@ namespace BL
         {
             throw new NotImplementedException();
         }
+
         #endregion
 
+        public List<Entiteit> ZoekEntiteiten(string zoek)
+        {
+            initNonExistingRepo();
+            List<Entiteit> gevondeEntiteiten = new List<Entiteit>();
+            foreach (var e in entiteitRepository.getAlleEntiteiten())
+            {
+                if (e.Naam.ToLower().Contains(zoek.ToLower()))
+                {
+                    gevondeEntiteiten.Add(e);
+                }
+            }
+            return gevondeEntiteiten;
+        }
 
+        public void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten)
+        {
+            foreach (var jsonE in jsonEntiteiten)
+            {
+                if(jsonE.Organisations == null)
+                {
+                    jsonE.Organisations = new List<Organisatie>();
+                }
+                if(GetAllOrganisaties(jsonE.PlatformId).FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
+                {
+
+                    Organisatie organisatie = new Organisatie()
+                    {
+                        Naam = jsonE.Organisation,
+                        Gemeente = jsonE.Disctrict,
+                        PlatformId = jsonE.PlatformId
+                    };
+                    AddOrganisatie(organisatie, null);
+                }
+
+                foreach (var o in GetAllOrganisaties(jsonE.PlatformId))
+                {
+                    if(o.Naam.ToLower() == jsonE.Organisation.ToLower())
+                    {
+                        jsonE.Organisations.Add(o);
+                    }
+                }
+                jsonE.Naam = jsonE.Full_name;
+                AddPerson(jsonE, null);
+            }
+        }
+
+        public void BerekenVasteGrafiekenAlleEntiteiten()
+        {
+            initNonExistingRepo();
+            List<Entiteit> alleEntiteiten = entiteitRepository.getAlleEntiteiten();
+            DateTime vandaag = new DateTime(2018, 04, 01);
+            foreach (var e in alleEntiteiten)
+            {
+                Grafiek postFrequentie = new Grafiek()
+                {
+                    Naam = "Post Frequentie - " + e.Naam,
+                    Waardes = new List<GrafiekWaarde>()
+                };
+                vandaag = new DateTime(2018, 04, 01);
+                for (int i=0; i < 30; i++)
+                {
+                    GrafiekWaarde waarde = new GrafiekWaarde();
+                    waarde.Naam = vandaag.ToShortDateString();
+                    waarde.Waarde = e.Posts.Where(x => x.Date.Date == vandaag.Date).Count();
+                    vandaag = vandaag.AddDays(1);
+                    postFrequentie.Waardes.Add(waarde);
+                }
+                e.Grafieken.Clear();
+                e.Grafieken.Add(postFrequentie);
+                entiteitRepository.updateEntiteit(e);
+            }
+        }
     }
 }

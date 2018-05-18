@@ -1,13 +1,20 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using DAL;
-
 using Domain.Account;
 using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
+using SendGrid;
+using SendGrid.Helpers.Mail;
+using System.Web.Script.Serialization;
+
 
 namespace BL
 {
@@ -33,16 +40,19 @@ namespace BL
         {
             initNonExistingRepo();
             accountRepository.addUser(account);
+
+            // uowManager.Save();
+
         }
         public void UpdateUser(Account account)
         {
-         
+
             initNonExistingRepo();
             Account oldaccount = new Account();
 
             oldaccount = accountRepository.ReadAccount(account.IdentityId);
             account.AccountId = oldaccount.AccountId;
-         
+
 
             accountRepository.updateUser(account);
         }
@@ -58,12 +68,14 @@ namespace BL
             initNonExistingRepo();
             return accountRepository.readAccounts();
         }
-
+   
         public void genereerAlerts()
         {
             initNonExistingRepo(true);
             EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
             List<Alert> Alerts = getAlleAlerts();
+            List<Alert> mailAlerts = new List<Alert>();
+            List<Alert> androidalerts = new List<Alert>();
             Entiteit e;
             //1 keer alle trends resetten om vandaag te kunnen kijken of er een trend aanwezig is
             entiteitMgr.ResetTrends();
@@ -74,15 +86,138 @@ namespace BL
                 {
                     alert.Triggered = true;
                     UpdateAlert(alert);
+                    if(alert.PlatformType == Domain.Enum.PlatformType.EMAIL)
+                    {
+                        mailAlerts.Add(alert);  
+                    }
+                    if(alert.PlatformType == Domain.Enum.PlatformType.ANDROID)
+                    {
+                        androidalerts.Add(alert);
+                    }
                 }
             }
+
+            //Alerts (mail & android) verzenden naar de gebruiker.
+            if(mailAlerts.Count > 0)
+            {
+                sendMailAlerts(mailAlerts);
+            }
+            if(androidalerts.Count > 0)
+            {
+                sendAndroidAlerts(androidalerts);
+            }
+        
             throw new NotImplementedException();
         }
+
+        // Android alerts verzenden
+        public async void sendAndroidAlerts(List<Alert> androidalerts)
+        {
+            AccountManager acm = new AccountManager();
+            foreach (Alert alert in androidalerts)
+            {
+
+                try
+                {
+                    AccountManager mgr = new AccountManager();
+                
+                    string deviceId = alert.Account.DeviceId;
+                    WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                    tRequest.Headers.Add("Authorization", "key=AAAAqR7gPVE:APA91bE_doWC0ah6uYH2KnM3djCI8E0rp4QJ4T6P5X1hL5KVCgofzr_c39psDcACiNYCrpy1TU5fIk8YpXQ_VqOHnfFRANR7uaHmKDtodm9iIa0fPczE4dED0G0zzYP7N4UUvm_qwtWB");
+                    tRequest.Method = "post";
+                    tRequest.ContentType = "application/json";
+                    var data = new
+                    {
+                        to = deviceId,
+                        notification = new
+                        {
+                            body = alert.TrendType + " " + alert.Voorwaarde,
+                            title = alert.AlertNaam,
+                            sound = "Enabled"
+                        }
+                    };
+
+                    var serializer = new JavaScriptSerializer();
+                    var json = serializer.Serialize(data);
+
+                    Byte[] byteArray = Encoding.UTF8.GetBytes(json);
+
+                    tRequest.ContentLength = byteArray.Length;
+                    
+                    using (Stream dataStream = await tRequest.GetRequestStreamAsync())
+                    {
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                        using (WebResponse tResponse = await tRequest.GetResponseAsync())
+                        {
+                            using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                            {
+                                using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                {
+                                    String sResponseFromServer = await tReader.ReadToEndAsync();
+                                    string str = sResponseFromServer;
+                                }
+                            }
+                        }
+                    }
+                    alert.Triggered = false;
+                    acm.UpdateAlert(alert);
+                }
+                catch (Exception ex)
+                {
+                    string str = ex.Message;
+                }
+
+                
+            }
+        }
+
+        // Email alerts verzenden 
+       public async void sendMailAlerts(List<Alert> mailalerts)
+        {
+            List<Alert> tempAlerts = mailalerts;
+
+            AccountManager acm = new AccountManager();
+
+            var apiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
+            string Mail = ConfigurationManager.AppSettings["mailAccount"];
+
+            var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress(Mail, "Politieke Barometer"),
+                Subject = "U heeft nieuwe alerts op Politieke Barometer",
+
+
+
+            };
+          
+            mailalerts.GroupBy(x => x.Entiteit.EntiteitId);
+            foreach (Alert alert in tempAlerts.ToList())
+            {
+                msg.HtmlContent = "<h1> Politieke Barometer</h1> <h3> U heeft nieuwe alerts: </h3> ";
+                foreach (Alert a in tempAlerts.Where(x => x.Account.AccountId == alert.Account.AccountId).ToList())
+                {
+                    msg.HtmlContent += "<h5><b>" + a.AlertNaam + ": </b> </h5><p>" + a.TrendType + " " + alert.Voorwaarde + " <p>";
+                    tempAlerts.Remove(a);
+
+
+                }
+                msg.AddTo(new EmailAddress(alert.Account.Email));
+                var response = await client.SendEmailAsync(msg);
+
+                alert.Triggered = false;
+                acm.UpdateAlert(alert);
+            }
+
+
+        }
+
 
         public void addDeviceId(string userId,string device)
         {
             repo.addDeviceId(userId, device);
         }
+
 
         public Alert GetAlert(int alertID)
         {
@@ -307,6 +442,14 @@ namespace BL
         public void DeleteGrafiekWaardes(int grafiekID)
         {
             accountRepository.DeleteGrafiekWaardes(grafiekID);
+        }
+
+        public void UpdateAlert(int id)
+        {
+            initNonExistingRepo();
+            Alert alertToUpdate = GetAlert(id);
+            alertToUpdate.Triggered = false;
+            repo.UpdateAlert(alertToUpdate);
         }
     }
 }
