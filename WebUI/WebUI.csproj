@@ -227,6 +227,7 @@
     <Compile Include="Models\GrafiekViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PersonViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
     <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

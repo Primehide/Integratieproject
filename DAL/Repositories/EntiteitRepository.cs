@@ -64,7 +64,7 @@ namespace DAL
 
         public Persoon ReadPerson(int id)
         {
-            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).First();
+            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
         }
 
         public Persoon UpdatePerson(Persoon UpdatedPerson)

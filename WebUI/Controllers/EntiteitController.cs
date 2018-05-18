@@ -1,5 +1,6 @@
 ﻿using BL;
 using Domain.Entiteit;
+using Domain.Post;
 using Domain.TextGain;
 using Newtonsoft.Json;
 using System;
@@ -200,7 +201,29 @@ namespace WebUI.Controllers
         public virtual ActionResult DisplayPerson(int EntityId)
         {
             Persoon ToDisplay = eM.GetPerson(EntityId);
-            return View(ToDisplay);
+            List<Post> posts = ToDisplay.Posts;
+            List<Double> polariteitPositief = new List<double>();
+           
+            foreach (Post post in posts)
+            {
+                if (post.Sentiment.polariteit >= 0)
+                {
+                    double waarde = post.Sentiment.polariteit;
+                    polariteitPositief.Add(waarde);
+                } 
+
+            }
+            int polariteitNegatiefCount = posts.Count() - polariteitPositief.Count();
+            int totaal = posts.Count();
+            int polariteitPositiefCount = polariteitPositief.Count();
+            PersonViewModel personViewModel = new PersonViewModel()
+            {
+                Persoon = ToDisplay,
+                AantalPosts = totaal,
+                AantalPositieve = polariteitPositiefCount,
+                AantalNegatieve = polariteitNegatiefCount
+            };
+            return View(personViewModel);
         }
         #endregion
 
