@@ -243,7 +243,7 @@ namespace BL
             Dictionary<int, int> dictionaryPopulariteit = new Dictionary<int, int>();
             Dictionary<string, int> dictionaryWords = new Dictionary<string, int>();
 
-            foreach (var p in entiteitManager.GetAllPeople())
+            foreach (var p in entiteitManager.GetAllPeople(1))
             {
                 double sentiment = 0;
                 foreach (var post in p.Posts)

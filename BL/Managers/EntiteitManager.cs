@@ -455,7 +455,7 @@ namespace BL
 
         public List<Persoon> GetAllPeople(int platId)
         {
-            initNonExistingRepo(false);
+            initNonExistingRepo();
             return entiteitRepository.ReadAllPeople().Where(x => x.PlatformId == platId).ToList();
         }
 
@@ -636,18 +636,19 @@ namespace BL
                 {
                     jsonE.Organisations = new List<Organisatie>();
                 }
-                if(GetAllOrganisaties(1).FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
+                if(GetAllOrganisaties(jsonE.PlatformId).FirstOrDefault(x => x.Naam.ToLower() == jsonE.Organisation.ToLower()) == null)
                 {
 
                     Organisatie organisatie = new Organisatie()
                     {
                         Naam = jsonE.Organisation,
-                        Gemeente = jsonE.Disctrict
+                        Gemeente = jsonE.Disctrict,
+                        PlatformId = jsonE.PlatformId
                     };
                     AddOrganisatie(organisatie, null);
                 }
 
-                foreach (var o in GetAllOrganisaties(1))
+                foreach (var o in GetAllOrganisaties(jsonE.PlatformId))
                 {
                     if(o.Naam.ToLower() == jsonE.Organisation.ToLower())
                     {

@@ -4364,6 +4364,7 @@
     <Content Include="Views\Manage\VolgItems.cshtml" />
     <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
     <Content Include="Views\Entiteit\Zoeken.cshtml" />
+    <Content Include="Views\Account\EditGrafiek.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -99,7 +99,11 @@ namespace WebUI.Controllers
                 if (file != null && file.ContentLength > 0)
                 {
                     string str = (new StreamReader(file.InputStream)).ReadToEnd();
-                    List<Domain.TextGain.JsonEntiteit> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.TextGain.JsonEntiteit>>(str);
+                    List<Domain.Entiteit.Persoon> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.Entiteit.Persoon>>(str);
+                    foreach (var p in JsonEntiteiten)
+                    {
+                        p.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                    }
                     entiteitManager.ConvertJsonToEntiteit(JsonEntiteiten);
                 }
             }
