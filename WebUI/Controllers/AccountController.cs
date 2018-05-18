@@ -321,6 +321,11 @@ namespace WebUI.Controllers
             return View("Register", model);
         }
 
+        public ActionResult EditGrafiek()
+        {
+            return View();
+        }
+
         //
         // GET: /Account/ConfirmEmail
         [AllowAnonymous]
