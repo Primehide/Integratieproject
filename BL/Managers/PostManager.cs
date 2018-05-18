@@ -74,7 +74,7 @@ namespace BL
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
-            
+
             foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
@@ -104,10 +104,11 @@ namespace BL
                         {
                             ConvertAndSaveToDb(posts, Persoon.EntiteitId);
                         }
-                    } catch (Newtonsoft.Json.JsonReaderException)
+                    }
+                    catch (Newtonsoft.Json.JsonReaderException)
                     {
 
-                    } 
+                    }
                 }
             }
         }
@@ -185,10 +186,10 @@ namespace BL
                 }
 
                 //sentiment in textgain geeft altijd 2 elementen terug, eerste is polariteit, tweede subjectiviteit
-                if(post.sentiment.Count != 0)
+                if (post.sentiment.Count != 0)
                 {
-                    double polariteit = double.Parse(post.sentiment.ElementAt(0),CultureInfo.InvariantCulture);
-                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1),CultureInfo.InvariantCulture);
+                    double polariteit = double.Parse(post.sentiment.ElementAt(0), CultureInfo.InvariantCulture);
+                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1), CultureInfo.InvariantCulture);
                     newPost.Sentiment.polariteit = polariteit;
                     newPost.Sentiment.subjectiviteit = subjectiviteit;
                 }
@@ -237,6 +238,7 @@ namespace BL
         public List<Grafiek> getAllGrafieken()
         {
             return postRepository.GetAllGrafieken().ToList();
+        }
 
         public void maakVasteGrafieken()
         {
@@ -285,7 +287,7 @@ namespace BL
             var orderedPopulariteit = dictionaryPopulariteit.OrderByDescending(x => x.Value);
             var frequency = postRepository.GetAllWords().GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count()).OrderByDescending(x => x.Value);
 
-            for (int i=0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 GrafiekWaarde waarde = new GrafiekWaarde()
                 {
@@ -325,6 +327,13 @@ namespace BL
             initNonExistingRepo();
             return postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
 
+        }
+
+        public void updateGrafiek(int id)
+        {
+            initNonExistingRepo();
+            Grafiek grafiekToUpdate = postRepository.GetAllGrafieken().Single(x => x.GrafiekId == id);
+            BerekenGrafiekWaarde(grafiekToUpdate.Type, null);
         }
     }
 }

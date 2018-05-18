@@ -491,62 +491,7 @@ namespace WebUI.Controllers
 
         public void updateGrafieken()
         {
-            EntiteitManager eM = new EntiteitManager();
-            AccountManager aM = new AccountManager();
-            PostManager pM = new PostManager();
 
-            foreach (Account acc in aM.GetAccounts())
-            {
-                List<Grafiek> grafieken = new List<Grafiek>();
-                foreach (DashboardBlok db in acc.Dashboard.Configuratie.DashboardBlokken)
-                {
-                    grafieken.Add(db.Grafiek);
-                }
-
-                foreach (Grafiek g in grafieken)
-                {
-
-                    List<Entiteit> grafiekEntiteiten = new List<Entiteit>();
-                    foreach (Entiteit iD in g.Entiteiten)
-                    {
-                        grafiekEntiteiten.Add(eM.getEntiteit(iD.EntiteitId));
-                    }
-
-                    Dictionary<string, double> nieuweWaardes = new Dictionary<string, double>();
-                    switch (g.Type)
-                    {
-                        case GrafiekType.CIJFERS:
-                            List<string> opties = new List<string>();
-                            foreach (CijferOpties c in g.CijferOpties)
-                            {
-                                opties.Add(c.optie.ToString());
-                            }
-
-                            nieuweWaardes = eM.BerekenGrafiekWaarde(g.Type, grafiekEntiteiten, opties, null);
-                            break;
-                        case GrafiekType.VERGELIJKING:
-                            nieuweWaardes = eM.BerekenGrafiekWaarde(g.Type, grafiekEntiteiten, null, g.soortGegevens.ToString());
-                            break;
-                    }
-
-                    aM.DeleteGrafiekWaardes(g.GrafiekId);
-
-
-
-                    foreach (var item in nieuweWaardes)
-                    {
-                        Domain.Post.GrafiekWaarde w = new Domain.Post.GrafiekWaarde()
-                        {
-                            Naam = item.Key,
-                            Waarde = item.Value
-                        };
-
-                        g.Waardes.Add(w);
-                    }
-
-                    aM.updateUser(acc);
-                }
-            }
         }
 
         Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();

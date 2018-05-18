@@ -20,5 +20,6 @@ namespace BL
         void maakVasteGrafieken();
         void addGrafiek(Grafiek grafiek);
         List<Grafiek> GetVasteGrafieken();
+        void updateGrafiek(int id);
     }
 }
