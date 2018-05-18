@@ -4935,6 +4935,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.eot" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.ttf" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Content\Dashboard\assets\images\background\Thumbs.db" />
     <Content Include="Content\Dashboard\assets\images\big\Thumbs.db" />
@@ -5241,7 +5242,6 @@
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\.travis.yml" />
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\bower.json" />
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\build\jquery.steps-1.1.0.zip" />
-    <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\build\jQuery.Steps.1.1.0.nupkg" />
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\CHANGELOG.md" />
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\nuget\jQuery.Steps.nuspec" />
     <Content Include="Content\Dashboard\assets\plugins\jquery-steps-master\package.json" />
@@ -5802,7 +5802,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\popper-utils.js" />
     <Content Include="Scripts\popper-utils.min.js" />
     <Content Include="Scripts\popper.js" />
@@ -5888,9 +5887,7 @@
     <Content Include="Views\Entiteit\DeleteThema.cshtml" />
     <Content Include="Views\Entiteit\EditThema.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Sleutelwoord.cshtml" />
-    <Content Include="Views\Account\LoginNew.cshtml" />
     <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\Sleutelwoord.cshtml" />
     <Content Include="Views\Account\RegisterNew.cshtml" />
     <Content Include="Views\Account\ConfirmEmailNew.cshtml" />
     <Content Include="Views\Account\PleaseConfirmEmail.cshtml" />
@@ -5923,6 +5920,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Post\" />
+    <Folder Include="Views\Shared\EditorTemplates\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
