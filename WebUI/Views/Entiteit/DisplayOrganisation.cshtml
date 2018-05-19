@@ -43,14 +43,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <center class="m-t-30">
-                               @if (Model.Image != null)
-                               {
-                                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
-                               }
-                               else
-                                {
-                                <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" , width="150" , height="150" , class="img-circle" />
-                                }
+
+                                    @if (Model.Image != null)
+            {
+                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
+}
+else
+{
+                        <img src="~/Content/Dashboard/assets/images/group.png" , width="150" , height="150" , class="img-circle" />
+}
 
                                     <h4> Organisatie: @Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" }) </h4>
 
@@ -62,6 +63,9 @@
                                         </font>
                                 </center>
                             </div>
+                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
+
+
                             <div>
                                 <hr>
                             </div>

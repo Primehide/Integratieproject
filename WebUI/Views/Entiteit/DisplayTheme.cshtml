@@ -41,14 +41,16 @@
                         <div class="card">
                             <div class="card-body">
                                 <center class="m-t-30">
-
-
+                                    <img src="~/Content/Dashboard/assets/images/light-bulb.png" , width="150" , height="150" , class="img-circle" />
 
 
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(x => x.Naam)</h4>
+                                    @Html.DisplayFor(m => m.SleutenWoorden, "SleutelwoordNaam")
 
                                 </center>
                             </div>
+
+                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
                             <div>
                                 <hr>
                             </div>

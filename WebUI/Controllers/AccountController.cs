@@ -13,6 +13,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
 using Microsoft.Owin.Security.DataProtection;
+using Domain.Entiteit;
+using System.Collections;
 
 namespace WebUI.Controllers
 {
@@ -81,7 +83,8 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
-            AdminViewModel model = new AdminViewModel()
+            AdminViewModel model =
+                new AdminViewModel()
             {
                 Users = accountManager.GetAccounts()
             };
@@ -91,6 +94,7 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerEntiteiten()
         {
+            fillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
             AdminViewModel model = new AdminViewModel()
             {
@@ -686,25 +690,50 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexUsers");
         }
 
-        public ActionResult FollowEntiteit(int id)
+        public ActionResult FollowEntiteit(int id, string fromDisplay)
         {
             string entityID = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
-       
+
             accountManager.FollowEntity(entityID, id);
+           
             return RedirectToAction("VolgItems", "Manage");
         }
-
         public ActionResult UnfollowEntiteit(int id)
         {
             string entityID = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
 
             accountManager.UnfollowEntity(entityID, id);
-            return RedirectToAction("VolgItems", "Manage");
+          return RedirectToAction("VolgItems", "Manage");
         }
+        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        private void fillOrganisaties()
+        {
 
-        
+            ArrayList organisaties = new ArrayList();
+
+            List<Entiteit> entiteits = new List<Entiteit>();
+
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.getAlleEntiteiten();
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
+            ViewBag.Organisaties = organisaties;
+        }
     }
 
 

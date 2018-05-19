@@ -39,26 +39,30 @@
                     <!-- Column -->
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
+
                             <div class="card-body">
                                 <center class="m-t-30">
+
                                     @if (Model.Image != null)
-    {
-                                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
+            {
+                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
 }
 else
 {
-                                <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" , width="150" , height="150" , class="img-circle" />
+                        <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
 }
 
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" })</h4>
-                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.Organisations, "Organisation")</h6>
+
+                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.Organisations, "Organisations")</h6>
                                 </center>
                             </div>
+                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
                             <div>
                                 <hr>
                             </div>
                             <div class="card-body">
-                                
+
                                 <br />
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>

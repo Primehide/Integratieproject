@@ -169,6 +169,7 @@ namespace DAL
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
+    
 
         public void UpdateThema(Thema thema)
         {

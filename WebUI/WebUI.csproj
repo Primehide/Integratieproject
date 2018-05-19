@@ -249,6 +249,7 @@
     <Content Include="Content\Dashboard\assets\images\alert\model.png" />
     <Content Include="Content\Dashboard\assets\images\alert\model2.png" />
     <Content Include="Content\Dashboard\assets\images\alert\model3.png" />
+    <Content Include="Content\Dashboard\assets\images\avatar.png" />
     <Content Include="Content\Dashboard\assets\images\background\error-bg.jpg" />
     <Content Include="Content\Dashboard\assets\images\background\login-register.jpg" />
     <Content Include="Content\Dashboard\assets\images\background\megamenubg.jpg" />
@@ -283,6 +284,7 @@
     <Content Include="Content\Dashboard\assets\images\gallery\chair2.jpg" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair3.jpg" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair4.jpg" />
+    <Content Include="Content\Dashboard\assets\images\group.png" />
     <Content Include="Content\Dashboard\assets\images\icon\assets-w.png" />
     <Content Include="Content\Dashboard\assets\images\icon\assets.png" />
     <Content Include="Content\Dashboard\assets\images\icon\danger.svg" />
@@ -295,6 +297,7 @@
     <Content Include="Content\Dashboard\assets\images\icon\success.svg" />
     <Content Include="Content\Dashboard\assets\images\icon\warning.svg" />
     <Content Include="Content\Dashboard\assets\images\icon\zip.png" />
+    <Content Include="Content\Dashboard\assets\images\light-bulb.png" />
     <Content Include="Content\Dashboard\assets\images\logo-icon.png" />
     <Content Include="Content\Dashboard\assets\images\logo-light-icon.png" />
     <Content Include="Content\Dashboard\assets\images\logo-light-text.png" />
@@ -5921,12 +5924,11 @@
     <Content Include="Views\Manage\EditAlert.cshtml" />
     <Content Include="Views\Account\EditUserAdmin.cshtml" />
     <Content Include="Views\Manage\VolgItems.cshtml" />
-    <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
     <Content Include="Views\Entiteit\ShowEntiteiten.cshtml" />
     <Content Include="Views\Entiteit\Zoeken.cshtml" />
-    <Content Include="Views\Entiteit\OrganisatiePagina.cshtml" />
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\SleutelwoordNaam.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -50,20 +50,28 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddPersoon(Persoon p, int organisationId)
+        public ActionResult AddPersoon(Persoon p, string organisatie, HttpPostedFileBase uploadFile)
         {
+            fillOrganisaties();
+
             EntiteitManager entiteitManager = new EntiteitManager();
             p.Organisations = new List<Organisatie>();
+            int organisationId = NaamType.Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
             p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
-            entiteitManager.AddPerson(p,null);
+            entiteitManager.AddPerson(p,uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
-        public ActionResult AddOrganisatie(Organisatie o)
+        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
         {
+           
+         
+
+
             EntiteitManager entiteitManager = new EntiteitManager();
             o.Leden = new List<Persoon>();
-            entiteitManager.AddOrganisatie(o, null);
+           
+            entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
@@ -554,6 +562,34 @@ namespace WebUI.Controllers
                 Organisaties = deelplatformOrganisaties
             };
             return View(zoekModel);
+        }
+
+        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        private void fillOrganisaties()
+        {
+
+            ArrayList organisaties = new ArrayList();
+
+            List<Entiteit> entiteits = new List<Entiteit>();
+
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.getAlleEntiteiten();
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
+            ViewBag.Organisaties = organisaties;
         }
 
     }

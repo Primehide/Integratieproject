@@ -9,6 +9,7 @@ using Domain.Enum;
 using Domain.Post;
 using System.Web;
 using Domain.TextGain;
+using System.Collections;
 
 namespace BL
 {
@@ -658,5 +659,6 @@ namespace BL
                 AddPerson(newPersoon, null);
             }
         }
+      
     }
 }
