@@ -32,22 +32,7 @@ namespace WebUI.Controllers
             };
         }
 
-        [HttpPost]
-        public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
-        {
-            IAccountManager accountManager = new AccountManager();
-            List<CijferOpties> opties = new List<CijferOpties>();
-            foreach (var optie in model.CijferOpties)
-            {
-                CijferOpties o = new CijferOpties()
-                {
-                    optie = optie
-                };
-                opties.Add(o);
-            }
-            //accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
-            return RedirectToAction("Index","Manage");
-        }
+        
 
         public ActionResult berekenVasteGrafieken()
         {

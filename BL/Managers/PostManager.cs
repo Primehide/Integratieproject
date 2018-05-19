@@ -68,7 +68,7 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-1).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
@@ -80,10 +80,10 @@ namespace BL
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Persoon.Naam,
-                    since = new DateTime(2018, 04, 01),
-                    until = new DateTime(2018, 04, 30)
-                    //since = gisteren,
-                    //until = vandaag
+                    //since = new DateTime(2018, 04, 01),
+                    //until = new DateTime(2018, 04, 30)
+                    since = gisteren,
+                    until = vandaag
                 };
 
                 List<TextGainResponse> posts = new List<TextGainResponse>();
@@ -342,10 +342,105 @@ namespace BL
             return postRepository.ReadGrafiek(id);
         }
 
-        public void UpdateGrafiek(Grafiek grafiekToUpdate)
+        public void UpdateGrafiek(List<int> EntiteitIds, Grafiek grafiek)
+        {
+            initNonExistingRepo(true);
+
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+
+            Grafiek grafiekToUpdate = GetGrafiek(grafiek.GrafiekId);
+            List<Entiteit> entiteiten = new List<Entiteit>();
+            entiteitManager.getAlleEntiteiten();
+
+            foreach (var i in EntiteitIds)
+            {
+                entiteiten.Add(entiteitManager.getEntiteit(i));
+            }
+            grafiekToUpdate.Waardes = BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, entiteiten);
+            grafiekToUpdate.Naam = grafiek.Naam;
+            grafiekToUpdate.GrafiekSoort = grafiek.GrafiekSoort;
+
+            foreach (var e in entiteiten)
+            {
+                e.Posts = null;
+            };
+            //grafiekToUpdate.Entiteiten.Clear();
+            //grafiekToUpdate.Entiteiten = entiteiten;
+            postRepository.UpdateGrafiek(grafiekToUpdate);
+            uowManager.Save();
+        }
+
+        public List<GrafiekWaarde> BerekenGrafiekWaardes(List<CijferOpties> opties, List<Entiteit> entiteiten)
         {
             initNonExistingRepo();
-            postRepository.UpdateGrafiek(grafiekToUpdate);
+            //EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            List<GrafiekWaarde> GrafiekWaardes = new List<GrafiekWaarde>();
+
+            //Alle opties overlopen
+            foreach (var o in opties)
+            {
+                //Als optie aantal posts is, voor elke entiteit het totaal aantal posts ophalen
+                if(o.optie.ToLower() == "aantalposts" || o.optie.ToLower() == "populariteit")
+                {
+                    foreach (var e in entiteiten)
+                    {
+                        GrafiekWaarde waarde = new GrafiekWaarde()
+                        {
+                            Naam = "# Posts " + e.Naam,
+                            Waarde = e.Posts.Count
+                        };
+                        GrafiekWaardes.Add(waarde);
+                    }
+                }
+                else if(o.optie.ToLower() == "aantalretweets")
+                {
+                    foreach (var e in entiteiten)
+                    {
+                        GrafiekWaarde waarde = new GrafiekWaarde()
+                        {
+                            Naam = "# Retweets " + e.Naam,
+                            Waarde = e.Posts.Where(x => x.retweet == true).Count()
+                        };
+                        GrafiekWaardes.Add(waarde);
+                    }
+                }
+                else if (o.optie.ToLower() == "aanwezigetrends")
+                {
+                    foreach (var e in entiteiten)
+                    {
+                        foreach (var t in e.Trends)
+                        {
+                            GrafiekWaarde waarde = new GrafiekWaarde()
+                            {
+                                Naam = "Trend " + t.Voorwaarde,
+                                Waarde = 1 //1 van true, aanwezig
+                            };
+                            GrafiekWaardes.Add(waarde);
+                        }
+                    }
+                }
+                else if(o.optie.ToLower() == "postfrequentie")
+                {
+                    foreach (var e in entiteiten)
+                    {
+                        for (int i = 0; i < 10; i++)
+                        {
+                            GrafiekWaarde waarde = new GrafiekWaarde()
+                            {
+                                Naam = "Posts " + e.Naam,
+                                Waarde = e.Posts.Where(x => x.Date.Date == DateTime.Today.AddDays(-i).Date).Count()
+                            };
+                            GrafiekWaardes.Add(waarde);
+                        }
+                        GrafiekWaarde end = new GrafiekWaarde()
+                        {
+                            Naam = "endpostfrequentie"
+                        };
+                        GrafiekWaardes.Add(end);
+                    }
+                }
+            }
+            return GrafiekWaardes;
         }
     }
 }

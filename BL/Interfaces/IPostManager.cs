@@ -22,6 +22,7 @@ namespace BL
         List<Grafiek> GetVasteGrafieken();
         void updateGrafiek(int id);
         Grafiek GetGrafiek(int id);
-        void UpdateGrafiek(Grafiek grafiekToUpdate);
+        void UpdateGrafiek(List<int> EntiteitIds, Grafiek grafiek);
+        List<GrafiekWaarde> BerekenGrafiekWaardes(List<CijferOpties> opties, List<Entiteit> entiteiten);
     }
 }

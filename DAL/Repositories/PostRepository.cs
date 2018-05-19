@@ -72,19 +72,20 @@ namespace DAL
 
         public List<Grafiek> AlleGrafieken()
         {
-            return ctx.Grafieken.Include(x => x.Waardes).ToList();
+            return ctx.Grafieken.Include(x => x.Waardes).Include(x => x.Entiteiten).ToList();
 
         }
 
         public Grafiek ReadGrafiek(int id)
         {
             return ctx.Grafieken
-                .Include(x => x.Waardes)
+                .Include(x => x.Waardes).Include(x => x.Entiteiten).Include(x => x.CijferOpties)
                 .Single(x => x.GrafiekId == id);
         }
 
         public void UpdateGrafiek(Grafiek grafiekToUpdate)
         {
+            //ctx.Entry(grafiekToUpdate.Entiteiten).State = EntityState.Unchanged;
             ctx.Entry(grafiekToUpdate).State = EntityState.Modified;
             ctx.SaveChanges();
         }

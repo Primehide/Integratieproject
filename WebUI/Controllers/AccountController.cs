@@ -23,7 +23,7 @@ using System.Data;
 using Microsoft.Owin.Security.DataProtection;
 using System.Configuration;
 using System.Web.Configuration;
-
+using Domain.Post;
 
 namespace WebUI.Controllers
 {
@@ -124,7 +124,7 @@ namespace WebUI.Controllers
         public virtual ActionResult Login(string returnUrl)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
+             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
             ViewBag.platId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
@@ -335,16 +335,39 @@ namespace WebUI.Controllers
         public ActionResult EditGrafiek(int id)
         {
             PostManager postManager = new PostManager();
-            return View(postManager.GetGrafiek(id));
+            EntiteitManager entiteitManager = new EntiteitManager();
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Grafiek = postManager.GetGrafiek(id),
+                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
+            };
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult EditGrafiek(Domain.Post.Grafiek grafiek)
+        public ActionResult EditGrafiek(Domain.Post.Grafiek grafiek, List<int> EntiteitIds)
         {
-            PostManager postManager = new PostManager();
-            Domain.Post.Grafiek grafiekToUpdate = postManager.GetGrafiek(grafiek.GrafiekId);
-            grafiekToUpdate.Naam = grafiek.Naam;
-            postManager.UpdateGrafiek(grafiekToUpdate);
+            IPostManager postManager = new PostManager();
+            postManager.UpdateGrafiek(EntiteitIds,grafiek);
+            return RedirectToAction("Index", "Manage");
+        }
+
+        [HttpPost]
+        public ActionResult createGrafiek(GrafiekModel model)
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<CijferOpties> opties = new List<CijferOpties>();
+            foreach (var optie in model.CijferOpties)
+            {
+                CijferOpties o = new CijferOpties()
+                {
+                    optie = optie
+                };
+                opties.Add(o);
+            }
+            accountManager.AddUserGrafiek(opties, model.EntiteitIds, model.TypeGrafiek, (int)System.Web.HttpContext.Current.Session["PlatformID"], User.Identity.GetUserId(), model.Naam, model.GrafiekSoort);
             return RedirectToAction("Index", "Manage");
         }
 

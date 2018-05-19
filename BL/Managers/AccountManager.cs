@@ -452,22 +452,19 @@ namespace BL
             repo.UpdateAlert(alertToUpdate);
         }
 
-        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId)
+        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            IPostManager postManager = new PostManager(uowManager);
             List<Entiteit> entiteiten = new List<Entiteit>();
+
+            Account user = accountRepository.ReadAccount(IdentityId);
 
             //geselecteerde entiteiten opzoeken
             foreach (var i in entiteitIds)
             {
-                foreach (var e in entiteitManager.getAlleEntiteiten())
-                {
-                    if(e.EntiteitId == i)
-                    {
-                        entiteiten.Add(e);
-                    } 
-                }
+                entiteiten.Add(entiteitManager.getEntiteit(i));
             }
 
             //nieuwe grafiek aanmaken
@@ -475,8 +472,55 @@ namespace BL
             {
                 CijferOpties = opties,
                 Entiteiten = entiteiten,
-                Type = grafiekType
+                Type = grafiekType,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = naam,
+                GrafiekSoort = grafiekSoort
             };
+
+            if (opties.First().optie.ToLower() == "populariteit")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POPULARITEIT;
+            }
+            else if (opties.First().optie.ToLower() == "postfrequentie")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POSTFREQUENTIE;
+            }
+            else if (opties.First().optie.ToLower() == "sentiment")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.SENTIMENT;
+            }
+
+            //waardes voor de grafiek berekenen
+            grafiek.Waardes = postManager.BerekenGrafiekWaardes(opties, entiteiten);
+
+            foreach (var e in entiteiten)
+            {
+                e.Posts.Clear();
+            };
+
+            //kijkt na of de gebruiker al een lijst van blokken heeft om nullpointer te vermijden
+            if (user.Dashboard.Configuratie.DashboardBlokken == null)
+                user.Dashboard.Configuratie.DashboardBlokken = new List<DashboardBlok>();
+
+            //nieuw blok aanmaken voor de configuratie
+            DashboardBlok dashboardBlok = new DashboardBlok()
+            {
+                Grafiek = grafiek,
+            };
+            user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
+            accountRepository.updateUser(user);
+            uowManager.Save();
+        }
+
+        public void UpdateGrafiek(int grafiekId)
+        {
+            initNonExistingRepo(true);
+            PostManager postManager = new PostManager(uowManager);
+            Grafiek grafiekToUpdate = postManager.GetGrafiek(grafiekId);
+            grafiekToUpdate.Waardes = postManager.BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, grafiekToUpdate.Entiteiten);
+            //postManager.UpdateGrafiek(grafiekToUpdate);
+            uowManager.Save();
         }
     }
 }
