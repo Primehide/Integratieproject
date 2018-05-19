@@ -451,5 +451,32 @@ namespace BL
             alertToUpdate.Triggered = false;
             repo.UpdateAlert(alertToUpdate);
         }
+
+        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId)
+        {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            List<Entiteit> entiteiten = new List<Entiteit>();
+
+            //geselecteerde entiteiten opzoeken
+            foreach (var i in entiteitIds)
+            {
+                foreach (var e in entiteitManager.getAlleEntiteiten())
+                {
+                    if(e.EntiteitId == i)
+                    {
+                        entiteiten.Add(e);
+                    } 
+                }
+            }
+
+            //nieuwe grafiek aanmaken
+            Grafiek grafiek = new Grafiek()
+            {
+                CijferOpties = opties,
+                Entiteiten = entiteiten,
+                Type = grafiekType
+            };
+        }
     }
 }

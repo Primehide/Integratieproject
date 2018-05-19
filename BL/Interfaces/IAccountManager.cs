@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DAL;
 using Domain.Account;
 using Domain.Entiteit;
+using Domain.Post;
 
 namespace BL
 {
@@ -28,5 +29,6 @@ namespace BL
         void FollowEntity(string identityID, int entiteitID);
         void UnfollowEntity(string identityID, int entiteitID);
         void UpdateAlert(int id);
+        void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, Domain.Enum.GrafiekType grafiekType);
     }
 }

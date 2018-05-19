@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BL;
+using Domain.Post;
 
 namespace WebUI.Controllers
 {
@@ -35,7 +36,16 @@ namespace WebUI.Controllers
         public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
         {
             IAccountManager accountManager = new AccountManager();
-            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
+            List<CijferOpties> opties = new List<CijferOpties>();
+            foreach (var optie in model.CijferOpties)
+            {
+                CijferOpties o = new CijferOpties()
+                {
+                    optie = optie
+                };
+                opties.Add(o);
+            }
+            //accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
             return RedirectToAction("Index","Manage");
         }
 
