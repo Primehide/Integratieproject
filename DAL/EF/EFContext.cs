@@ -43,6 +43,7 @@ namespace DAL
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Alert> Alerts { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
+        public DbSet<Faq> Faqs { get; set; }
 
         //PLATFORM//
         public DbSet<Deelplatform> DeelPlatformen { get; set; }

@@ -259,5 +259,29 @@ namespace BL
             initNonExistingRepo();
             repo.updateUser(account);
         }
+        public void addFaq(Faq faq)
+        {
+            initNonExistingRepo();
+            accountRepository.addFaq(faq);
+
+        }
+        public void updateFaq(Faq faq)
+        {
+            initNonExistingRepo();
+            repo.UpdateFaq(faq); 
+
+        }
+        public void deleteFaq(int faqID)
+        {
+            initNonExistingRepo();
+            accountRepository.DeleteFaq(faqID);
+
+        }
+        public List<Faq> getAlleFaqs()
+        {
+            initNonExistingRepo();
+            return accountRepository.getAlleFaqs();
+        }
+
     }
 }

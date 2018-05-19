@@ -78,7 +78,26 @@ namespace WebUI.Controllers
             };
             return View(model);
         }
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerFaq()
+        {
+            AccountManager accountManager = new AccountManager();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            return View(faqs);
+        }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult DeleteFaq(int id)
+        {
+            AccountManager accountManager = new AccountManager();
+            accountManager.deleteFaq(id);
+
+
+
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+           
+            return View("AdminBeheerFaq", faqs);
+        }
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerGebruikers()
         {
@@ -101,6 +120,19 @@ namespace WebUI.Controllers
                 AlleEntiteiten = entiteitManager.getAlleEntiteiten()
             };
             return View(model);
+        }
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AddFaq(Faq f)
+        {
+
+
+
+            AccountManager acm = new AccountManager();
+           
+        
+
+            acm.addFaq(f);
+            return RedirectToAction("AdminBeheerFaq", "Account");
         }
 
         //

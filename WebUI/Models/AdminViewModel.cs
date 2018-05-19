@@ -13,5 +13,6 @@ namespace WebUI.Models
         public List<Post> RecentePosts { get; set; }
         public List<Entiteit> AlleEntiteiten { get; set; }
         public List<Account> Users { get; set; }
+        public List<Faq> Faqs { get; set; }
     }
 }

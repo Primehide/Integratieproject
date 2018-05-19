@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,12 @@ namespace WebUI.Controllers
     [RequireHttps]
     public partial class HomeController : Controller
     {
+        public ActionResult Faq()
+        {
+            AccountManager mgr = new AccountManager();
+            IEnumerable<Domain.Account.Faq> faqs = mgr.getAlleFaqs();
+            return View(faqs);
+        }
 
         public ActionResult HomePagina()
         {
