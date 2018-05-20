@@ -46,7 +46,7 @@
                                         <div class="cold-md-4">
                                             <div class="form-group">
                                                 <label>Grafiek naam</label>
-                                                <input type="text" class="form-control" placeholder="@Model.Grafiek.Naam" name="Naam">
+                                                <input type="text" class="form-control" placeholder="@Model.Grafiek.Naam" name="Naam" value="@Model.Grafiek.Naam">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
@@ -75,7 +75,7 @@
                                         <div class="col-md-4" id="SelecteerGrafiek">
                                             <h5 class="box-title">Soort Grafiek:</h5>
                                             <select class="selectpicker" id="SoortGrafiek" name="SoortGrafiek" data-style="form-control btn-secondary">
-                                                <option>--Selecteer grafiek--</option>
+                                                <option value="@Model.Grafiek.GrafiekSoort">--Selecteer grafiek--</option>
                                                 <option value="STAFGRAFIEK">Staafdiagram</option>
                                                 <option value="TAARTGRAFIEK">Taartdiagram</option>
                                                 <option value="LIJNGRAFIEK">Lijndiagram</option>

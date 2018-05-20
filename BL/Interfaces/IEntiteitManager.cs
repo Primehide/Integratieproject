@@ -50,6 +50,7 @@ namespace BL
         void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
 
         void BerekenVasteGrafiekenAlleEntiteiten();
+        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
 
     }
 }

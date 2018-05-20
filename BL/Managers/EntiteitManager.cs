@@ -124,6 +124,12 @@ namespace BL
             return entiteitRepository.getAlleEntiteiten();
         }
 
+        public List<Entiteit> getAlleEntiteiten(bool IncludePosts)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.getAlleEntiteiten(IncludePosts);
+        }
+
         public Entiteit GetEntiteit(int id)
         {
             initNonExistingRepo();

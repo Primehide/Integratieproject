@@ -24,6 +24,7 @@ using Microsoft.Owin.Security.DataProtection;
 using System.Configuration;
 using System.Web.Configuration;
 using Domain.Post;
+using Domain.Entiteit;
 
 namespace WebUI.Controllers
 {
@@ -336,12 +337,13 @@ namespace WebUI.Controllers
         {
             PostManager postManager = new PostManager();
             EntiteitManager entiteitManager = new EntiteitManager();
+            List<Entiteit> AlleEntiteiten = entiteitManager.getAlleEntiteiten(false);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
                 Grafiek = postManager.GetGrafiek(id),
-                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
+                Personen = AlleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Organisaties = AlleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
             };
             return View(model);
         }

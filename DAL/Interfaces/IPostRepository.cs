@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entiteit;
 using Domain.Post;
 
 namespace DAL
@@ -20,5 +21,6 @@ namespace DAL
         List<Grafiek> AlleGrafieken();
         Grafiek ReadGrafiek(int id);
         void UpdateGrafiek(Grafiek grafiekToUpdate);
+        List<Entiteit> getAlleEntiteiten();
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Post;
 using System.Data.Entity;
+using Domain.Entiteit;
 
 namespace DAL
 {
@@ -79,7 +80,9 @@ namespace DAL
         public Grafiek ReadGrafiek(int id)
         {
             return ctx.Grafieken
-                .Include(x => x.Waardes).Include(x => x.Entiteiten).Include(x => x.CijferOpties)
+                .Include(x => x.Waardes)
+                .Include(x => x.Entiteiten)
+                .Include(x => x.CijferOpties)
                 .Single(x => x.GrafiekId == id);
         }
 
@@ -88,6 +91,11 @@ namespace DAL
             //ctx.Entry(grafiekToUpdate.Entiteiten).State = EntityState.Unchanged;
             ctx.Entry(grafiekToUpdate).State = EntityState.Modified;
             ctx.SaveChanges();
+        }
+
+        public List<Entiteit> getAlleEntiteiten()
+        {
+            return ctx.Entiteiten.Include(x => x.Posts).ToList();
         }
     }
 }

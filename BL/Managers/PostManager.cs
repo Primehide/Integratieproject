@@ -68,7 +68,7 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-1).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-30).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
@@ -345,27 +345,26 @@ namespace BL
         public void UpdateGrafiek(List<int> EntiteitIds, Grafiek grafiek)
         {
             initNonExistingRepo(true);
-
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
 
             Grafiek grafiekToUpdate = GetGrafiek(grafiek.GrafiekId);
             List<Entiteit> entiteiten = new List<Entiteit>();
-            entiteitManager.getAlleEntiteiten();
 
+            grafiekToUpdate.Entiteiten.Clear();
             foreach (var i in EntiteitIds)
             {
-                entiteiten.Add(entiteitManager.getEntiteit(i));
+                var e = postRepository.getAlleEntiteiten().Single(x => x.EntiteitId == i);
+                entiteiten.Add(e);
+                grafiekToUpdate.Entiteiten.Add(e);
             }
+
             grafiekToUpdate.Waardes = BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, entiteiten);
             grafiekToUpdate.Naam = grafiek.Naam;
             grafiekToUpdate.GrafiekSoort = grafiek.GrafiekSoort;
 
-            foreach (var e in entiteiten)
-            {
-                e.Posts = null;
-            };
-            //grafiekToUpdate.Entiteiten.Clear();
             //grafiekToUpdate.Entiteiten = entiteiten;
+            //entiteiten.Clear();
+            //grafiekToUpdate.Entiteiten.Add(entiteitManager.getEntiteit(4));
             postRepository.UpdateGrafiek(grafiekToUpdate);
             uowManager.Save();
         }
