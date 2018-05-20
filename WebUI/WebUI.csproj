@@ -314,6 +314,7 @@
     <Compile Include="Models\GrafiekViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PersonViewModel.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
@@ -3593,6 +3594,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.eot" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.ttf" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
+    <Content Include="Controllers\DataTextGain4.json" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
@@ -4374,6 +4376,7 @@
     <Content Include="Views\Entiteit\Zoeken.cshtml" />
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
+    <Content Include="Views\Shared\DataTextGain4.json" />
     <Content Include="Views\Shared\DisplayTemplates\SleutelwoordNaam.cshtml" />
     <Content Include="Views\Home\Faq.cshtml" />
     <Content Include="Views\Account\AdminBeheerFaq.cshtml" />
