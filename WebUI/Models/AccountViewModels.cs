@@ -127,4 +127,5 @@ namespace WebUI.Models
         [Display(Name = "Email")]
         public string Email { get; set; }
     }
+
 }
