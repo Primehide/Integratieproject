@@ -28,5 +28,6 @@ namespace BL
         void UnfollowEntity(string identityID, int entiteitID);
         void addFaq(Faq faq);
         void deleteFaq(int id);
+        void UpdateAlert(int id);
     }
 }

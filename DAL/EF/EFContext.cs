@@ -38,6 +38,7 @@ namespace DAL
         public DbSet<Verhaal> Verhalen { get; set; }
         public DbSet<Grafiek> Grafieken { get; set; }
         public DbSet<Term> Termen { get; set; }
+        public DbSet<Word> Words { get; set; }
 
         //ACCOUNT//
         public DbSet<Account> Accounts { get; set; }
