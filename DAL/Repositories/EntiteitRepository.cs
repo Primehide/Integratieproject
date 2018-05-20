@@ -59,7 +59,16 @@ namespace DAL
 
         public IEnumerable<Persoon> ReadAllPeople()
         {
-            return ctx.Personen.Include(p => p.Organisations).ToList();
+            return ctx.Personen
+                .Include(p => p.Organisations)
+                .Include(p => p.Posts)
+                .Include(p => p.Posts.Select(x => x.Mentions))
+                .Include(p => p.Posts.Select(x => x.Sentiment))
+                .Include(p => p.Posts.Select(x => x.Words))
+                .Include(p => p.Posts.Select(x => x.HashTags))
+                .Include(p => p.Posts.Select(x => x.Urls))
+                .Include(p => p.Trends)
+                .ToList();
         }
 
         public Persoon ReadPerson(int id)
@@ -155,7 +164,12 @@ namespace DAL
 
         public List<Entiteit> getAlleEntiteiten()
         {
-            return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
+            return ctx.Entiteiten
+                .Include(x => x.Posts)
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
         }
 
         public void updateEntiteit(Entiteit entiteit)
@@ -169,6 +183,7 @@ namespace DAL
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
+    
 
         public void UpdateThema(Thema thema)
         {

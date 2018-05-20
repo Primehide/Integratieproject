@@ -1,6 +1,10 @@
-﻿@{
+﻿
+@{
     Layout = null;
 }
+
+
+
 <header class="topbar">
     <nav class="navbar top-navbar navbar-expand-md navbar-light">
         <!-- ============================================================== -->
@@ -11,17 +15,10 @@
                 <!-- Logo icon --><b>
                     <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                     <!-- Dark Logo icon -->
-                    <img src="~/Content/Dashboard/assets/images/logo-icon.png" alt="homepage" class="dark-logo">
+                    <img src="~/Content/Homepagina/img/gallery/logo-black.png" height="50" width="150" alt="homepage" class="dark-logo">
                     <!-- Light Logo icon -->
-                    <img src="~/Content/Dashboard/assets/images/logo-light-icon.png" alt="homepage" class="light-logo">
                 </b>
                 <!--End Logo icon -->
-                <!-- Logo text --><span style="display: none;">
-                    <!-- dark Logo text -->
-                    <img src="~/Content/Dashboard/assets/images/logo-text.png" alt="homepage" class="dark-logo">
-                    <!-- Light Logo text -->
-                    <img src="~/Content/Dashboard/assets/images/logo-light-text.png" class="light-logo" alt="homepage">
-                </span>
             </a>
         </div>
         <!-- ============================================================== -->
@@ -71,17 +68,17 @@
                             <li>
                                 <div class="message-center ps ps--theme_default" data-ps-id="9be782a0-1077-d492-9acc-37f8cebcc34e">
                                     <!-- Message -->
-                                    <a href="#">
-                                        <div class="btn btn-danger btn-circle"><i class="fa fa-link"></i></div>
-                                        <div class="mail-contnet">
-                                            <h5>Test</h5> <span class="mail-desc">Test notificatie!</span>
-                                        </div>
+                                   
+                                    @Html.Action("Notifications", "Alert")
+
+                       
                                     </a>
+
                                     <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>
                                 </div>
                             </li>
                             <li>
-                                <a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
+                                <a class="nav-link text-center" href="~/Manage/UpdateAlerts"> <strong>Beheer je alerts</strong> <i class="fa fa-angle-right"></i> </a>
                             </li>
                         </ul>
                     </div>

@@ -12,5 +12,8 @@ namespace DAL
         void AddPosts(List<Post> posts);
         void AddPost(Post post);
         List<Post> getAllPosts();
+        void AddGrafiek(Grafiek grafiek);
+        List<Word> GetAllWords();
+        List<Grafiek> AlleGrafieken();
     }
 }

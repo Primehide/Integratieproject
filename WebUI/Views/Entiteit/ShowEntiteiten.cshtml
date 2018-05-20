@@ -43,6 +43,14 @@
         {
                 <div class="card">
                     <div class="card-body">
+                        @if (p.Image != null)
+    {
+                    <img src="data:image;base64,@System.Convert.ToBase64String(p.Image)" , width="50" , height="50" , class="img-circle" />
+}
+else
+{
+                    <img src="~/Content/Dashboard/assets/images/avatar.png" , width="50" , height="50" , class="img-circle" />
+}
                         @Html.ActionLink(p.Naam, "DisplayPerson", new { EntityId = p.EntiteitId }, null)
                         <br />
                     </div>
@@ -56,6 +64,14 @@
         {
                 <div class="card">
                     <div class="card-body">
+                        @if (p.Image != null)
+    {
+                    <img src="data:image;base64,@System.Convert.ToBase64String(p.Image)" , width="50" , height="50" , class="img-circle" />
+}
+else
+{
+                    <img src="~/Content/Dashboard/assets/images/group.png" , width="50" , height="50" , class="img-circle" />
+}
                         @Html.ActionLink(p.Naam, "DisplayOrganisation", new { EntityId = p.EntiteitId }, null)
                         <br />
                     </div>
@@ -69,7 +85,10 @@
         {
                 <div class="card">
                     <div class="card-body">
-                        @Html.ActionLink(p.Naam, "EditThema", new { EntityId = p.EntiteitId }, null)
+
+                    <img src="~/Content/Dashboard/assets/images/light-bulb.png" , width="50" , height="50" , class="img-circle" />
+
+                        @Html.ActionLink(p.Naam, "DisplayTheme", new { EntityId = p.EntiteitId }, null)
                         <br />
                     </div>
 

@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 using System.Web;
 using System.Web.Mvc;
 using BL;
@@ -12,7 +14,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
+using System.Data;
 using Microsoft.Owin.Security.DataProtection;
+using Domain.Entiteit;
+using System.Collections;
+using System.Configuration;
+using System.Web.Configuration;
 
 namespace WebUI.Controllers
 {
@@ -22,6 +29,8 @@ namespace WebUI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+      
+
 
         public AccountController()
         {
@@ -37,7 +46,7 @@ namespace WebUI.Controllers
         {
             get
             {
-                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+                return _signInManager ?? makeSignInManager();
             }
             private set
             {
@@ -49,7 +58,7 @@ namespace WebUI.Controllers
         {
             get
             {
-                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return _userManager ?? makeUserManager();
             }
             private set
             {
@@ -57,10 +66,16 @@ namespace WebUI.Controllers
             }
         }
 
-        public ApplicationUserManager makeManager()
+        public ApplicationSignInManager makeSignInManager()
+        {
+            var uM = makeUserManager();
+            return new ApplicationSignInManager(uM, HttpContext.GetOwinContext().Authentication);
+        }
+
+        public ApplicationUserManager makeUserManager()
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
             ApplicationUserManager uM = new ApplicationUserManager(userstore);
             return uM;
         }
@@ -76,12 +91,32 @@ namespace WebUI.Controllers
             };
             return View(model);
         }
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminBeheerFaq()
+        {
+            AccountManager accountManager = new AccountManager();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            return View(faqs);
+        }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult DeleteFaq(int id)
+        {
+            AccountManager accountManager = new AccountManager();
+            accountManager.deleteFaq(id);
+
+
+
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+           
+            return View("AdminBeheerFaq", faqs);
+        }
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
-            AdminViewModel model = new AdminViewModel()
+            AdminViewModel model =
+                new AdminViewModel()
             {
                 Users = accountManager.GetAccounts()
             };
@@ -91,12 +126,26 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerEntiteiten()
         {
+            fillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
             AdminViewModel model = new AdminViewModel()
             {
                 AlleEntiteiten = entiteitManager.getAlleEntiteiten()
             };
             return View(model);
+        }
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AddFaq(Faq f)
+        {
+
+
+
+            AccountManager acm = new AccountManager();
+           
+        
+
+            acm.addFaq(f);
+            return RedirectToAction("AdminBeheerFaq", "Account");
         }
 
         //
@@ -105,21 +154,38 @@ namespace WebUI.Controllers
         public virtual ActionResult Login(string returnUrl)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
-            ViewBag.platId = PlatformController.currentPlatform;
+            ViewBag.platId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
             return View();
         }
 
         [AllowAnonymous]
         public virtual ActionResult LoginNew(string returnUrl)
         {
-            //var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            //var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = id };
-            //UserManager = new ApplicationUserManager(userstore);
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
+            UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
             return View();
+        }
+
+        public async Task<bool> CheckIfAdminAsync(LoginViewModel model)
+        {
+            int oldplat = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+
+            System.Web.HttpContext.Current.Session["PlatformID"] = 0;
+            var adminUM = makeUserManager();
+            var user = await adminUM.FindByEmailAsync(model.Email);
+            System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
+            if (user != null)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
         }
 
         //
@@ -128,27 +194,41 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public virtual async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+            var result = SignInStatus.Failure;
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Login", model);
             }
 
-            // Require the user to have a confirmed email before they can log on.
-            var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
-
-            if (user != null)
+            if (await CheckIfAdminAsync(model))
             {
-                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+             var currentPlatId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+             System.Web.HttpContext.Current.Session["PlatformID"] = 0;
+             var adminSM = makeSignInManager();
+             result = await adminSM.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
+             System.Web.HttpContext.Current.Session["PlatformID"] = currentPlatId;
+            } else
+            {
+                // Require the user to have a confirmed email before they can log on.
+                var user = await UserManager.FindByNameAsync(model.Email);
+
+                if (user != null)
                 {
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                    return View("Error");
+                    if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                    {
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+                        ViewBag.errorMessage = "You must have a confirmed email to log on.";
+                        return View("Error");
+                    }
                 }
+
+                // In case of Admin trying to login
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
+
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email /* + PlatformController.currentPlatform */, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -210,7 +290,13 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public ActionResult MakePartial()
         {
-            ViewBag.platId = PlatformController.currentPlatform;
+            if (System.Web.HttpContext.Current.Session["PlatformID"] == null)
+            {
+                ViewBag.platId = 0;
+            }
+            else { 
+                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+            }
             return PartialView("_LoginPartial");
         }
 
@@ -220,7 +306,7 @@ namespace WebUI.Controllers
         public virtual ActionResult Register()
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-           var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = PlatformController.currentPlatform };
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
             return View();
         }
@@ -228,9 +314,9 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public virtual ActionResult RegisterNew()
         {
-            //var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            //var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = id };
-            //UserManager = new ApplicationUserManager(userstore);
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
+            UserManager = new ApplicationUserManager(userstore);
             return View();
         }
 
@@ -242,7 +328,7 @@ namespace WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email, TenantId = PlatformController.currentPlatform};
+                var user = new ApplicationUser { UserName = model.Email , Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
@@ -263,6 +349,11 @@ namespace WebUI.Controllers
 
             // If we got this far, something failed, redisplay form
             return View("Register", model);
+        }
+
+        public ActionResult EditGrafiek()
+        {
+            return View();
         }
 
         //
@@ -305,7 +396,7 @@ namespace WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
+                var user = await UserManager.FindByNameAsync(model.Email);
                 if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -382,6 +473,7 @@ namespace WebUI.Controllers
         public virtual ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
+            Session["Workaround"] = 0;
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
         }
 
@@ -455,6 +547,7 @@ namespace WebUI.Controllers
         [AllowAnonymous]
         public virtual async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
+
             if (User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Manage");
@@ -468,7 +561,8 @@ namespace WebUI.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email /* + PlatformController.currentPlatform */, Email = model.Email /*, TenantId = PlatformController.currentPlatform */ };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
+
                 var result = await UserManager.CreateAsync(user);
                 CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
                 if (result.Succeeded)
@@ -686,12 +780,27 @@ namespace WebUI.Controllers
             return RedirectToAction("IndexUsers");
         }
 
+        //push notifications
+        // GET: Notification
+        public ActionResult Alerts()
+        {
+            return View();
+        }
+
+        public JsonResult GetNotification()
+        {
+            return Json(NotificaionService.GetNotification(), JsonRequestBehavior.AllowGet);
+        }
+
+
+
         public ActionResult FollowEntiteit(int id)
         {
             string entityID = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
-       
+
             accountManager.FollowEntity(entityID, id);
+           
             return RedirectToAction("VolgItems", "Manage");
         }
 
@@ -701,10 +810,33 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
 
             accountManager.UnfollowEntity(entityID, id);
-            return RedirectToAction("VolgItems", "Manage");
+          return RedirectToAction("VolgItems", "Manage");
         }
 
-        
+        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        private void fillOrganisaties()
+        {
+            ArrayList organisaties = new ArrayList();
+            List<Entiteit> entiteits = new List<Entiteit>();
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.getAlleEntiteiten();
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
+            ViewBag.Organisaties = organisaties;
+        }
     }
 
 

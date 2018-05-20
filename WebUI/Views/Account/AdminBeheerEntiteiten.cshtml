@@ -41,20 +41,25 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    <form action="/Entiteit/AddPersoon" method="post">
-                                        <div class="form-group">
-                                            <label>Voornaam</label>
-                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                        </div>
-                                        <div class="form-group">
-                                            <select class="select2 form-control custom-select" name="organisationId">
-                                                <option>Selecteer organisatie</option>
-                                                <option value="1">N-VA</option>
-                                                <option value="2">Open-VLD</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
-                                    </form>
+                                    @using (Html.BeginForm("AddPersoon", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" })) { 
+
+                                    <div class="form-group">
+
+                                        <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.DropDownList("organisatie", new SelectList(ViewBag.Organisaties), new { @name = "organisationId" , @class = "select2 form-control custom-select" })
+                                      
+
+                                    </div>
+                                    <label>Afbeelding</label>
+                                    <div class="form-group">
+
+                                        <input type="file" name="uploadFile" ,  class="btn waves-effect waves-light btn-secondary"/>
+                                 
+                                    </div>
+                                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                               }
                                 </div>
                             </div>
                         </div>
@@ -64,17 +69,25 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Organisatie aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    <form action="/Entiteit/AddOrganisatie" method="post">
-                                        <div class="form-group">
-                                            <label>Naam</label>
-                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Gemeente</label>
-                                            <input type="text" class="form-control" placeholder="Naam" name="Gemeente">
-                                        </div>
-                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
-                                    </form>
+                                    @using (Html.BeginForm("AddOrganisatie", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+
+                                <div class="form-group">
+                                    <label>Naam</label>
+                                    <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                </div>
+                                <div class="form-group">
+                                    <label>Gemeente</label>
+                                    <input type="text" class="form-control" placeholder="Naam" name="Gemeente">
+                                </div> 
+                                <label>Afbeelding</label>
+                                <div class="form-group">
+
+                                    <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+
+                                </div>
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -84,17 +97,20 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Thema aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    <form action="/Entiteit/AddThema" method="post">
-                                        <div class="form-group">
-                                            <label>Naam</label>
-                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                        </div>
-                                        <div class="form-group">
-                                            <label>Woorden (splitst op komma)</label>
-                                            <input type="text" class="form-control" placeholder="Naam" name="woorden">
-                                        </div>
-                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
-                                    </form>
+                                    @using (Html.BeginForm("AddThema", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+
+                                <div class="form-group">
+                                    <label>Naam</label>
+                                    <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                </div>
+                                <div class="form-group">
+                                    <label>Woorden (splitst op komma)</label>
+                                    <input type="text" class="form-control" placeholder="Naam" name="woorden">
+                                </div>
+                            
+                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+}
                                 </div>
                             </div>
                         </div>

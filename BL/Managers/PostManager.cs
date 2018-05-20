@@ -71,7 +71,7 @@ namespace BL
             DateTime gisteren = DateTime.Today.AddDays(-30).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
 
            PostRequest postRequest1 = new PostRequest()
             {
@@ -110,10 +110,10 @@ namespace BL
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Persoon.Naam,
-                    //since = new DateTime(2018, 04, 01),
-                    //until = new DateTime(2018, 04, 09)
-                    since = gisteren,
-                    until = vandaag
+                    since = new DateTime(2018, 04, 01),
+                    until = new DateTime(2018, 04, 30)
+                    //since = gisteren,
+                    //until = vandaag
                 };
 
 
@@ -264,6 +264,94 @@ namespace BL
         public List<Post> getRecentePosts()
         {
             return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
+        }
+
+        public void maakVasteGrafieken()
+        {
+            initNonExistingRepo(true);
+            DateTime since = new DateTime(2018, 04, 01);
+            DateTime until = new DateTime(2018, 04, 30);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            AccountManager accountManager = new AccountManager(uowManager);
+            Dictionary<int, double> dictionarySentiment = new Dictionary<int, double>();
+            Dictionary<int, int> dictionaryPopulariteit = new Dictionary<int, int>();
+            Dictionary<string, int> dictionaryWords = new Dictionary<string, int>();
+
+            foreach (var p in entiteitManager.GetAllPeople(1))
+            {
+                double sentiment = 0;
+                foreach (var post in p.Posts)
+                {
+                    sentiment += (post.Sentiment.polariteit * post.Sentiment.subjectiviteit) / p.Posts.Count();
+                }
+                dictionarySentiment.Add(p.EntiteitId, sentiment);
+                dictionaryPopulariteit.Add(p.EntiteitId, p.Posts.Count);
+            }
+
+            Grafiek grafiekSentiment = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Positieve/Negatieve personen"
+            };
+
+            Grafiek grafiekPopulair = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Populaire personen"
+            };
+
+            Grafiek grafiekPopulairWords = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Populaire Woorden"
+            };
+
+            var orderedSentiment = dictionarySentiment.OrderBy(x => x.Value);
+            var orderedPopulariteit = dictionaryPopulariteit.OrderByDescending(x => x.Value);
+            var frequency = postRepository.GetAllWords().GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count()).OrderByDescending(x => x.Value);
+
+            for (int i=0; i < 4; i++)
+            {
+                GrafiekWaarde waarde = new GrafiekWaarde()
+                {
+                    Naam = entiteitManager.getEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
+                    Waarde = orderedSentiment.ElementAt(i).Value
+                };
+                GrafiekWaarde waardePop = new GrafiekWaarde()
+                {
+                    Naam = entiteitManager.getEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
+                    Waarde = orderedPopulariteit.ElementAt(i).Value
+                };
+
+                GrafiekWaarde waardeWords = new GrafiekWaarde()
+                {
+                    Naam = frequency.ElementAt(i).Key.word,
+                    Waarde = frequency.ElementAt(i).Value
+                };
+
+                grafiekSentiment.Waardes.Add(waarde);
+                grafiekPopulair.Waardes.Add(waardePop);
+                grafiekPopulairWords.Waardes.Add(waardeWords);
+            }
+            postRepository.AddGrafiek(grafiekSentiment);
+            postRepository.AddGrafiek(grafiekPopulair);
+            postRepository.AddGrafiek(grafiekPopulairWords);
+            uowManager.Save();
+        }
+
+        public void addGrafiek(Grafiek grafiek)
+        {
+            initNonExistingRepo();
+            postRepository.AddGrafiek(grafiek);
+        }
+
+        public List<Grafiek> GetVasteGrafieken()
+        {
+            initNonExistingRepo();
+            return postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
         }
     }
 }

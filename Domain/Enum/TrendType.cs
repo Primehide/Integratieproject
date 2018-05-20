@@ -8,7 +8,7 @@ namespace Domain.Enum
 {
     public enum TrendType
     {
-        STERKOPWAARDS,
+        STERKOPWAARTS,
         STIJGEND,
         MATIGOPWAARDS,
         MATIGDALEND,

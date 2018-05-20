@@ -10,7 +10,10 @@ namespace Domain.Entiteit
     {
         public Item(int EntiteitsID)
         {
+          
+
             EntiteitId = EntiteitsID;
+      
         }
         public Item()
         {
@@ -18,5 +21,6 @@ namespace Domain.Entiteit
         }
         public int ItemId { get; set; }
         public int EntiteitId { get; set; }
+
     }
 }

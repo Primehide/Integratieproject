@@ -29,7 +29,12 @@ namespace WebUI.Controllers
             return RedirectToAction("Index","Manage");
         }
 
-
+        public ActionResult berekenVasteGrafieken()
+        {
+            IPostManager postManager = new PostManager();
+            postManager.maakVasteGrafieken();
+            return View();
+        }
     }
 
 
