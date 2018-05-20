@@ -22,7 +22,7 @@ namespace WebUI
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //Alerts
-         SqlDependency.Start(@"Server=localhost\SQLEXPRESS;Database=Integratieproject;Trusted_Connection=True;");
+         //SqlDependency.Start(@"Server=localhost\SQLEXPRESS;Database=Integratieproject;Trusted_Connection=True;");
         }
     }
 }

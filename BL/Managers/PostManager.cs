@@ -11,6 +11,7 @@ using Domain.TextGain;
 using Domain.Post;
 using Domain.Entiteit;
 using System.Globalization;
+using System.IO;
 
 namespace BL
 {
@@ -67,25 +68,59 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-30).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
+
+           
+
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(0);
 
+           PostRequest postRequest1 = new PostRequest()
+            {
+               since = gisteren,
+               until = vandaag
+           };
+
+            using (HttpClient http = new HttpClient())
+            {
+                string uri = "https://kdg.textgain.com/query";
+                http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
+               // var myContent = JsonConvert.SerializeObject(postRequest1);
+                //var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                //var byteContent = new ByteArrayContent(buffer);
+                //byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var result = await http.PostAsync(uri,null).Result.Content.ReadAsStringAsync();
+                try
+                {
+                    var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                    if (posts.Count != 0)
+                    {
+                       // ConvertAndSaveToDb(posts);
+
+                        System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
+                    }
+                }
+                catch (Newtonsoft.Json.JsonReaderException)
+                {
+
+                }
+            }
+
+
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
-            
-            foreach (var Persoon in AllePersonen)
+        foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
                     name = Persoon.Naam,
-                    //since = new DateTime(2018, 04, 01),
-                    //until = new DateTime(2018, 04, 09)
-                    since = gisteren,
-                    until = vandaag
+                    since = new DateTime(2018, 04, 01),
+                    until = new DateTime(2018, 04, 30)
+                    //since = gisteren,
+                    //until = vandaag
                 };
 
-                List<TextGainResponse> posts = new List<TextGainResponse>();
+
 
                 using (HttpClient http = new HttpClient())
                 {
@@ -98,19 +133,22 @@ namespace BL
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
                     try
                     {
-                        posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                        var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                            ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                              //ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                            System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
-                    } catch (Newtonsoft.Json.JsonReaderException)
+                    }
+                    catch (Newtonsoft.Json.JsonReaderException)
                     {
 
-                    } 
+                    }
                 }
             }
         }
 
+       
         private void ConvertAndSaveToDb(List<TextGainResponse> response, int entiteitId)
         {
             initNonExistingRepo(true);
@@ -184,10 +222,10 @@ namespace BL
                 }
 
                 //sentiment in textgain geeft altijd 2 elementen terug, eerste is polariteit, tweede subjectiviteit
-                if(post.sentiment.Count != 0)
+                if (post.sentiment.Count != 0)
                 {
-                    double polariteit = double.Parse(post.sentiment.ElementAt(0),CultureInfo.InvariantCulture);
-                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1),CultureInfo.InvariantCulture);
+                    double polariteit = double.Parse(post.sentiment.ElementAt(0), CultureInfo.InvariantCulture);
+                    double subjectiviteit = double.Parse(post.sentiment.ElementAt(1), CultureInfo.InvariantCulture);
                     newPost.Sentiment.polariteit = polariteit;
                     newPost.Sentiment.subjectiviteit = subjectiviteit;
                 }
@@ -230,6 +268,94 @@ namespace BL
         public List<Post> getRecentePosts()
         {
             return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
+        }
+
+        public void maakVasteGrafieken()
+        {
+            initNonExistingRepo(true);
+            DateTime since = new DateTime(2018, 04, 01);
+            DateTime until = new DateTime(2018, 04, 30);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            AccountManager accountManager = new AccountManager(uowManager);
+            Dictionary<int, double> dictionarySentiment = new Dictionary<int, double>();
+            Dictionary<int, int> dictionaryPopulariteit = new Dictionary<int, int>();
+            Dictionary<string, int> dictionaryWords = new Dictionary<string, int>();
+
+            foreach (var p in entiteitManager.GetAllPeople(1))
+            {
+                double sentiment = 0;
+                foreach (var post in p.Posts)
+                {
+                    sentiment += (post.Sentiment.polariteit * post.Sentiment.subjectiviteit) / p.Posts.Count();
+                }
+                dictionarySentiment.Add(p.EntiteitId, sentiment);
+                dictionaryPopulariteit.Add(p.EntiteitId, p.Posts.Count);
+            }
+
+            Grafiek grafiekSentiment = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Positieve/Negatieve personen"
+            };
+
+            Grafiek grafiekPopulair = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Populaire personen"
+            };
+
+            Grafiek grafiekPopulairWords = new Grafiek()
+            {
+                Type = Domain.Enum.GrafiekType.VASTE,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = "Meest Populaire Woorden"
+            };
+
+            var orderedSentiment = dictionarySentiment.OrderBy(x => x.Value);
+            var orderedPopulariteit = dictionaryPopulariteit.OrderByDescending(x => x.Value);
+            var frequency = postRepository.GetAllWords().GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count()).OrderByDescending(x => x.Value);
+
+            for (int i=0; i < 4; i++)
+            {
+                GrafiekWaarde waarde = new GrafiekWaarde()
+                {
+                    Naam = entiteitManager.getEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
+                    Waarde = orderedSentiment.ElementAt(i).Value
+                };
+                GrafiekWaarde waardePop = new GrafiekWaarde()
+                {
+                    Naam = entiteitManager.getEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
+                    Waarde = orderedPopulariteit.ElementAt(i).Value
+                };
+
+                GrafiekWaarde waardeWords = new GrafiekWaarde()
+                {
+                    Naam = frequency.ElementAt(i).Key.word,
+                    Waarde = frequency.ElementAt(i).Value
+                };
+
+                grafiekSentiment.Waardes.Add(waarde);
+                grafiekPopulair.Waardes.Add(waardePop);
+                grafiekPopulairWords.Waardes.Add(waardeWords);
+            }
+            postRepository.AddGrafiek(grafiekSentiment);
+            postRepository.AddGrafiek(grafiekPopulair);
+            postRepository.AddGrafiek(grafiekPopulairWords);
+            uowManager.Save();
+        }
+
+        public void addGrafiek(Grafiek grafiek)
+        {
+            initNonExistingRepo();
+            postRepository.AddGrafiek(grafiek);
+        }
+
+        public List<Grafiek> GetVasteGrafieken()
+        {
+            initNonExistingRepo();
+            return postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
         }
     }
 }

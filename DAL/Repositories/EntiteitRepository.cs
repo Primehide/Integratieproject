@@ -59,12 +59,21 @@ namespace DAL
 
         public IEnumerable<Persoon> ReadAllPeople()
         {
-            return ctx.Personen.Include(p => p.Organisations).ToList();
+            return ctx.Personen
+                .Include(p => p.Organisations)
+                .Include(p => p.Posts)
+                .Include(p => p.Posts.Select(x => x.Mentions))
+                .Include(p => p.Posts.Select(x => x.Sentiment))
+                .Include(p => p.Posts.Select(x => x.Words))
+                .Include(p => p.Posts.Select(x => x.HashTags))
+                .Include(p => p.Posts.Select(x => x.Urls))
+                .Include(p => p.Trends)
+                .ToList();
         }
 
         public Persoon ReadPerson(int id)
         {
-            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).First();
+            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
         }
 
         public Persoon UpdatePerson(Persoon UpdatedPerson)
@@ -155,7 +164,12 @@ namespace DAL
 
         public List<Entiteit> getAlleEntiteiten()
         {
-                return ctx.Entiteiten.Include(x => x.Posts).Include(x => x.Trends).ToList();
+            return ctx.Entiteiten
+                .Include(x => x.Posts)
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
         }
 
         public void updateEntiteit(Entiteit entiteit)
@@ -169,6 +183,7 @@ namespace DAL
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
+    
 
         public void UpdateThema(Thema thema)
         {
@@ -220,10 +235,12 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+
         public Entiteit ReadEntiteit(int id)
         {
             return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
         }
+
 
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
@@ -239,6 +256,24 @@ namespace DAL
         {
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
+        }
+
+
+
+        List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
+        {
+            List<Entiteit> entiteiten = ctx.Entiteiten.Where(x => x.Naam.ToUpper().Contains(naam.ToUpper())).ToList();
+            List<Thema> themas = ctx.Themas.Include(p => p.SleutenWoorden).ToList();
+            foreach(Thema thema in themas)
+            {
+                foreach(Sleutelwoord sl in thema.SleutenWoorden)
+                {
+                    if (sl.woord.ToUpper().Contains(naam.ToUpper())) {
+                        entiteiten.Add(ReadEntiteit(thema.EntiteitId));
+                    }
+                }
+            }
+            return entiteiten;
         }
     }
 }

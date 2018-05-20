@@ -38,11 +38,13 @@ namespace DAL
         public DbSet<Verhaal> Verhalen { get; set; }
         public DbSet<Grafiek> Grafieken { get; set; }
         public DbSet<Term> Termen { get; set; }
+        public DbSet<Word> Words { get; set; }
 
         //ACCOUNT//
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Alert> Alerts { get; set; }
         public DbSet<Dashboard> Dashboards { get; set; }
+        public DbSet<Faq> Faqs { get; set; }
 
         //PLATFORM//
         public DbSet<Deelplatform> DeelPlatformen { get; set; }

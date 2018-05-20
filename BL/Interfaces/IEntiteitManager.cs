@@ -30,6 +30,7 @@ namespace BL
         Entiteit getEntiteit(int entiteitId);
         void updateEntiteit(Entiteit entiteit);
         Entiteit GetEntiteit(int id);
+        List<Entiteit> GetEntiteiten(string naam);
 
 
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
@@ -46,7 +47,9 @@ namespace BL
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie);
 
         List<Entiteit> ZoekEntiteiten(string zoek);
-        void ConvertJsonToEntiteit(List<Domain.TextGain.JsonEntiteit> jsonEntiteiten);
+        void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
+
+        void BerekenVasteGrafiekenAlleEntiteiten();
 
     }
 }

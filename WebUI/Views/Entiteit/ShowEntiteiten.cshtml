@@ -1,0 +1,115 @@
+﻿@model WebUI.Models.ZoekModel
+
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Zoekresultaten</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Zoekresultaten</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        @foreach (Domain.Entiteit.Persoon p in Model.Personen)
+        {
+                <div class="card">
+                    <div class="card-body">
+                        @if (p.Image != null)
+    {
+                    <img src="data:image;base64,@System.Convert.ToBase64String(p.Image)" , width="50" , height="50" , class="img-circle" />
+}
+else
+{
+                    <img src="~/Content/Dashboard/assets/images/avatar.png" , width="50" , height="50" , class="img-circle" />
+}
+                        @Html.ActionLink(p.Naam, "DisplayPerson", new { EntityId = p.EntiteitId }, null)
+                        <br />
+                    </div>
+
+                </div>
+}
+
+                    </div>
+                    <div class="col-12">
+                        @foreach (Domain.Entiteit.Organisatie p in Model.Organisaties)
+        {
+                <div class="card">
+                    <div class="card-body">
+                        @if (p.Image != null)
+    {
+                    <img src="data:image;base64,@System.Convert.ToBase64String(p.Image)" , width="50" , height="50" , class="img-circle" />
+}
+else
+{
+                    <img src="~/Content/Dashboard/assets/images/group.png" , width="50" , height="50" , class="img-circle" />
+}
+                        @Html.ActionLink(p.Naam, "DisplayOrganisation", new { EntityId = p.EntiteitId }, null)
+                        <br />
+                    </div>
+
+                </div>
+}
+
+                    </div>
+                    <div class="col-12">
+                        @foreach (Domain.Entiteit.Thema p in Model.Themas)
+        {
+                <div class="card">
+                    <div class="card-body">
+
+                    <img src="~/Content/Dashboard/assets/images/light-bulb.png" , width="50" , height="50" , class="img-circle" />
+
+                        @Html.ActionLink(p.Naam, "DisplayTheme", new { EntityId = p.EntiteitId }, null)
+                        <br />
+                    </div>
+
+                </div>
+}
+
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+

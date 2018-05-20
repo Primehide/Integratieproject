@@ -1,17 +1,28 @@
 
+﻿using BL;
+
+
 ﻿using Domain.Platform;
+
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BL;
 
 namespace WebUI.Controllers
 {
     [RequireHttps]
     public partial class HomeController : Controller
     {
+        public ActionResult Faq()
+        {
+            AccountManager mgr = new AccountManager();
+            IEnumerable<Domain.Account.Faq> faqs = mgr.getAlleFaqs();
+            return View(faqs);
+        }
 
         public ActionResult HomePagina()
         {
@@ -32,7 +43,6 @@ namespace WebUI.Controllers
             {
                 return RedirectToAction("Index", "Platform", null);
             }
-            
         }
 
         public virtual ActionResult About()
