@@ -187,6 +187,7 @@ namespace DAL
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
+    
 
         public void UpdateThema(Thema thema)
         {
@@ -238,10 +239,12 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+
         public Entiteit ReadEntiteit(int id)
         {
             return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
         }
+
 
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
@@ -257,6 +260,24 @@ namespace DAL
         {
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
+        }
+
+
+
+        List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
+        {
+            List<Entiteit> entiteiten = ctx.Entiteiten.Where(x => x.Naam.ToUpper().Contains(naam.ToUpper())).ToList();
+            List<Thema> themas = ctx.Themas.Include(p => p.SleutenWoorden).ToList();
+            foreach(Thema thema in themas)
+            {
+                foreach(Sleutelwoord sl in thema.SleutenWoorden)
+                {
+                    if (sl.woord.ToUpper().Contains(naam.ToUpper())) {
+                        entiteiten.Add(ReadEntiteit(thema.EntiteitId));
+                    }
+                }
+            }
+            return entiteiten;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Domain.Entiteit.Persoon
+﻿@model Domain.Entiteit.Thema
 @{
     Layout = null;
 }
@@ -16,7 +16,7 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Persoon pagina</h3>
+                        <h3 class="text-themecolor">Thema pagina</h3>
                     </div>
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
@@ -39,34 +39,20 @@
                     <!-- Column -->
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
-
                             <div class="card-body">
                                 <center class="m-t-30">
 
-                                    @if (Model.Image != null)
-            {
-                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
-}
-else
-{
-                        <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
-}
 
-                                    <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" })</h4>
 
-                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.Organisations, "Organisations")</h6>
+
+                                    <h4 class="card-title m-t-10">@Html.DisplayFor(x => x.Naam)</h4>
+
                                 </center>
                             </div>
-                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
                             <div>
                                 <hr>
                             </div>
-                            <div class="card-body">
 
-                                <br />
-                                <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
-                                <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
-                            </div>
                         </div>
                     </div>
                     <!-- Column -->
@@ -109,16 +95,7 @@ else
                                 </div>
                                 <div class="tab-pane" id="settings" role="tabpanel">
                                     <div class="card-body">
-                                        <h2>Biografie</h2>
-                                        <p>
-                                            De Wever behaalde een licentiaat in de geschiedenis aan de KU Leuven en UFSIA en het aggregaat aan de KU Leuven. Hij heeft eerst twee jaar rechten geprobeerd, maar zonder succes.[4][5]
 
-                                            Bart De Wever stamt uit een Vlaams-nationalistische familie. Zijn grootvader was lid van de Vlaams-nationalistische partij VNV.[6] Als middelbaar scholier liep hij school in het Onze-Lieve-Vrouw-van-Lourdescollege in Edegem[7] en was hij lid van het Vlaams Nationaal Jeugdverbond (VNJ) waar zijn vader een kaderfunctie vervulde.[8][9] Tot 1980 woonde hij in Kontich, waarna hij verhuisde naar Mortsel [10].De Wever studeerde eerst rechten aan de universiteit van Antwerpen, maar haakte af om vervolgens geschiedenis te studeren aan de universiteit van Leuven. Als student was Bart De Wever lid van het Liberaal Vlaams Studentenverbond (LVSV), KVHV Antwerpen en KVHV Leuven en hij is oud-hoofdredacteur van Tegenstroom en Ons Leven. Hij was een tijd verbonden aan de K.U.Leuven als wetenschappelijk medewerker en werkte daar mee aan de Nieuwe Encyclopedie van de Vlaamse Beweging. Hij schreef toen ook als doctorandus een bijdrage over de controversiële politieke figuur Joris Van Severen voor het in 2001 uitgegeven jaarboek van de Stichting Joris Van Severen. Aan de K.U.Leuven was hij begonnen aan een proefschrift over de naoorlogse Vlaams-nationale partijvorming, toen hij besloot zich volledig aan de politiek te wijden. Na zijn studies vestigde hij zich in Antwerpen (Berchem) waar hij voor het eerst politiek verkozen geraakte als districtsraadslid.
-                                        </p>
-                                        <h2>Politieke carrière</h2>
-                                        <p>
-                                            De Wever werd lid van de Volksunie (VU). Voor deze partij nam hij deel aan de gemeenteraadsverkiezingen te Antwerpen in 1994 en stond op de kartellijst Antwerpen 94 van CVP en VU. Na het uiteenvallen van de VU ging De Wever naar de N-VA, waarvan hij een van de medeoprichters was.
-                                        </p>
                                     </div>
                                 </div>
                             </div>

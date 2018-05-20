@@ -628,6 +628,26 @@ namespace WebUI.Controllers
         }
 
 
+
+        public ActionResult genereerReview()
+        {
+            string id = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+            List<Account> accounts = accountManager.GetAccounts();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            foreach (Account acc in accounts)
+            {
+                List<Entiteit> entiteiten = new List<Entiteit>();
+                List<Item> items = acc.Items;
+                foreach(Item item in items)
+                {
+                    entiteiten.Add(entiteitManager.GetEntiteit(item.EntiteitId));
+                }
+                return View(entiteiten);
+            }
+            return View();
+        }
+
         #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
@@ -681,4 +701,5 @@ namespace WebUI.Controllers
 
         #endregion
     }
+
 }

@@ -30,6 +30,7 @@ namespace BL
         Entiteit getEntiteit(int entiteitId);
         void updateEntiteit(Entiteit entiteit);
         Entiteit GetEntiteit(int id);
+        List<Entiteit> GetEntiteiten(string naam);
 
 
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);

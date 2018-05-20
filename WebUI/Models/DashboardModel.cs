@@ -21,6 +21,7 @@ namespace WebUI.Models
 
         public List<Domain.Entiteit.Item> GevolgdeItems { get; set; }
         public List<Domain.Entiteit.Entiteit> AlleEntiteiten { get; set; }
+        public Domain.Entiteit.Entiteit Entiteit { get; set; }
 
 
     }
