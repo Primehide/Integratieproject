@@ -638,7 +638,7 @@ namespace BL
                     Organisations = new List<Organisatie>()
                 };
 
-                if(GetAllOrganisaties().FirstOrDefault(x => x.Naam.ToLower() == jsonE.organisation.ToLower()) == null)
+                if(GetAllOrganisaties(0).FirstOrDefault(x => x.Naam.ToLower() == jsonE.organisation.ToLower()) == null)
                 {
                     Organisatie organisatie = new Organisatie()
                     {
@@ -648,7 +648,7 @@ namespace BL
                     AddOrganisatie(organisatie, null);
                 }
 
-                foreach (var o in GetAllOrganisaties())
+                foreach (var o in GetAllOrganisaties(0))
                 {
                     if(o.Naam.ToLower() == jsonE.organisation.ToLower())
                     {
