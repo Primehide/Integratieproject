@@ -1,8 +1,12 @@
-﻿using System;
+
+﻿using Domain.Platform;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BL;
 
 namespace WebUI.Controllers
 {
@@ -16,12 +20,19 @@ namespace WebUI.Controllers
         }
        
 
-        public virtual ActionResult Index()
+        public virtual ActionResult Index(string gekozenplatform,string tagline)
 
         {
-            ViewBag.platId = PlatformController.currentPlatform;
-
-            return View();
+            try
+            {
+                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                ViewBag.dpnaam = gekozenplatform;
+                ViewBag.tagline = tagline;
+                return View();
+            } catch ( NullReferenceException e )
+            {
+                return RedirectToAction("Index", "Platform", null);
+            }
         }
 
         public virtual ActionResult About()
@@ -42,5 +53,7 @@ namespace WebUI.Controllers
         {
             return View("~/Views/Shared/Dashboard/DashboardStarterKit.cshtml");
         }
+
+    
     }
 }

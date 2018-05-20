@@ -176,12 +176,12 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = entiteitManager.GetAllPeople(),
-                Organisaties = entiteitManager.GetAllOrganisaties(),
-                Themas = entiteitManager.GetThemas().ToList()
+                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
             };
             return View(model);
         }
@@ -190,12 +190,12 @@ namespace WebUI.Controllers
         public ActionResult Sandbox()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople().ToList();
+            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = entiteitManager.GetAllPeople(),
-                Organisaties = entiteitManager.GetAllOrganisaties(),
-                Themas = entiteitManager.GetThemas().ToList()
+                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
             };
             return View(model);
         }
@@ -482,6 +482,8 @@ namespace WebUI.Controllers
 
             return View("UpdateAlerts", newalerts);
         }
+      
+       
         public ActionResult EditAlert(int id)
         {
            
