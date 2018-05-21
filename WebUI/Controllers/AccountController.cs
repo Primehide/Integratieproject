@@ -25,7 +25,7 @@ using Domain.Post;
 namespace WebUI.Controllers
 {
     [Authorize]
-    [RequireHttps]
+    //[RequireHttps]
     public partial class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

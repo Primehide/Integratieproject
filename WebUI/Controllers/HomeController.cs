@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace WebUI.Controllers
 {
-    [RequireHttps]
+    //[RequireHttps]
     public partial class HomeController : Controller
     {
         public ActionResult Faq()
