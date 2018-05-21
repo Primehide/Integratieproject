@@ -221,14 +221,10 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-<<<<<<< HEAD
         public void DeleteGrafiekWaardes(int grafiekID)
         {
             Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
             teverwijderenwaardes.Waardes = null;
         }
-=======
-    
->>>>>>> master
     }
 }

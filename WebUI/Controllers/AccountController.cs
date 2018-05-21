@@ -20,11 +20,7 @@ using Domain.Entiteit;
 using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
-<<<<<<< HEAD
 using Domain.Post;
-using Domain.Entiteit;
-=======
->>>>>>> master
 
 namespace WebUI.Controllers
 {

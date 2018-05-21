@@ -438,6 +438,10 @@ namespace BL
                 {
                     foreach (var e in entiteiten)
                     {
+                        if(e.Trends == null)
+                        {
+                            e.Trends = new List<Trend>();
+                        }
                         foreach (var t in e.Trends)
                         {
                             GrafiekWaarde waarde = new GrafiekWaarde()
