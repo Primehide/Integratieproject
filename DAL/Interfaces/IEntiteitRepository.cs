@@ -34,6 +34,7 @@ namespace DAL
         List<Entiteit> getAlleEntiteiten();
         void updateEntiteit(Entiteit entiteit);
         Entiteit ReadEntiteit(int id);
+        List<Entiteit> ReadEntiteiten(string naam);
 
         void CreateThema(Thema thema);
         void UpdateThema(Thema thema);

@@ -63,6 +63,8 @@ namespace DAL
             ctx.Entry(alert.Entiteit).State = EntityState.Unchanged;
             ctx.SaveChanges();
         }
+    
+
 
         public void UpdateAlert(Alert alert)
         {
@@ -82,6 +84,42 @@ namespace DAL
             ctx.SaveChanges();
     
 
+        }
+
+        // Frequently asked questions //
+        public void addFaq(Faq faq)
+        {
+
+            ctx.Faqs.Add(faq);
+            ctx.SaveChanges();
+        }
+        public void UpdateFaq(Faq faq)
+        {
+
+            ctx.Entry(faq).State = System.Data.Entity.EntityState.Modified;
+            ctx.SaveChanges();
+        }
+        public void DeleteFaq(int faqID)
+        {
+            Faq faq = ReadFaq(faqID);
+
+
+            ctx.Faqs.Remove(faq);
+
+            ctx.SaveChanges();
+
+
+        }
+        public Faq ReadFaq(int faqID)
+        {
+            Faq faq = ctx.Faqs.Find(faqID);
+            return faq;
+        }
+        public List<Faq> getAlleFaqs()
+        {
+            return ctx.Faqs
+
+                .ToList();
         }
         public void updateUser(Account account)
         {
@@ -124,6 +162,7 @@ namespace DAL
 
         public List<Account> readAccounts()
         {
+           
             return ctx.Accounts
                 .Include(x => x.Alerts)
                 .Include(x => x.Items)
@@ -135,7 +174,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.CijferOpties))
                 .ToList();
         }
-
+        
         public void DeleteUser(string accountId)
         {
             Account account = ReadAccount(accountId);
@@ -182,10 +221,14 @@ namespace DAL
             ctx.SaveChanges();
         }
 
+<<<<<<< HEAD
         public void DeleteGrafiekWaardes(int grafiekID)
         {
             Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
             teverwijderenwaardes.Waardes = null;
         }
+=======
+    
+>>>>>>> master
     }
 }

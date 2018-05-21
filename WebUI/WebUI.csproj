@@ -314,9 +314,11 @@
     <Compile Include="Models\GrafiekViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\PersonViewModel.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
+    <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
     <Compile Include="Providers\CustomOAuthProvider.cs" />
@@ -339,6 +341,7 @@
     <Content Include="Content\Dashboard\assets\images\alert\model.png" />
     <Content Include="Content\Dashboard\assets\images\alert\model2.png" />
     <Content Include="Content\Dashboard\assets\images\alert\model3.png" />
+    <Content Include="Content\Dashboard\assets\images\avatar.png" />
     <Content Include="Content\Dashboard\assets\images\background\error-bg.jpg" />
     <Content Include="Content\Dashboard\assets\images\background\login-register.jpg" />
     <Content Include="Content\Dashboard\assets\images\background\megamenubg.jpg" />
@@ -373,6 +376,7 @@
     <Content Include="Content\Dashboard\assets\images\gallery\chair2.jpg" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair3.jpg" />
     <Content Include="Content\Dashboard\assets\images\gallery\chair4.jpg" />
+    <Content Include="Content\Dashboard\assets\images\group.png" />
     <Content Include="Content\Dashboard\assets\images\icon\assets-w.png" />
     <Content Include="Content\Dashboard\assets\images\icon\assets.png" />
     <Content Include="Content\Dashboard\assets\images\icon\danger.svg" />
@@ -385,6 +389,7 @@
     <Content Include="Content\Dashboard\assets\images\icon\success.svg" />
     <Content Include="Content\Dashboard\assets\images\icon\warning.svg" />
     <Content Include="Content\Dashboard\assets\images\icon\zip.png" />
+    <Content Include="Content\Dashboard\assets\images\light-bulb.png" />
     <Content Include="Content\Dashboard\assets\images\logo-icon.png" />
     <Content Include="Content\Dashboard\assets\images\logo-light-icon.png" />
     <Content Include="Content\Dashboard\assets\images\logo-light-text.png" />
@@ -3589,6 +3594,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.eot" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.ttf" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
+    <Content Include="Controllers\DataTextGain4.json" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Properties\PublishProfiles\CustomProfile1.pubxml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
@@ -4349,6 +4355,10 @@
     <Content Include="Views\Account\CreateUser.cshtml" />
     <Content Include="Views\Account\IndexUsers.cshtml" />
     <Content Include="Views\Account\EditUser.cshtml" />
+    <Content Include="Views\Account\FollowEntiteit.cshtml" />
+    <Content Include="Views\Account\UnfollowEntiteit.cshtml" />
+    <Content Include="Views\Manage\UpdateProfile.cshtml" />
+    <Content Include="Views\Manage\UpdateAlerts.cshtml" />
     <Content Include="Views\Manage\UpdateProfile.cshtml" />
     <Content Include="Views\Manage\UpdateAlerts.cshtml" />
     <Content Include="Views\Account\AdminCp.cshtml" />
@@ -4362,12 +4372,19 @@
     <Content Include="Views\Account\Alerts.cshtml" />
     <Content Include="Views\Account\EditUserAdmin.cshtml" />
     <Content Include="Views\Manage\VolgItems.cshtml" />
-    <Content Include="Views\Entiteit\PersoonPagina.cshtml" />
+    <Content Include="Views\Entiteit\ShowEntiteiten.cshtml" />
     <Content Include="Views\Entiteit\Zoeken.cshtml" />
+    <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
+    <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
+    <Content Include="Views\Shared\DataTextGain4.json" />
+    <Content Include="Views\Shared\DisplayTemplates\SleutelwoordNaam.cshtml" />
+    <Content Include="Views\Home\Faq.cshtml" />
+    <Content Include="Views\Account\AdminBeheerFaq.cshtml" />
     <Content Include="Views\Account\EditGrafiek.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="json\" />
     <Folder Include="Views\EditorTemplates\" />
     <Folder Include="Views\Post\" />
     <Folder Include="Views\Shared\EditorTemplates\" />

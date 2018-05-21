@@ -12,6 +12,7 @@ using System.Web;
 using Domain.Account;
 
 using Domain.TextGain;
+using System.Collections;
 
 
 namespace BL
@@ -627,6 +628,11 @@ namespace BL
             throw new NotImplementedException();
         }
 
+        public List<Entiteit> GetEntiteiten(string naam)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.ReadEntiteiten(naam);
+        }
         #endregion
 
         public List<Entiteit> ZoekEntiteiten(string zoek)
@@ -701,5 +707,6 @@ namespace BL
                 entiteitRepository.updateEntiteit(e);
             }
         }
+      
     }
 }

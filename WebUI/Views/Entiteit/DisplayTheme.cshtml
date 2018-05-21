@@ -1,0 +1,150 @@
+@model Domain.Entiteit.Thema
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Thema pagina</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item">@Model.Naam</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="m-t-30">
+                                    <img src="~/Content/Dashboard/assets/images/light-bulb.png" , width="150" , height="150" , class="img-circle" />
+                                    <h4 class="card-title m-t-10">@Html.DisplayFor(x => x.Naam)</h4>
+                                    @Html.DisplayFor(m => m.SleutenWoorden, "SleutelwoordNaam")
+                                </center>
+                            </div>
+
+                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
+                            <div>
+                                <hr>
+                            </div>
+                            <div class="card-body">
+                                <small class="text-muted p-t-30 db">Social Profile</small>
+                                <br />
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                    <!-- Column -->
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs profile-tab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Data</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Over</a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!--second tab-->
+                                <div class="tab-pane active" id="profile" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                        </div>
+                                        <hr>
+                                        <p class="m-t-30">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <canvas id="chart1"></canvas>
+                                                </div>
+                                            </div>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="settings" role="tabpanel">
+                                    <div class="card-body">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        <script>
+            new Chart(document.getElementById("chart1"),
+                {
+                    "type": "line",
+                    "data": {
+                        "labels": ["@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Naam",
+                "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Naam"],
+                        "datasets": [{
+                            "label": "@Model.Grafieken.ElementAt(0).Naam",
+                            "data": [@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Waarde],
+                            "fill": false, "borderColor": "rgb(75, 192, 192)",
+                            "lineTension": 0.1
+                        }]
+                    }, "options": {}
+                });
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+
+

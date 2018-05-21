@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Domain.Entiteit.Sleutelwoord>
+
+<dl class="dl-horizontal">
+    @foreach (var sleutelwoord in Model)
+    {
+    <span class="border border-info">
+        @Html.DisplayFor(m => sleutelwoord.woord) 
+    </span>
+    <span>
+        &nbsp;
+    </span>
+    }
+</dl>
+

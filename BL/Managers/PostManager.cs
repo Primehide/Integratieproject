@@ -11,6 +11,7 @@ using Domain.TextGain;
 using Domain.Post;
 using Domain.Entiteit;
 using System.Globalization;
+using System.IO;
 
 namespace BL
 {
@@ -73,9 +74,37 @@ namespace BL
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
 
-            //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
+           PostRequest postRequest1 = new PostRequest()
+            {
+               since = gisteren,
+               until = vandaag
+           };
 
-            foreach (var Persoon in AllePersonen)
+            using (HttpClient http = new HttpClient())
+            {
+                string uri = "https://kdg.textgain.com/query";
+                http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
+               // var myContent = JsonConvert.SerializeObject(postRequest1);
+                //var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
+                //var byteContent = new ByteArrayContent(buffer);
+                //byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+                var result = await http.PostAsync(uri,null).Result.Content.ReadAsStringAsync();
+                try
+                {
+                    var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                    if (posts.Count != 0)
+                    {
+                       // ConvertAndSaveToDb(posts);
+
+                        System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
+                    }
+                }
+                catch (Newtonsoft.Json.JsonReaderException)
+                {
+
+                }
+            }
+        foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
@@ -86,7 +115,7 @@ namespace BL
                     until = vandaag
                 };
 
-                List<TextGainResponse> posts = new List<TextGainResponse>();
+
 
                 using (HttpClient http = new HttpClient())
                 {
@@ -99,10 +128,11 @@ namespace BL
                     var result = await http.PostAsync(uri, byteContent).Result.Content.ReadAsStringAsync();
                     try
                     {
-                        posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
+                        var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                            ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                              //ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                            System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
                     }
                     catch (Newtonsoft.Json.JsonReaderException)
@@ -113,6 +143,7 @@ namespace BL
             }
         }
 
+       
         private void ConvertAndSaveToDb(List<TextGainResponse> response, int entiteitId)
         {
             initNonExistingRepo(true);

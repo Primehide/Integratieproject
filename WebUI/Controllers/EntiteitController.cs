@@ -1,5 +1,6 @@
 ﻿using BL;
 using Domain.Entiteit;
+using Domain.Post;
 using Domain.TextGain;
 using Newtonsoft.Json;
 using System;
@@ -59,27 +60,28 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult AddPersoon(Persoon p, int organisationId)
+        public ActionResult AddPersoon(Persoon p, string organisatie, HttpPostedFileBase uploadFile)
         {
+            fillOrganisaties();
             p.Naam = p.FirstName + " " + p.LastName;
             EntiteitManager entiteitManager = new EntiteitManager();
             p.Organisations = new List<Organisatie>();
+            int organisationId = NaamType.Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
             p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
-            entiteitManager.AddPerson(p,null);
+            entiteitManager.AddPerson(p,uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult AddOrganisatie(Organisatie o)
+        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
             o.Leden = new List<Persoon>();
-            entiteitManager.AddOrganisatie(o, null);
+            entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
 
         public ActionResult PersoonPagina(int id)
-
         {
             EntiteitManager entiteitManager = new EntiteitManager();
             return View(entiteitManager.GetPerson(id));
@@ -130,6 +132,14 @@ namespace WebUI.Controllers
             entiteitManager.AddThema(t, sleutelWoorden);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
+        // this region is for displaying a certain theme
+        #region
+        public virtual ActionResult DisplayTheme(int EntityId)
+        {
+            Thema ToDisplay = eM.GetThema(EntityId);
+            return View(ToDisplay);
+        }
+        #endregion
 
         // This region is for adding a person to the database and persisting.
         #region
@@ -222,14 +232,29 @@ namespace WebUI.Controllers
         public virtual ActionResult DisplayPerson(int EntityId)
         {
             Persoon ToDisplay = eM.GetPerson(EntityId);
-            if ((int)System.Web.HttpContext.Current.Session["PlatformID"] == ToDisplay.PlatformId)
+            List<Post> posts = ToDisplay.Posts;
+            List<Double> polariteitPositief = new List<double>();
+           
+            foreach (Post post in posts)
             {
-                return View(ToDisplay);
-            } else
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+                if (post.Sentiment.polariteit >= 0)
+                {
+                    double waarde = post.Sentiment.polariteit;
+                    polariteitPositief.Add(waarde);
+                } 
+
             }
-            
+            int polariteitNegatiefCount = posts.Count() - polariteitPositief.Count();
+            int totaal = posts.Count();
+            int polariteitPositiefCount = polariteitPositief.Count();
+            PersonViewModel personViewModel = new PersonViewModel()
+            {
+                Persoon = ToDisplay,
+                AantalPosts = totaal,
+                AantalPositieve = polariteitPositiefCount,
+                AantalNegatieve = polariteitNegatiefCount
+            };
+            return View(personViewModel);
         }
         #endregion
 
@@ -560,6 +585,76 @@ namespace WebUI.Controllers
             // return View();
         }
 
+        public ActionResult ZoekEntiteit(string naam)
+        {
+            List<Entiteit> entiteiten = eM.GetEntiteiten(naam);
+            TempData["myList"] = entiteiten.ToList();
+            return RedirectToAction("ShowEntiteiten");
+        }
+
+        public ActionResult ShowEntiteiten()
+        {
+            List<Persoon> deelplatformPersonen = new List<Persoon>();
+            List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
+            List<Thema> deelplatformThemas = new List<Thema>();
+
+            var model = TempData["myList"] as List<Entiteit>;
+
+
+            foreach (Entiteit e in model)
+            {
+                if (e is Persoon)
+                {
+                    deelplatformPersonen.Add((Persoon)e);
+                }
+                else
+                if (e is Organisatie)
+                {
+                    deelplatformOrganisaties.Add((Organisatie)e);
+                }
+                else
+                if (e is Thema)
+                {
+                    deelplatformThemas.Add((Thema)e);
+                }
+                
+            }
+            ZoekModel zoekModel = new ZoekModel()
+            {
+                Themas = deelplatformThemas,
+                Personen = deelplatformPersonen,
+                Organisaties = deelplatformOrganisaties
+            };
+            return View(zoekModel);
+        }
+
+        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        private void fillOrganisaties()
+        {
+
+            ArrayList organisaties = new ArrayList();
+
+            List<Entiteit> entiteits = new List<Entiteit>();
+
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.getAlleEntiteiten();
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
+            ViewBag.Organisaties = organisaties;
+        }
         public ActionResult OrganisatiePagina(Organisatie organisatie)
         {
          

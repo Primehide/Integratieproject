@@ -1,0 +1,206 @@
+﻿@model Domain.Entiteit.Thema
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Thema pagina</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <!-- Column -->
+                    <div class="col-lg-4 col-xlg-3 col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <center class="m-t-30">
+
+
+
+
+                                    <h4 class="card-title m-t-10">@Html.DisplayFor(x => x.Naam)</h4>
+
+                                </center>
+                            </div>
+                            <div>
+                                <hr>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- Column -->
+                    <!-- Column -->
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs profile-tab" role="tablist">
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#profile" role="tab">Data</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#settings" role="tab">Over</a> </li>
+                            </ul>
+                            <!-- Tab panes -->
+                            <div class="tab-content">
+                                <!--second tab-->
+                                <div class="tab-pane active" id="profile" role="tabpanel">
+                                    <div class="card-body">
+                                        <div class="row">
+                                        </div>
+                                        <hr>
+                                        <p class="m-t-30">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    Personen meest positief/negatief
+                                                    <canvas id="myChart" width="150" height="150"></canvas>
+                                                </div>
+                                                <div class="col-md4">
+                                                    Trending personen<br />
+                                                    (aantal vermeldingen laatste 24 uur)
+                                                    <canvas id="myChart2" width="150" height="150"></canvas>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    Organisaties meest positief/negatief
+                                                    <canvas id="myChart3" width="150" height="150"></canvas>
+                                                </div>
+                                            </div>
+
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="settings" role="tabpanel">
+                                    <div class="card-body">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column -->
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        <script>
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.5, 0.7, -0.2],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+            var ctx2 = document.getElementById("myChart2").getContext('2d');
+            var myChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [10, 20],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                    }],
+                    labels: [
+                        'Maggie De Block',
+                        'Theo Francken',
+                    ]
+                },
+            });
+
+            var ctx3 = document.getElementById("myChart3").getContext('2d');
+            var myChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ["N-VA", "Vlaams belang", "CD&V"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.9, -0.7, -0.6],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+
