@@ -135,6 +135,7 @@
     <Compile Include="Enum\Voorwaarde.cs" />
     <Compile Include="Platform\Deelplatform.cs" />
     <Compile Include="Platform\Pagina.cs" />
+    <Compile Include="Post\CijferOpties.cs" />
     <Compile Include="Post\Grafiek.cs" />
     <Compile Include="Post\HashTag.cs" />
     <Compile Include="Post\Mention.cs" />

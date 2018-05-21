@@ -20,6 +20,7 @@ using Domain.Entiteit;
 using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
+using Domain.Post;
 
 namespace WebUI.Controllers
 {
@@ -154,7 +155,7 @@ namespace WebUI.Controllers
         public virtual ActionResult Login(string returnUrl)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
+             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
             ViewBag.ReturnUrl = returnUrl;
             ViewBag.platId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
@@ -186,6 +187,16 @@ namespace WebUI.Controllers
             {
                 return false;
             }
+        }
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
 
         //
@@ -351,9 +362,45 @@ namespace WebUI.Controllers
             return View("Register", model);
         }
 
-        public ActionResult EditGrafiek()
+        [HttpGet]
+        public ActionResult EditGrafiek(int id)
         {
-            return View();
+            PostManager postManager = new PostManager();
+            EntiteitManager entiteitManager = new EntiteitManager();
+            List<Entiteit> AlleEntiteiten = entiteitManager.getAlleEntiteiten(false);
+            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
+            {
+                Grafiek = postManager.GetGrafiek(id),
+                Personen = AlleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Organisaties = AlleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditGrafiek(Domain.Post.Grafiek grafiek, List<int> EntiteitIds)
+        {
+            IPostManager postManager = new PostManager();
+            postManager.UpdateGrafiek(EntiteitIds,grafiek);
+            return RedirectToAction("Index", "Manage");
+        }
+
+        [HttpPost]
+        public ActionResult createGrafiek(GrafiekModel model)
+        {
+            IAccountManager accountManager = new AccountManager();
+            List<CijferOpties> opties = new List<CijferOpties>();
+            foreach (var optie in model.CijferOpties)
+            {
+                CijferOpties o = new CijferOpties()
+                {
+                    optie = optie
+                };
+                opties.Add(o);
+            }
+            accountManager.AddUserGrafiek(opties, model.EntiteitIds, model.TypeGrafiek, (int)System.Web.HttpContext.Current.Session["PlatformID"], User.Identity.GetUserId(), model.Naam, model.GrafiekSoort);
+            return RedirectToAction("Index", "Manage");
         }
 
         //
@@ -382,7 +429,6 @@ namespace WebUI.Controllers
 
         //
         // GET: /Account/ForgotPassword
-        [Authorize(Roles = "Admin")]
         public virtual ActionResult ForgotPassword()
         {
             return View();
@@ -728,6 +774,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUserAdmin(Domain.Account.Account model)
         {
             AccountManager accountManager = new AccountManager();
@@ -741,13 +788,14 @@ namespace WebUI.Controllers
         }
 
         //Aanmaken van een user door admin
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult CreateUser()
         {
             return View();
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async Task<ActionResult> CreateUser(RegisterViewModel model)
         {
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
@@ -755,7 +803,7 @@ namespace WebUI.Controllers
             CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
             return RedirectToAction("IndexUsers");
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult DeleteUser(string id)
         {
             IAccountManager accountManager = new AccountManager();
@@ -764,7 +812,7 @@ namespace WebUI.Controllers
             return RedirectToAction("Index","Home");
         }
 
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUser(string id)
         {
             IAccountManager accountManager = new AccountManager();
@@ -772,6 +820,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUser(Account account)
         {
            

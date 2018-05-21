@@ -8,8 +8,12 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using System.Web;
+
+using Domain.Account;
+
 using Domain.TextGain;
 using System.Collections;
+
 
 namespace BL
 {
@@ -119,6 +123,12 @@ namespace BL
         {
             initNonExistingRepo();
             return entiteitRepository.getAlleEntiteiten();
+        }
+
+        public List<Entiteit> getAlleEntiteiten(bool IncludePosts)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.getAlleEntiteiten(IncludePosts);
         }
 
         public Entiteit GetEntiteit(int id)
@@ -348,6 +358,11 @@ namespace BL
         {
             initNonExistingRepo();
             return entiteitRepository.ReadThema(entiteitsId);
+        }
+
+        public void UpdateGrafieken()
+        {
+          
         }
 
         public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie)

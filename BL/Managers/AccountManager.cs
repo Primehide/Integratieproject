@@ -9,6 +9,8 @@ using System.Text;
 using DAL;
 using Domain.Account;
 using Domain.Entiteit;
+using Domain.Enum;
+using Domain.Post;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Web.Script.Serialization;
@@ -321,11 +323,16 @@ namespace BL
             accountRepository.FollowEntiteit(identityID, entiteitID);
         }
 
+
+
         public void UnfollowEntity(string identityID, int entiteitID)
         {
             initNonExistingRepo();
             accountRepository.UnFollowEntiteit(identityID, entiteitID);
         }
+
+
+
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
             initNonExistingRepo(true);
@@ -333,14 +340,15 @@ namespace BL
             IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
             Domain.Account.Account user = accountRepository.ReadAccount(IdentityId);
             Domain.Post.Grafiek grafiek = new Domain.Post.Grafiek();
-
+            grafiek.Entiteiten = new List<Entiteit>();
             List<Entiteit> entiteiten = new List<Entiteit>();
+
             foreach (var i in entiteitInts)
             {
                 var e = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == i);
                 entiteiten.Add(e);
+                grafiek.Entiteiten.Add(e);
             }
-
             Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten,CijferOpties, VergelijkOptie);
             List<Domain.Post.GrafiekWaarde> grafiekWaardes = new List<Domain.Post.GrafiekWaarde>();
             
@@ -353,7 +361,34 @@ namespace BL
                 };
                 grafiekWaardes.Add(w);
             }
-
+            if (CijferOpties != null)
+            {
+                grafiek.CijferOpties = new List<Domain.Post.CijferOpties>();
+                foreach (var opt in CijferOpties)
+                {
+                    if (opt.ToLower() == "aantalposts")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                    if (opt.ToLower() == "aantalretweets")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                    if (opt.ToLower() == "aanwezigetrends")
+                    {
+                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        {
+                            optie = opt
+                        });
+                    }
+                }
+            }
             grafiek.Type = TypeGrafiek;
             grafiek.Waardes = grafiekWaardes;
             grafiek.GrafiekSoort = grafiekSoort;
@@ -382,7 +417,10 @@ namespace BL
                     }
                     break;
             }
-
+            foreach (Entiteit e in grafiek.Entiteiten)
+            {
+                e.Posts = null;
+            }
             Domain.Account.DashboardBlok dashboardBlok = new Domain.Account.DashboardBlok()
             {
                 Grafiek = grafiek
@@ -398,7 +436,12 @@ namespace BL
         public void updateUser(Account account)
         {
             initNonExistingRepo();
-            repo.updateUser(account);
+            accountRepository.updateUser(account);
+        }
+
+        public void DeleteGrafiekWaardes(int grafiekID)
+        {
+            accountRepository.DeleteGrafiekWaardes(grafiekID);
         }
 
         public void addFaq(Faq faq)
@@ -430,6 +473,77 @@ namespace BL
             Alert alertToUpdate = GetAlert(id);
             alertToUpdate.Triggered = false;
             repo.UpdateAlert(alertToUpdate);
+        }
+
+        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort)
+        {
+            initNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            IPostManager postManager = new PostManager(uowManager);
+            List<Entiteit> entiteiten = new List<Entiteit>();
+
+            Account user = accountRepository.ReadAccount(IdentityId);
+
+            //geselecteerde entiteiten opzoeken
+            foreach (var i in entiteitIds)
+            {
+                entiteiten.Add(entiteitManager.getEntiteit(i));
+            }
+
+            //nieuwe grafiek aanmaken
+            Grafiek grafiek = new Grafiek()
+            {
+                CijferOpties = opties,
+                Entiteiten = entiteiten,
+                Type = grafiekType,
+                Waardes = new List<GrafiekWaarde>(),
+                Naam = naam,
+                GrafiekSoort = grafiekSoort
+            };
+
+            if (opties.First().optie.ToLower() == "populariteit")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POPULARITEIT;
+            }
+            else if (opties.First().optie.ToLower() == "postfrequentie")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POSTFREQUENTIE;
+            }
+            else if (opties.First().optie.ToLower() == "sentiment")
+            {
+                grafiek.soortGegevens = Domain.Enum.SoortGegevens.SENTIMENT;
+            }
+
+            //waardes voor de grafiek berekenen
+            grafiek.Waardes = postManager.BerekenGrafiekWaardes(opties, entiteiten);
+
+            foreach (var e in entiteiten)
+            {
+                e.Posts.Clear();
+            };
+
+            //kijkt na of de gebruiker al een lijst van blokken heeft om nullpointer te vermijden
+            if (user.Dashboard.Configuratie.DashboardBlokken == null)
+                user.Dashboard.Configuratie.DashboardBlokken = new List<DashboardBlok>();
+
+            //nieuw blok aanmaken voor de configuratie
+            DashboardBlok dashboardBlok = new DashboardBlok()
+            {
+                Grafiek = grafiek,
+            };
+            user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
+            accountRepository.updateUser(user);
+            uowManager.Save();
+        }
+
+        public void UpdateGrafiek(int grafiekId)
+        {
+            initNonExistingRepo(true);
+            PostManager postManager = new PostManager(uowManager);
+            Grafiek grafiekToUpdate = postManager.GetGrafiek(grafiekId);
+            grafiekToUpdate.Waardes = postManager.BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, grafiekToUpdate.Entiteiten);
+            //postManager.UpdateGrafiek(grafiekToUpdate);
+            uowManager.Save();
         }
     }
 }

@@ -1,16 +1,10 @@
-<<<<<<< HEAD
-﻿using BL;
-=======
-
+using BL;
 ﻿using Domain.Platform;
-
->>>>>>> master
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using BL;
 
 namespace WebUI.Controllers
 {
@@ -28,7 +22,16 @@ namespace WebUI.Controllers
         {
             return View();
         }
-       
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
 
         public virtual ActionResult Index(string gekozenplatform,string tagline)
 

@@ -27,6 +27,15 @@ namespace WebUI.Controllers
 
     public class AlertController : Controller
     {
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
 
 
         public ActionResult Notifications()
@@ -47,7 +56,9 @@ namespace WebUI.Controllers
             IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
             return RedirectToAction("UpdateAlerts", "Manage");
 
+
         }
+
     }
 }
 

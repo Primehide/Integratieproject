@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Post;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +14,7 @@ namespace WebUI.Models
         public bool aantalRetweets { get; set; }
         public int Entiteit1 { get; set; }
 
+        public string Naam { get; set; }
         public List<int> EntiteitIds { get; set; }
         public List<string> CijferOpties { get; set; }
         public string VergelijkOptie { get; set; }

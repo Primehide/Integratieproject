@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BL;
+using Domain.Post;
 
 namespace WebUI.Controllers
 {
@@ -14,20 +15,24 @@ namespace WebUI.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async System.Threading.Tasks.Task SyncDataAsync()
         {
             IPostManager postManager = new PostManager();
             await postManager.SyncDataAsync();
         }
 
-        [HttpPost]
-        public ActionResult createGrafiek(WebUI.Models.GrafiekModel model)
+        protected override void OnException(ExceptionContext filterContext)
         {
-            IAccountManager accountManager = new AccountManager();
-            accountManager.grafiekAanGebruikerToevoegen(model.IdentityId,model.TypeGrafiek, model.EntiteitIds, model.CijferOpties, model.VergelijkOptie,model.GrafiekSoort);
-            return RedirectToAction("Index","Manage");
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
+
+        
 
         public ActionResult berekenVasteGrafieken()
         {
