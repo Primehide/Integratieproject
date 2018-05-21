@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<Domain.Platform.Deelplatform>
+@{
     Layout = null;
 }
 
@@ -20,7 +21,6 @@
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                            <li class="breadcrumb-item"><a href="javascript:void(0)">Platform aanmaken</a></li>
                         </ol>
                     </div>
                     <div>
@@ -40,43 +40,36 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    @foreach (var p in Model)
+                    {
+                        <!-- column -->
+                        <div class="col-lg-3 col-md-6">
+                            <!-- Card -->
+                            <div class="card">
+                                <img class="card-img-top img-responsive" src="~/Content/Dashboard/assets/images/platform-image.png" alt="Card image cap">
+                                <div class="card-body">
+                                    <h4 class="card-title">@p.Naam</h4>
+                                    <p class="card-text">@p.Tagline</p>
+                                    <a href="#" class="btn btn-primary">Beheer</a>
+                                </div>
+                            </div>
+                            <!-- Card -->
+                        </div>
+                        <!-- column -->
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-md-5 align-self-center">
+                        <h4 class="text-themecolor">Deelplatformen aanmaken</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">Platform aanmaken</h4>
-                                <form class="form-horizontal p-t-20" action="/Platform/CreatePlatform" enctype="multipart/form-data" method="post">
-                                    <div class="form-group row">
-                                        <label for="Naam" class="col-sm-3 control-label">Naam</label>
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-user"></i></div>
-                                                <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="Naam" class="col-sm-3 control-label">Tagline</label>
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <div class="input-group-addon"><i class="ti-user"></i></div>
-                                                <input type="text" class="form-control" placeholder="Tagline" name="Tagline">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-3 control-label">Upload json van entiteiten</label>
-                                        <div class="col-sm-9">
-                                            <div class="input-group">
-                                                <input type="file" id="input-file-max-fs" name="file" class="dropify" data-max-file-size="2M" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row m-b-0">
-                                        <div class="offset-sm-3 col-sm-9">
-                                            <button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
-                                        </div>
-                                    </div>
-                                </form>
+                                <h4 class="card-title">Nieuw platform?</h4>
+                                <p class="card-text">Maak er snel eentje aan.</p>
+                                <a href="/platform/CreatePlatform" class="btn btn-primary">Platform aanmaken</a>
                             </div>
                         </div>
                     </div>

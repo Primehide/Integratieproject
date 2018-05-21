@@ -30,11 +30,12 @@ namespace WebUI.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-      
+
 
 
         public AccountController()
         {
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -76,9 +77,24 @@ namespace WebUI.Controllers
         public ApplicationUserManager makeUserManager()
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-            var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
+            var userstore = new ApplicationUserStore<ApplicationUser>(context);
+            try
+            {
+              userstore.TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+            }
+            catch (NullReferenceException)
+            {
+                userstore.TenantId = 0;
+            }
             ApplicationUserManager uM = new ApplicationUserManager(userstore);
             return uM;
+        }
+
+        [Authorize(Roles = "SuperAdmin")]
+        public ActionResult SuperAdminCp()
+        {
+            IPlatformManager platformManager = new PlatformManager();
+            return View(platformManager.GetAllDeelplatformen());
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -109,7 +125,7 @@ namespace WebUI.Controllers
 
 
             IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
-           
+
             return View("AdminBeheerFaq", faqs);
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -118,9 +134,9 @@ namespace WebUI.Controllers
             AccountManager accountManager = new AccountManager();
             AdminViewModel model =
                 new AdminViewModel()
-            {
-                Users = accountManager.GetAccounts()
-            };
+                {
+                    Users = accountManager.GetAccounts()
+                };
             return View(model);
         }
 
@@ -138,13 +154,7 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddFaq(Faq f)
         {
-
-
-
             AccountManager acm = new AccountManager();
-           
-        
-
             acm.addFaq(f);
             return RedirectToAction("AdminBeheerFaq", "Account");
         }
@@ -155,10 +165,19 @@ namespace WebUI.Controllers
         public virtual ActionResult Login(string returnUrl)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
-             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int) System.Web.HttpContext.Current.Session["PlatformID"] };
-            UserManager = new ApplicationUserManager(userstore);
-            ViewBag.ReturnUrl = returnUrl;
-            ViewBag.platId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
+            ApplicationUserStore<ApplicationUser> userstore = new ApplicationUserStore<ApplicationUser>(context);
+            try
+            {
+                userstore.TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                ViewBag.ReturnUrl = returnUrl;
+            }
+            catch (System.NullReferenceException)
+            {
+                userstore.TenantId = 0;
+                UserManager = new ApplicationUserManager(userstore);
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.platId = 0;
+            }
             return View();
         }
 
@@ -183,12 +202,14 @@ namespace WebUI.Controllers
             if (user != null)
             {
                 return true;
-            } else
+            }
+            else
             {
                 return false;
             }
         }
 
+        /*
         protected override void OnException(ExceptionContext filterContext)
         {
             filterContext.ExceptionHandled = true;
@@ -198,6 +219,7 @@ namespace WebUI.Controllers
                 ViewName = "~/Views/Shared/Error.cshtml"
             };
         }
+        */
 
         //
         // POST: /Account/Login
@@ -211,34 +233,29 @@ namespace WebUI.Controllers
                 return RedirectToAction("Login", model);
             }
 
-            if (await CheckIfAdminAsync(model))
-            {
-             var currentPlatId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
-             System.Web.HttpContext.Current.Session["PlatformID"] = 0;
-             var adminSM = makeSignInManager();
-             result = await adminSM.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
-             System.Web.HttpContext.Current.Session["PlatformID"] = currentPlatId;
-            } else
-            {
-                // Require the user to have a confirmed email before they can log on.
-                var user = await UserManager.FindByNameAsync(model.Email);
+            // Require the user to have a confirmed email before they can log on.
 
-                if (user != null)
+            var user = await UserManager.FindByEmailAsync(model.Email);
+            var superadmin = UserManager.Users.Single(x => x.Email == model.Email);
+
+            if (user != null)
+            {
+                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
-                    if (!await UserManager.IsEmailConfirmedAsync(user.Id))
-                    {
-                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-                        ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                        return View("Error");
-                    }
+                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
+                    return View("Error");
                 }
-
-                // In case of Admin trying to login
-                // This doesn't count login failures towards account lockout
-                // To enable password failures to trigger account lockout, change to shouldLockout: true
-                result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
-
             }
+
+            // In case of Admin trying to login
+            // This doesn't count login failures towards account lockout
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            if (superadmin != null)
+            {
+                HttpContext.Session["PlatformID"] = superadmin.TenantId;
+            }
+            result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
 
             switch (result)
             {
@@ -305,7 +322,8 @@ namespace WebUI.Controllers
             {
                 ViewBag.platId = 0;
             }
-            else { 
+            else
+            {
                 ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             }
             return PartialView("_LoginPartial");
@@ -339,7 +357,7 @@ namespace WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email , Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
@@ -382,7 +400,7 @@ namespace WebUI.Controllers
         public ActionResult EditGrafiek(Domain.Post.Grafiek grafiek, List<int> EntiteitIds)
         {
             IPostManager postManager = new PostManager();
-            postManager.UpdateGrafiek(EntiteitIds,grafiek);
+            postManager.UpdateGrafiek(EntiteitIds, grafiek);
             return RedirectToAction("Index", "Manage");
         }
 
@@ -488,7 +506,7 @@ namespace WebUI.Controllers
                 return View(model);
             }
 
-            
+
             var user = await UserManager.FindByNameAsync(model.Email /* + PlatformController.currentPlatform */);
             if (user == null)
             {
@@ -809,7 +827,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
             accountManager.DeleteUser(id);
             UserManager.Delete(UserManager.FindById(id));
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -823,7 +841,7 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUser(Account account)
         {
-           
+
             IAccountManager accountManager = new AccountManager();
             accountManager.UpdateUser(account);
             return RedirectToAction("IndexUsers");
@@ -849,7 +867,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
 
             accountManager.FollowEntity(entityID, id);
-           
+
             return RedirectToAction("VolgItems", "Manage");
         }
 
@@ -859,7 +877,7 @@ namespace WebUI.Controllers
             IAccountManager accountManager = new AccountManager();
 
             accountManager.UnfollowEntity(entityID, id);
-          return RedirectToAction("VolgItems", "Manage");
+            return RedirectToAction("VolgItems", "Manage");
         }
 
         Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();

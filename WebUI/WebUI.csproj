@@ -19,7 +19,8 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
     <IISExpressSSLPort>44365</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>
     </IISExpressAnonymousAuthentication>
@@ -394,6 +395,7 @@
     <Content Include="Content\Dashboard\assets\images\logo-light-icon.png" />
     <Content Include="Content\Dashboard\assets\images\logo-light-text.png" />
     <Content Include="Content\Dashboard\assets\images\logo-text.png" />
+    <Content Include="Content\Dashboard\assets\images\platform-image.png" />
     <Content Include="Content\Dashboard\assets\images\tooltip\Euclid.png" />
     <Content Include="Content\Dashboard\assets\images\tooltip\shape1.svg" />
     <Content Include="Content\Dashboard\assets\images\tooltip\shape2.svg" />
@@ -4381,6 +4383,8 @@
     <Content Include="Views\Home\Faq.cshtml" />
     <Content Include="Views\Account\AdminBeheerFaq.cshtml" />
     <Content Include="Views\Account\EditGrafiek.cshtml" />
+    <Content Include="Views\Account\SuperAdminCp.cshtml" />
+    <Content Include="Views\Shared\Dashboard\_SuperAdminCpLeftBar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

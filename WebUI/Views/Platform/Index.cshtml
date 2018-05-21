@@ -27,18 +27,19 @@
                 @Html.DisplayFor(m => deelplat.Naam)
             </td>
             <td>
-               @deelplat.Entiteiten.Count()
+                @deelplat.Entiteiten.Count()
             </td>
             <td>
-                @Html.ActionLink("Change", "ChangePlatform", new { id = deelplat.DeelplatformId})
+                @Html.ActionLink("Change", "ChangePlatform", new { id = deelplat.DeelplatformId })
             </td>
             <td>
                 @Html.ActionLink("Enter", "DisplayPlatform", new { id = deelplat.DeelplatformId })
             </td>
         </tr>
     }
-
-    @Html.ActionLink("Maak Nieuw Platform","CreatePlatform","Platform")
+    <br />
+    @Html.ActionLink("Maak Nieuw Platform", "CreatePlatform", "Platform")<br />
+    @Html.ActionLink("Ik ben superadmin!", "SuperAdminCp", "Account")
 </table>
 
 
