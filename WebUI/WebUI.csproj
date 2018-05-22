@@ -3417,6 +3417,7 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\php\twitter\RestApi.php" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\php\vimeo\class-vimeo.php" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\php\youtube\class-youtube.php" />
+    <Content Include="Content\TagMarkup.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />

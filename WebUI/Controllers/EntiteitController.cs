@@ -61,7 +61,7 @@ namespace WebUI.Controllers
         public ActionResult AddPersoon(Persoon p, string organisatie, HttpPostedFileBase uploadFile)
         {
             fillOrganisaties();
-            p.Naam = p.FirstName + " " + p.LastName;
+           
             EntiteitManager entiteitManager = new EntiteitManager();
             p.Organisations = new List<Organisatie>();
             int organisationId = NaamType.Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
@@ -72,9 +72,6 @@ namespace WebUI.Controllers
 
         public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
         {
-           
-         
-
 
             EntiteitManager entiteitManager = new EntiteitManager();
             o.Leden = new List<Persoon>();
@@ -82,7 +79,7 @@ namespace WebUI.Controllers
             entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
-
+      
         public ActionResult PersoonPagina(int id)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
@@ -119,7 +116,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddThema(Thema t, string woorden)
+        public ActionResult AddThema(Thema t, string woorden, HttpPostedFileBase uploadFile)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
             string[] split = woorden.Split(',');
@@ -130,7 +127,7 @@ namespace WebUI.Controllers
                 sleutelwoord.woord = woord;
                 sleutelWoorden.Add(sleutelwoord);
             }
-            entiteitManager.AddThema(t, sleutelWoorden);
+            entiteitManager.AddThema(t, sleutelWoorden, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         // this region is for displaying a certain theme
@@ -281,22 +278,23 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations)
+        public virtual ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations, HttpPostedFileBase uploadFile)
         {
+            
 
             if (SelectedOrganisations != null)
             {
 
-                eM.ChangePerson(EditedPerson.RequestedPerson, SelectedOrganisations);
+                eM.ChangePerson(EditedPerson.RequestedPerson, SelectedOrganisations, uploadFile);
 
 
             }
             else
             {
-                eM.ChangePerson(EditedPerson.RequestedPerson);
+                eM.ChangePerson(EditedPerson.RequestedPerson, uploadFile);
             }
 
-            return RedirectToAction("Index");
+            return Redirect("~/Account/AdminBeheerEntiteiten");
         }
         #endregion
 
@@ -444,19 +442,20 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult UpdateOrganisation(UpdateOrganisatieVM editedOrganisation, IEnumerable<string> SelectedPeople)
+        public virtual ActionResult UpdateOrganisation(UpdateOrganisatieVM vm, IEnumerable<string> SelectedPeople, HttpPostedFileBase uploadFile)
         {
+            
             if (SelectedPeople != null)
             {
-                eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie, SelectedPeople);
+                eM.ChangeOrganisatie(vm.RequestedOrganisatie, SelectedPeople, uploadFile);
 
             }
             else
             {
-                eM.ChangeOrganisatie(editedOrganisation.RequestedOrganisatie);
+                eM.ChangeOrganisatie(vm.RequestedOrganisatie, uploadFile);
             }
-
-            return RedirectToAction("Index");
+        
+            return Redirect("~/Account/AdminBeheerEntiteiten");
         }
         #endregion
 
@@ -490,7 +489,7 @@ namespace WebUI.Controllers
         }
         // POST: Thema/Create
         [HttpPost]
-        public virtual ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden)
+        public virtual ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase uploadFile)
         {
             // sleutelwoorden.RemoveAll(item => item.woord == null);
             string woorden = sleutelwoorden[0].woord;
@@ -503,7 +502,7 @@ namespace WebUI.Controllers
             }
             if (ModelState.IsValid)
             {
-                eM.AddThema(thema, mijnList);
+                eM.AddThema(thema, mijnList, uploadFile);
                 return RedirectToAction("IndexThema");
             }
             return View();
@@ -517,11 +516,11 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public virtual ActionResult EditThema(Thema thema, int id, List<Sleutelwoord> sleutelwoorden)
+        public virtual ActionResult EditThema(Thema thema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase uploadFile)
         {
-            thema.EntiteitId = id;
 
-            var mijnThema = eM.GetThema(id);
+          //  TempData["themaID"] = thema.EntiteitId;
+            var mijnThema = eM.GetThema(thema.EntiteitId);
             string woorden = sleutelwoorden[0].woord;
             if (woorden != null)
             {
@@ -534,31 +533,37 @@ namespace WebUI.Controllers
                 }
                 thema.SleutenWoorden = mijnList;
             }
-            eM.UpdateThema(thema);
-            return RedirectToAction("IndexThema");
+            eM.UpdateThema(thema, uploadFile);
+            return Redirect("~/Account/AdminBeheerEntiteiten");
         }
 
 
         public virtual ActionResult DeleteThema(int id)
         {
+            
+            TempData["themaID"] = eM.GetThema(id);
             return View(eM.GetThema(id));
         }
 
         [HttpPost]
-        public virtual ActionResult DeleteThema(int id, FormCollection collection)
+        public virtual ActionResult DeleteThema(int id,  FormCollection collection)
         {
             eM.DeleteThema(id);
             return RedirectToAction("IndexThema");                                        
         }
 
-        public virtual ActionResult DeleteThemaSleutelwoord(int id)
+        // Sleutelwoord Rechstreeks verwijderen
+        public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID)
         {
-            return View(eM.GetSleutelwoord(id));
+            TempData["themaID"] = themaID ;
+            eM.DeleteSleutelwoord(id);
+            Thema thema = eM.GetThema(themaID);
+            return View("~/Views/Entiteit/EditThema.cshtml", thema);
         }
         [HttpPost]
-        public virtual ActionResult DeleteThemaSleutelwoord(int id, FormCollection collection)
+        public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID, FormCollection collection)
         {
-            eM.DeleteSleutelwoord(id);
+       
             return RedirectToAction("IndexThema");
             // return View();
         }
@@ -566,7 +571,7 @@ namespace WebUI.Controllers
         public ActionResult ZoekEntiteit(string naam)
         {
             List<Entiteit> entiteiten = eM.GetEntiteiten(naam);
-            TempData["myList"] = entiteiten.ToList();
+      
             return RedirectToAction("ShowEntiteiten");
         }
 
@@ -633,16 +638,6 @@ namespace WebUI.Controllers
             NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
             ViewBag.Organisaties = organisaties;
         }
-        public ActionResult OrganisatiePagina(Organisatie organisatie)
-        {
-         
-            Organisatie org = new Organisatie();
-            org.EntiteitId = 999;
-            org.AantalLeden = 50;
-            org.Gemeente = "Antwerpen";
-            org.Naam = "NVA";
-
-            return View(org);
-        }
+   
     }
 }

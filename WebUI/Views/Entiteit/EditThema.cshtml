@@ -1,61 +1,133 @@
 ﻿@model Domain.Entiteit.Thema
-
 @{
-    ViewBag.Title = "Edit";
+    Layout = null;
 }
 
-<h2>Edit</h2>
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Starter kit</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Home</li>
 
-<div class="form-horizontal">
-    <h4>Thema</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Naam, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Naam, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.SleutenWoorden, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.SleutenWoorden, "Sleutelwoord")
-        </div>
-    </div>
-
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
 
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.SleutenWoorden, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @{
-                for (int i = 0; i < 1; i++)
-                {
-                    <tr>
-                        <td> @Html.TextBox("[" + i + "].woord")</td>
-                    </tr>
-                }
-            }
-            @Html.ValidationMessageFor(model => model.SleutenWoorden, "", new { @class = "text-danger" })
-        </div>
-    </div>
+                                @{
+                                    ViewBag.Title = "Edit";
+                                }
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </div>
-</div>
+                                <h2>Edit</h2>
+
+                                @using (Html.BeginForm("EditThema", "Entiteit", FormMethod.Post, new { id = Model.EntiteitId, enctype = "multipart/form-data" }))
+                                {
+
+                                    @Html.AntiForgeryToken()
+
+                                <div class="form-horizontal">
+                                    <h4>Thema</h4>
+                                    <hr />
+                                    @Html.EditorFor(x => x.EntiteitId, new { htmlAttributes = new { type = "hidden" } })
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.EditorFor(model => model.Naam, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.Naam, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.SleutenWoorden, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            @Html.DisplayFor(m => m.SleutenWoorden, "Sleutelwoord")
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group">
+                                        <label>Sleutelwoorden (splitst op komma)</label>
+                                        <div class="col-md-10">
+                                            @{
+            for (int i = 0; i < 1; i++)
+            {
+                                    <tr>
+                                        <td> @Html.TextBox("[" + i + "].woord")</td>
+                                    </tr>
 }
-<div>
-    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.PlatformId }, null)
-</div>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+                                            }
+                                            @Html.ValidationMessageFor(model => model.SleutenWoorden, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="col-md-10">
+                                            <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Save" class="btn btn-default" />
+                                        </div>
+                                    </div>
+                                </div>
+                                }
+                                <div>
+                                    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.PlatformId }, null)
+                                </div>
+                                @section Scripts {
+                                    @Scripts.Render("~/bundles/jqueryval")
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+

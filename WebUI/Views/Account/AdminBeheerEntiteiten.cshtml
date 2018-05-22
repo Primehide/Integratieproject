@@ -44,8 +44,8 @@
                                     @using (Html.BeginForm("AddPersoon", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" })) { 
 
                                     <div class="form-group">
-
-                                        <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        
+                                        <input type="text" class="form-control" placeholder="FirstName" name="Naam">
                                     </div>
                                     <div class="form-group">
                                         @Html.DropDownList("organisatie", new SelectList(ViewBag.Organisaties), new { @name = "organisationId" , @class = "select2 form-control custom-select" })
@@ -108,7 +108,11 @@
                                     <label>Woorden (splitst op komma)</label>
                                     <input type="text" class="form-control" placeholder="Naam" name="woorden">
                                 </div>
-                            
+                                <div class="form-group">
+
+                                    <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+
+                                </div>
                                 <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
 }
                                 </div>
@@ -143,23 +147,35 @@
                                             <tr>
                                                 <th>Naam</th>
                                                 <th>Type</th>
+                                                <th>Afbeelding</th>
                                                 <th>Actie</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach (var e in Model.AlleEntiteiten)
                                             {
-                                                <tr>
-                                                    <td>
-                                                        @e.Naam
-                                                    </td>
-                                                    <td>
-                                                        @e.GetType().Name
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn waves-effect waves-light btn-success">Edit</button>
-                                                    </td>
-                                                </tr>
+                                            <tr>
+                                                <td>
+
+                                                  @e.Naam
+                                                </td>
+
+                                                <td>
+                                                    @e.GetType().Name
+                                                </td>
+                                                <td>
+                                                    @if (e.Image != null)
+        {
+                                            <img src="data:image;base64,@System.Convert.ToBase64String(e.Image)" width="25" height="25"/>
+}
+                                                </td>
+                                                <td>
+                                                    @Html.ActionLink("Edit", "AdminEditEntiteiten", new { id = e.EntiteitId }) |
+                                                    @Html.ActionLink("Delete", "AdminDeleteEntiteit", new { id = e.EntiteitId }, new { onclick = "return confirm('Weet je zeker dat je deze entiteit wil verwijderen?');" })
+                                                
+
+                                                </td>
+                                            </tr>
                                             }
                                         </tbody>
                                     </table>

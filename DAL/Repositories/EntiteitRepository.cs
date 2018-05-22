@@ -76,8 +76,10 @@ namespace DAL
             return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
         }
 
-        public Persoon UpdatePerson(Persoon UpdatedPerson)
+        public Persoon UpdatePerson(Persoon UpdatedPerson )
         {
+
+        
             ctx.Entry(UpdatedPerson).State = EntityState.Modified;
             ctx.SaveChanges();
             return UpdatedPerson;
@@ -114,7 +116,9 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            //ctx.Entry(UpdatedOrganisatie).State = EntityState.Modified;
+       
+
+       
             ctx.SaveChanges();
             return UpdatedOrganisatie;
         }
@@ -178,22 +182,21 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-        public void CreateThema(Thema thema)
+        public void CreateThema(Thema thema, HttpPostedFileBase ImageFile)
         {
+            thema.Image = ConvertToBytes(ImageFile);
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
-    
 
-        public void UpdateThema(Thema thema)
+
+        public Thema UpdateThema(Thema UpdatedThema)
         {
-            var result = ReadThema(thema.EntiteitId);
-         
-            if (result != null)
-            {
-                result.Naam = thema.Naam;
-                ctx.SaveChanges();
-            }
+
+
+          ctx.Entry(UpdatedThema).State = EntityState.Modified;
+            ctx.SaveChanges();
+            return UpdatedThema;
         }
 
         public void DeleteThema(int entiteitsId)
