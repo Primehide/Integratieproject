@@ -229,6 +229,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PersonViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -5930,6 +5931,7 @@
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
     <Content Include="Views\Shared\DataTextGain4.json" />
+    <Content Include="Views\Manage\ShowReview.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

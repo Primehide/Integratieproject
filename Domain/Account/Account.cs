@@ -18,5 +18,6 @@ namespace Domain.Account
         public List<Alert> Alerts { get; set; }
         public Dashboard Dashboard { get; set; }
         public List<Entiteit.Item> Items { get; set; }
+        public List<Entiteit.Entiteit> ReviewEntiteiten { get; set; }
     }
 }

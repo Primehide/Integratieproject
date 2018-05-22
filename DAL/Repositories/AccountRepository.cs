@@ -78,6 +78,8 @@ namespace DAL
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
             updated.Email = account.Email;
+            updated.ReviewEntiteiten = account.ReviewEntiteiten;
+
             ctx.SaveChanges();
         }
 
@@ -86,6 +88,9 @@ namespace DAL
             //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Posts))
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Posts.Select(z => z.Urls)))
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Trends))
                 .Include("Alerts")
                 .Include("Items")
                 .Include(x => x.Dashboard.Configuratie)
@@ -102,6 +107,7 @@ namespace DAL
             return ctx.Accounts
                 .Include(x => x.Alerts)
                 .Include(x => x.Items)
+                .Include(x => x.ReviewEntiteiten)
                 .ToList();
         }
         

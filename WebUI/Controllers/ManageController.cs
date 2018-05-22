@@ -629,21 +629,62 @@ namespace WebUI.Controllers
 
         public ActionResult genereerReview()
         {
-            string id = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();
             IEntiteitManager entiteitManager = new EntiteitManager();
             foreach (Account acc in accounts)
             {
+                //Review aanmaken
+                
                 List<Entiteit> entiteiten = new List<Entiteit>();
                 List<Item> items = acc.Items;
                 foreach(Item item in items)
                 {
+                   
                     entiteiten.Add(entiteitManager.GetEntiteit(item.EntiteitId));
                 }
-                return View(entiteiten);
+             
+                acc.ReviewEntiteiten = entiteiten;
+                accountManager.UpdateUser(acc);
             }
             return View();
+        }
+
+        public ActionResult ShowReview()
+        {
+            string id = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+            Account account = accountManager.getAccount(id);
+            List<Entiteit> entiteiten = account.ReviewEntiteiten;
+            List<Persoon> deelplatformPersonen = new List<Persoon>();
+            List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
+            List<Thema> deelplatformThemas = new List<Thema>();
+
+            foreach (Entiteit e in entiteiten)
+            {
+                if (e is Persoon)
+                {
+                    deelplatformPersonen.Add((Persoon)e);
+                }
+                else
+                if (e is Organisatie)
+                {
+                    deelplatformOrganisaties.Add((Organisatie)e);
+                }
+                else
+                if (e is Thema)
+                {
+                    deelplatformThemas.Add((Thema)e);
+                }
+            }
+
+            ReviewModel reviewModel = new ReviewModel()
+            {
+                Organisaties = deelplatformOrganisaties,
+                Personen = deelplatformPersonen,
+                Themas = deelplatformThemas
+            };
+            return View(reviewModel);
         }
 
         #region Helpers

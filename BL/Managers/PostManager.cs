@@ -68,12 +68,12 @@ namespace BL
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-30).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople();
 
-           PostRequest postRequest1 = new PostRequest()
+         /*  PostRequest postRequest1 = new PostRequest()
             {
                since = gisteren,
                until = vandaag
@@ -102,7 +102,7 @@ namespace BL
                 {
 
                 }
-            }
+            }*/
 
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
         foreach (var Persoon in AllePersonen)
@@ -132,8 +132,8 @@ namespace BL
                         var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                              //ConvertAndSaveToDb(posts, Persoon.EntiteitId);
-                            System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
+                              ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                          //  System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
                     }
                     catch (Newtonsoft.Json.JsonReaderException)
