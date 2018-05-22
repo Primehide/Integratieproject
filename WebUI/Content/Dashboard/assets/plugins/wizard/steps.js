@@ -29,14 +29,6 @@ $(".tab-wizard").steps({
             }).appendTo('#grafiekForm');
         }
 
-        //vergelijk select
-        var vergelijkoptie = $('select[name=vergelijkOpties]').val()
-        $('<input>').attr({
-            type: 'hidden',
-            name: 'vergelijkOptie',
-            value: vergelijkoptie
-        }).appendTo('#grafiekForm');
-
         var SoortGrafiek = $('select[name=SoortGrafiek]').val()
         $('<input>').attr({
             type: 'hidden',
@@ -44,8 +36,15 @@ $(".tab-wizard").steps({
             value: SoortGrafiek
         }).appendTo('#grafiekForm');
 
+        var naam = $("#Naam").val()
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'Naam',
+            value: naam
+        }).appendTo('#grafiekForm');
+
         $.ajax({
-            url: '/post/createGrafiek',
+            url: '/account/createGrafiek',
             type: 'POST',
             data: $('#grafiekForm').serialize(),
             success: function () {

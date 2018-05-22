@@ -1,18 +1,110 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
-    ViewBag.Title = "Error";
+    Layout = "";
 }
 
-<h1 class="text-danger">Error.</h1>
-@{
-    if (String.IsNullOrEmpty(ViewBag.errorMessage))
-    {
-        <h2 class="text-danger">An error occurred while processing your request.</h2>
-    }
-    else
-    {
-        <h2 class="text-danger">@ViewBag.errorMessage</h2>
-    }
-}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>ERROR</title>
+
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description" content="Porto - Responsive HTML5 Template">
+    <meta name="author" content="okler.net">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/font-awesome/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/animate/animate.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/simple-line-icons/css/simple-line-icons.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/owl.carousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/owl.carousel/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/magnific-popup/magnific-popup.min.css">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-elements.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-blog.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-shop.css">
+
+    <!-- Current Page CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/settings.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/layers.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/navigation.css">
+
+    <!-- Demo CSS -->
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="skin-corporate-7.css">
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/custom.css">
+
+    <!-- Head Libs -->
+    <script src="~/Content/Homepagina/vendor/modernizr/modernizr.min.js"></script>
+
+</head>
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">ERROR</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                   <div>
+                       Er is iets gebeurt tijdens het verwerken van de request.
+                   </div>
+
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        </div>
+</body>
+
+
+</html>
+
 

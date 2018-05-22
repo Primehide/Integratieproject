@@ -1,4 +1,6 @@
 ﻿@model WebUI.Models.DashboardModel
+@using System.Linq
+
 @{
     Layout = null;
 }
@@ -7,6 +9,7 @@
 
 <body class="fix-header card-no-border fix-sidebar mini-sidebar">
     <div id="main-wrapper">
+
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
         <div class="page-wrapper">
@@ -34,62 +37,77 @@
                 <!-- Start Page Content -->
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
-                <div class="row">
-                    @foreach (var blok in Model.Configuratie.DashboardBlokken)
-            {
-                if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
+                @if(Model.Configuratie.DashboardBlokken.Count == 0)
                 {
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-bordered table-striped ">
-                                        <thead>
-                                            <tr>
-                                                <th></th>
-                                                <th class="text-center">
-                                                    Waarde
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var waarde in blok.Grafiek.Waardes)
-                                    {
-                                        <tr>
-                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                            @if (waarde.Naam.ToLower().Contains("trend"))
-                                    {
-                                        <td>Aanwezig</td>
-                            }
-                            else
-                            {
-                                <td>@waarde.Waarde</td>
-                    }
-                                        </tr>
-                            }
-                                        </tbody>
-                                    </table>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Geen grafieken :(</h4>
+                                    <p class="card-text">Je hebt nog geen enkele grafiek. Maak jou eerste grafiek!</p>
+                                    <a href="/manage/addgrafiek" class="btn btn-primary">Start</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-        }
-        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-        {
-            <div class="col-md-4" style="overflow:hidden;">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                        <div>
-                            <canvas id="chart @Model.CanvasCounter"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    Model.CanvasCounter++;
-}
-}
+                }
+                <div class="row">
+                    @foreach (var blok in Model.Configuratie.DashboardBlokken)
+                    {
+                        if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
+                        {
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped ">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th class="text-center">
+                                                            Waarde
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var waarde in blok.Grafiek.Waardes)
+                                                    {
+                                                        <tr>
+                                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
+                                                            @if (waarde.Naam.ToLower().Contains("trend"))
+                                                            {
+                                                                <td>Aanwezig</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@waarde.Waarde</td>
+                                                            }
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                        {
+                            <div class="col-md-4" style="overflow:hidden;">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
+                                        <div>
+                                            <canvas id="chart @Model.CanvasCounter"></canvas>
+                                        </div>
+                                        <a href="/Account/EditGrafiek?id=@blok.Grafiek.GrafiekId" class="btn waves-effect waves-light btn-success">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            Model.CanvasCounter++;
+                        }
+                    }
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
@@ -99,11 +117,11 @@
         </div>
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
-    {
-        Model.DataSetTeller = 0;
-        if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
         {
-            <script>
+            Model.DataSetTeller = 0;
+            if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
+            {
+                <script>
                     var ctx1 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data1 = {
                         labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
@@ -167,11 +185,11 @@
                         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
                         responsive: true
                     });
-            </script>
-    }
-    else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
-    {
-        <script>
+                </script>
+            }
+            else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
+            {
+                <script>
                     var ctx2 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data2 = {
                         labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
@@ -207,11 +225,11 @@
                         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
                         responsive: true
                     });
-        </script>
-}
-else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
-{
-    <script>
+                </script>
+            }
+            else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
+            {
+                <script>
                     var ctx3 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data3 = [
                         @{
@@ -243,10 +261,10 @@ else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
                         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
                         responsive: true
                     });
-    </script>
-}
-Model.ScriptCounter++;
-}
+                </script>
+            }
+            Model.ScriptCounter++;
+        }
     </div>
 </body>
 

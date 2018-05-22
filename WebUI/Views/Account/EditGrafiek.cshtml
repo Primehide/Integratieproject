@@ -1,0 +1,133 @@
+﻿@model WebUI.Models.GrafiekViewModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Starter kit</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">Grafiek Aanpassen</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-body">
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
+                            <div class="row">
+                                <div class="col-sm-12 col-xs-12">
+                                    <form action="/Account/EditGrafiek" method="post" id="grafiekForm">
+                                        <input type="hidden" name="GrafiekId" value="@Model.Grafiek.GrafiekId" />
+                                        <div class="cold-md-4">
+                                            <div class="form-group">
+                                                <label>Grafiek naam</label>
+                                                <input type="text" class="form-control" placeholder="@Model.Grafiek.Naam" name="Naam" value="@Model.Grafiek.Naam">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h5 class="box-title">Selecteer entiteiten:</h5>
+                                            <select multiple id="optgroup" name="optgroup[]">
+                                                <optgroup label="Personen">
+                                                    @foreach (var p in Model.Personen)
+                                                    {
+                                                        <option value="@p.EntiteitId" class="@p.EntiteitId">@p.Naam</option>
+                                                    }
+                                                </optgroup>
+                                                <optgroup label="Organisatie">
+                                                    @foreach (var o in Model.Organisaties)
+                                                    {
+                                                        <option value="@o.EntiteitId">@o.Naam</option>
+                                                    }
+                                                </optgroup>
+                                                <optgroup label="Themas">
+                                                    @foreach (var t in Model.Themas)
+                                                    {
+                                                        <option value="@t.EntiteitId">@t.Naam</option>
+                                                    }
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4" id="SelecteerGrafiek">
+                                            <h5 class="box-title">Soort Grafiek:</h5>
+                                            <select class="selectpicker" id="SoortGrafiek" name="SoortGrafiek" data-style="form-control btn-secondary">
+                                                <option value="@Model.Grafiek.GrafiekSoort">--Selecteer grafiek--</option>
+                                                <option value="STAFGRAFIEK">Staafdiagram</option>
+                                                <option value="TAARTGRAFIEK">Taartdiagram</option>
+                                                <option value="LIJNGRAFIEK">Lijndiagram</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10" onclick="editForm()">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+        <script>
+            @foreach (var e in Model.Grafiek.Entiteiten)
+            {
+                <text>
+                    $("#optgroup option[value=@e.EntiteitId]").prop("selected", "selected")
+                </text>
+            }
+
+            function editForm() {
+                //geselecteerde entiteit
+                var selectedvalues = $('select#optgroup').val();
+                for (i = 0; i < selectedvalues.length; i++) {
+                    $('<input>').attr({
+                        type: 'hidden',
+                        name: 'EntiteitIds[' + i + ']',
+                        value: selectedvalues[i]
+                    }).appendTo('#grafiekForm');
+                }
+
+                var SoortGrafiek = $('select[name=SoortGrafiek]').val()
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'GrafiekSoort',
+                    value: SoortGrafiek
+                }).appendTo('#grafiekForm');
+            }
+        </script>
+    </div>
+</body>
+
+
+
+
+
+
+

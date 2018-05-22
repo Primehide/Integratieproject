@@ -15,12 +15,12 @@ namespace BL
         Persoon GetPerson(int id);
         Persoon ChangePerson(Persoon ChangedPerson);
         void RemovePerson(int id);
-        List<Persoon> GetAllPeople();
+        List<Persoon> GetAllPeople(int platId);
         byte[] GetPersonImageFromDataBase(int id);
 
         void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile);
         Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie);
-        List<Organisatie> GetAllOrganisaties();
+        List<Organisatie> GetAllOrganisaties(int platId);
         Organisatie GetOrganisatie(int id);
         void RemoveOrganisatie(int id);
         byte[] GetOrganisationImageFromDataBase(int id);
@@ -32,13 +32,14 @@ namespace BL
         Entiteit GetEntiteit(int id);
         List<Entiteit> GetEntiteiten(string naam);
 
+        void UpdateGrafieken();
 
         void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
         void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden);
         void UpdateThema(Thema thema);
         void DeleteThema(int entiteitsId);
         void DeleteSleutelwoord(int sleutelId);
-        IEnumerable<Thema> GetThemas();
+        IEnumerable<Thema> GetThemas(int platId);
         Thema GetThema(int entiteitsId);
         Sleutelwoord GetSleutelwoord(int sleutelId);
         List<Entiteit> GetEntiteitenVanDeelplatform(int id);
@@ -47,7 +48,10 @@ namespace BL
         Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie);
 
         List<Entiteit> ZoekEntiteiten(string zoek);
-        void ConvertJsonToEntiteit(List<Domain.TextGain.JsonEntiteit> jsonEntiteiten);
+        void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
+
+        void BerekenVasteGrafiekenAlleEntiteiten();
+        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
 
     }
 }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Post;
 using System.Data.Entity;
+using Domain.Entiteit;
 
 namespace DAL
 {
@@ -52,6 +53,49 @@ namespace DAL
                 .Include(x => x.Urls)
                 .Include(x => x.Words)
                 .ToList();
+        }
+
+
+        public IEnumerable<Domain.Post.Grafiek> GetAllGrafieken()
+        {
+            return ctx.Grafieken.Include(ctx => ctx.Entiteiten).Include(mbox => mbox.Waardes).ToList();
+        }
+        public void AddGrafiek(Grafiek grafiek)
+        {
+            ctx.Grafieken.Add(grafiek);
+            ctx.SaveChanges();
+        }
+
+        public List<Word> GetAllWords()
+        {
+            return ctx.Words.ToList();
+        }
+
+        public List<Grafiek> AlleGrafieken()
+        {
+            return ctx.Grafieken.Include(x => x.Waardes).Include(x => x.Entiteiten).ToList();
+
+        }
+
+        public Grafiek ReadGrafiek(int id)
+        {
+            return ctx.Grafieken
+                .Include(x => x.Waardes)
+                .Include(x => x.Entiteiten)
+                .Include(x => x.CijferOpties)
+                .Single(x => x.GrafiekId == id);
+        }
+
+        public void UpdateGrafiek(Grafiek grafiekToUpdate)
+        {
+            //ctx.Entry(grafiekToUpdate.Entiteiten).State = EntityState.Unchanged;
+            ctx.Entry(grafiekToUpdate).State = EntityState.Modified;
+            ctx.SaveChanges();
+        }
+
+        public List<Entiteit> getAlleEntiteiten()
+        {
+            return ctx.Entiteiten.Include(x => x.Posts).ToList();
         }
     }
 }

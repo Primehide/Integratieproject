@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Account;
 using Domain.Entiteit;
 using System.Data.Entity;
+using Domain.Post;
 
 namespace DAL
 {
@@ -32,9 +33,20 @@ namespace DAL
             ctx.Accounts.Add(account);
             ctx.SaveChanges();
         }
+
+        public void addDeviceId(string userId,string device)
+        {
+            Account acc = ctx.Accounts.Where(m => m.IdentityId == userId).FirstOrDefault();
+            acc.DeviceId = device;
+            ctx.SaveChanges();
+        }
+
         public Alert ReadAlert(int alertID)
         {
-            Alert alert = ctx.Alerts.Find(alertID);
+            Alert alert = ctx.Alerts.Where(x => x.AlertId == alertID)
+                .Include(x => x.Entiteit)
+                .FirstOrDefault();
+            
             return alert;
         }
         public List<Alert> getAlleAlerts()
@@ -51,6 +63,8 @@ namespace DAL
             ctx.Entry(alert.Entiteit).State = EntityState.Unchanged;
             ctx.SaveChanges();
         }
+    
+
 
         public void UpdateAlert(Alert alert)
         {
@@ -71,6 +85,42 @@ namespace DAL
     
 
         }
+
+        // Frequently asked questions //
+        public void addFaq(Faq faq)
+        {
+
+            ctx.Faqs.Add(faq);
+            ctx.SaveChanges();
+        }
+        public void UpdateFaq(Faq faq)
+        {
+
+            ctx.Entry(faq).State = System.Data.Entity.EntityState.Modified;
+            ctx.SaveChanges();
+        }
+        public void DeleteFaq(int faqID)
+        {
+            Faq faq = ReadFaq(faqID);
+
+
+            ctx.Faqs.Remove(faq);
+
+            ctx.SaveChanges();
+
+
+        }
+        public Faq ReadFaq(int faqID)
+        {
+            Faq faq = ctx.Faqs.Find(faqID);
+            return faq;
+        }
+        public List<Faq> getAlleFaqs()
+        {
+            return ctx.Faqs
+
+                .ToList();
+        }
         public void updateUser(Account account)
         {
             Account updated = ctx.Accounts.Find(account.AccountId);
@@ -78,9 +128,27 @@ namespace DAL
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
             updated.Email = account.Email;
+
             updated.ReviewEntiteiten = account.ReviewEntiteiten;
 
             ctx.SaveChanges();
+
+            updated.Dashboard = account.Dashboard;
+            foreach (DashboardBlok b in updated.Dashboard.Configuratie.DashboardBlokken)
+            {
+                if (b.Grafiek.Entiteiten != null)
+                {
+                    foreach (Entiteit e in b.Grafiek.Entiteiten)
+                    {
+                        ctx.Entry(e).State = EntityState.Modified;
+                    }
+                }
+            }
+            
+                ctx.SaveChanges();
+           
+            
+
         }
 
         public Account ReadAccount(string ID)
@@ -108,6 +176,12 @@ namespace DAL
                 .Include(x => x.Alerts)
                 .Include(x => x.Items)
                 .Include(x => x.ReviewEntiteiten)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Entiteiten))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.CijferOpties))
                 .ToList();
         }
         
@@ -155,6 +229,12 @@ namespace DAL
             updated.Items.Remove(ItemToUnfollow);
             ctx.Items.Remove(ItemToUnfollow);
             ctx.SaveChanges();
+        }
+
+        public void DeleteGrafiekWaardes(int grafiekID)
+        {
+            Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
+            teverwijderenwaardes.Waardes = null;
         }
     }
 }

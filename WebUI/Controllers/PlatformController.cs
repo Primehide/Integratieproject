@@ -19,7 +19,7 @@ namespace WebUI.Controllers
     {
         PlatformManager pM = new PlatformManager();
         EntiteitManager eM = new EntiteitManager();
-        public static int currentPlatform;
+        
 
         // GET: Platform
         public  ActionResult Index()
@@ -46,6 +46,8 @@ namespace WebUI.Controllers
         #endregion
         //Changing of a SubPlatform (Admin)
         #region
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public  ActionResult ChangePlatform(int id)
         {
             List<Persoon> deelplatformPersonen = new List<Persoon>();
@@ -84,12 +86,12 @@ namespace WebUI.Controllers
             return View(CPVM);
 
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         [HttpPost]
-        public  ActionResult ChangePlatform(Deelplatform dp)
+        public  ActionResult ChangePlatform(ChangePlatformViewModel dp)
         {
             //I have to be able to make new Entities that are related to the currently selected SubPlatform
-            pM.ChangeDeelplatform(dp);
+            pM.ChangeDeelplatform(dp.requestedDeelplatform);
             return RedirectToAction("Index");
 
         }
@@ -134,15 +136,28 @@ namespace WebUI.Controllers
 
             //I have to be able to direct the user to the homepage of the selected Platform (Implementation)
             #region
-            currentPlatform = id;
+
+            System.Web.HttpContext.Current.Session["PlatformID"] = id;
             HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home", new { platId = id });
+            Deelplatform p = pM.GetDeelplatform(id);
+            return RedirectToAction("Index", "Home",new { gekozenplatform = p.Naam, tagline = p.Tagline });
 
             #endregion
             //return View(CPVM);
 
         }
         #endregion
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
         //Deletion of a SubPlatform
         #region
         public  ActionResult DeletePlatform()
@@ -161,13 +176,14 @@ namespace WebUI.Controllers
 
         }
         #endregion
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();         
             return View(accounts);
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public FileResult DownloadReport()
         {
             IPlatformManager platformManager = new PlatformManager();

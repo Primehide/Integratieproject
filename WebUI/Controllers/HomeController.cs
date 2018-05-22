@@ -1,4 +1,6 @@
-﻿using System;
+using BL;
+﻿using Domain.Platform;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,19 +11,41 @@ namespace WebUI.Controllers
     [RequireHttps]
     public partial class HomeController : Controller
     {
+        public ActionResult Faq()
+        {
+            AccountManager mgr = new AccountManager();
+            IEnumerable<Domain.Account.Faq> faqs = mgr.getAlleFaqs();
+            return View(faqs);
+        }
 
         public ActionResult HomePagina()
         {
             return View();
         }
-       
 
-        public virtual ActionResult Index()
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
+        public virtual ActionResult Index(string gekozenplatform,string tagline)
 
         {
-            ViewBag.platId = PlatformController.currentPlatform;
-
-            return View();
+            try
+            {
+                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                ViewBag.dpnaam = gekozenplatform;
+                ViewBag.tagline = tagline;
+                return View();
+            } catch ( NullReferenceException e )
+            {
+                return RedirectToAction("Index", "Platform", null);
+            }
         }
 
         public virtual ActionResult About()
@@ -42,5 +66,7 @@ namespace WebUI.Controllers
         {
             return View("~/Views/Shared/Dashboard/DashboardStarterKit.cshtml");
         }
+
+    
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Domain.Entiteit.Thema
+@model Domain.Entiteit.Thema
 @{
     Layout = null;
 }
@@ -22,6 +22,7 @@
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
                             <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item">@Model.Naam</li>
                         </ol>
                     </div>
                     <div>
@@ -41,18 +42,22 @@
                         <div class="card">
                             <div class="card-body">
                                 <center class="m-t-30">
-
-
-
-
+                                    <img src="~/Content/Dashboard/assets/images/light-bulb.png" , width="150" , height="150" , class="img-circle" />
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(x => x.Naam)</h4>
-
+                                    @Html.DisplayFor(m => m.SleutenWoorden, "SleutelwoordNaam")
                                 </center>
                             </div>
+
+                            <a href="/Account/FollowEntiteit?id=@Model.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
                             <div>
                                 <hr>
                             </div>
-
+                            <div class="card-body">
+                                <small class="text-muted p-t-30 db">Social Profile</small>
+                                <br />
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
+                                <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
+                            </div>
                         </div>
                     </div>
                     <!-- Column -->
@@ -74,22 +79,10 @@
                                         <hr>
                                         <p class="m-t-30">
                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    Personen meest positief/negatief
-                                                    <canvas id="myChart" width="150" height="150"></canvas>
-                                                </div>
-                                                <div class="col-md4">
-                                                    Trending personen<br />
-                                                    (aantal vermeldingen laatste 24 uur)
-                                                    <canvas id="myChart2" width="150" height="150"></canvas>
-                                                </div>
-                                                <div class="col-md-4">
-                                                    Organisaties meest positief/negatief
-                                                    <canvas id="myChart3" width="150" height="150"></canvas>
+                                                <div class="col-md-6">
+                                                    <canvas id="chart1"></canvas>
                                                 </div>
                                             </div>
-
-
                                         </p>
                                     </div>
                                 </div>
@@ -113,87 +106,37 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
         <script>
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [0.5, 0.7, -0.2],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
+            new Chart(document.getElementById("chart1"),
+                {
+                    "type": "line",
+                    "data": {
+                        "labels": ["@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Naam",
+                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Naam",
+                "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Naam"],
+                        "datasets": [{
+                            "label": "@Model.Grafieken.ElementAt(0).Naam",
+                            "data": [@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Waarde,
+                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Waarde],
+                            "fill": false, "borderColor": "rgb(75, 192, 192)",
+                            "lineTension": 0.1
                         }]
-                    }
-                }
-            });
-
-            var ctx2 = document.getElementById("myChart2").getContext('2d');
-            var myChart = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [10, 20],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                        ],
-                    }],
-                    labels: [
-                        'Maggie De Block',
-                        'Theo Francken',
-                    ]
-                },
-            });
-
-            var ctx3 = document.getElementById("myChart3").getContext('2d');
-            var myChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ["N-VA", "Vlaams belang", "CD&V"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [0.9, -0.7, -0.6],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }]
-                    }
-                }
-            });
+                    }, "options": {}
+                });
         </script>
     </div>
 </body>
