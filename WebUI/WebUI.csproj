@@ -29,6 +29,11 @@
     </IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>
     </IISExpressUseClassicPipelineMode>
+    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <IISExpressSSLPort>44365</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -320,6 +325,7 @@
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
@@ -4948,6 +4954,7 @@
     <Content Include="Content\Homepagina\vendor\simple-line-icons\gulpfile.js" />
     <Content Include="Content\Homepagina\vendor\vide\vide.js" />
     <Content Include="Content\Homepagina\vendor\vide\vide.min.js" />
+    <Content Include="Content\TagMarkup.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -5936,6 +5943,7 @@
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
     <Content Include="Views\Shared\DataTextGain4.json" />
+    <Content Include="Views\Manage\ShowReview.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SleutelwoordNaam.cshtml" />
     <Content Include="Views\Home\Faq.cshtml" />
     <Content Include="Views\Account\AdminBeheerFaq.cshtml" />
