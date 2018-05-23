@@ -45,23 +45,18 @@
 
 
                                     @if (Model.Persoon.Image != null)
-            {
-                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Persoon.Image)" , width="150" , height="150" , class="img-circle" />
+                                    {
+                                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Persoon.Image)" , width="150" , height="150" , class="img-circle" />
 
-}
-else
-{
-                        <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
-}
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
+                                    }
 
 
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>
                                     <h6 class="card-subtitle">@Html.DisplayFor(m => m.Persoon.Organisations[0].Naam, "Organisation")</h6>
-
-                                    <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>
-
-                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.Persoon.Organisations, "Organisations")</h6>
-
                                 </center>
                             </div>
                             <a href="/Account/FollowEntiteit?id=@Model.Persoon.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
@@ -75,7 +70,7 @@ else
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                             </div>
-                                            
+
                         </div>
                     </div>
                     <!-- Column -->
@@ -141,7 +136,7 @@ else
                                                             window.player.setValue('textPath4', 'text', @Model.AantalPositieve);
                                                         }
                                                     });
-                                                  
+
                                                 </script>
 
                                             </div>
@@ -177,91 +172,91 @@ else
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-                                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-                                <script>
-                                    var ctx = document.getElementById("myChart").getContext('2d');
-                                    var myChart = new Chart(ctx, {
-                                        type: 'bar',
-                                        data: {
-                                        labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
-                                            datasets: [{
-                                        label: 'Sentiment',
-                                                data: [0.5, 0.7, -0.2],
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 0.2)',
-                                                    'rgba(54, 162, 235, 0.2)',
-                                                    'rgba(255, 206, 86, 0.2)',
-                                                ],
-                                                borderColor: [
-                                                    'rgba(255,99,132,1)',
-                                                    'rgba(54, 162, 235, 1)',
-                                                    'rgba(255, 206, 86, 1)',
-                                                ],
-                                                borderWidth: 1
-                                            }]
-                                        },
-                                        options: {
-                                        scales: {
-                                        yAxes: [{
-                                        ticks: {
-                                        beginAtZero: true
-                                                    }
-                                                }]
-                                            }
-                                        }
-                                    });
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        <script>
+            var ctx = document.getElementById("myChart").getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.5, 0.7, -0.2],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
 
-                                    var ctx2 = document.getElementById("myChart2").getContext('2d');
-                                    var myChart = new Chart(ctx2, {
-                                        type: 'doughnut',
-                                        data: {
-                                        datasets: [{
-                                        data: [10, 20],
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 0.2)',
-                                                    'rgba(54, 162, 235, 0.2)',
-                                                ],
-                                            }],
-                                            labels: [
-                                                'Maggie De Block',
-                                                'Theo Francken',
-                                            ]
-                                        },
-                                    });
+            var ctx2 = document.getElementById("myChart2").getContext('2d');
+            var myChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [10, 20],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                    }],
+                    labels: [
+                        'Maggie De Block',
+                        'Theo Francken',
+                    ]
+                },
+            });
 
-                                    var ctx3 = document.getElementById("myChart3").getContext('2d');
-                                    var myChart = new Chart(ctx3, {
-                                        type: 'bar',
-                                        data: {
-                                        labels: ["N-VA", "Vlaams belang", "CD&V"],
-                                            datasets: [{
-                                        label: 'Sentiment',
-                                                data: [0.9, -0.7, -0.6],
-                                                backgroundColor: [
-                                                    'rgba(255, 99, 132, 0.2)',
-                                                    'rgba(54, 162, 235, 0.2)',
-                                                    'rgba(255, 206, 86, 0.2)',
-                                                ],
-                                                borderColor: [
-                                                    'rgba(255,99,132,1)',
-                                                    'rgba(54, 162, 235, 1)',
-                                                    'rgba(255, 206, 86, 1)',
-                                                ],
-                                                borderWidth: 1
-                                            }]
-                                        },
-                                        options: {
-                                        scales: {
-                                        yAxes: [{
-                                        ticks: {
-                                        beginAtZero: true
-                                                    }
-                                                }]
-                                            }
-                                        }
-                                    });
-                                </script>
-                            </div>
+            var ctx3 = document.getElementById("myChart3").getContext('2d');
+            var myChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: ["N-VA", "Vlaams belang", "CD&V"],
+                    datasets: [{
+                        label: 'Sentiment',
+                        data: [0.9, -0.7, -0.6],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+    </div>
 </body>
 
 
