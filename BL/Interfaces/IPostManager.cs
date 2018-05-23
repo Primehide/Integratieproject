@@ -11,7 +11,7 @@ namespace BL
 {
     public interface IPostManager
     {
-        Task SyncDataAsync();
+        Task SyncDataAsync(int platformid);
         void AddPost(Post post);
         List<Post> getAllPosts();
         List<Grafiek> getAllGrafieken();

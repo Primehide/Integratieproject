@@ -12,6 +12,6 @@ namespace Domain.Entiteit
         public int AantalLeden { get; set; }
         public string Gemeente { get; set; }
         public List<Persoon> Leden { get; set; }
-        public byte[] Image { get; set; }
+       // public byte[] Image { get; set; }
     }
 }

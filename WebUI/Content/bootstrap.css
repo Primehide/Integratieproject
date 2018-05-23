@@ -4854,6 +4854,7 @@ input[type="button"].btn-block {
 }
 
 .alert {
+
   position: relative;
   padding: 0.75rem 1.25rem;
   margin-bottom: 1rem;
@@ -4927,6 +4928,7 @@ input[type="button"].btn-block {
   color: #0c5460;
   background-color: #d1ecf1;
   border-color: #bee5eb;
+  display:inline-block;
 }
 
 .alert-info hr {

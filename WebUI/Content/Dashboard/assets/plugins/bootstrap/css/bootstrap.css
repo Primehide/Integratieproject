@@ -4097,10 +4097,11 @@ tbody.collapse.show {
 }
 
 .alert {
-  padding: 0.75rem 1.25rem;
-  margin-bottom: 1rem;
-  border: 1px solid transparent;
-  border-radius: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    display: inline-block;
 }
 
 .alert-heading {
@@ -4165,6 +4166,7 @@ tbody.collapse.show {
   color: #0c5460;
   background-color: #d1ecf1;
   border-color: #bee5eb;
+  display:inline-block;
 }
 
 .alert-info hr {

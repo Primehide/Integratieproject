@@ -63,16 +63,18 @@ namespace BL
             return postRepository.getAllPosts();
         }
 
-        public async Task SyncDataAsync()
+        public async Task SyncDataAsync(int platformid)
         {
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
-            DateTime gisteren = DateTime.Today.AddDays(-15).Date;
+            DateTime gisteren = DateTime.Today.AddDays(-30).Date;
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(0);
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
-            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(1);
+            /*
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(0);
 
          /*  PostRequest postRequest1 = new PostRequest()
             {
@@ -103,12 +105,11 @@ namespace BL
                 {
 
                 }
+<<<<<<< HEAD
 
             }*/
-
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
-
-        foreach (var Persoon in AllePersonen)
+            foreach (var Persoon in AllePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
