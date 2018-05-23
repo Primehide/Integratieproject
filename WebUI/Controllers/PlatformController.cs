@@ -39,11 +39,14 @@ namespace WebUI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin")]
-        public  ActionResult CreatePlatform(Deelplatform dp)
+        public  ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase ImgLogo)
         {
             //I have to be able to create a SubPlatform
+            byte[] imageBytes = null;
+            BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
+            imageBytes = reader.ReadBytes((int)ImgLogo.ContentLength);
+            dp.Logo = imageBytes;
             pM.AddDeelplatform(dp);
-            //pM.GetAllDeelplatformen().Where(x => x.Naam == dp.Naam).Single(x => x.Tagline == dp.Tagline);
             EntiteitManager entiteitManager = new EntiteitManager();
             if (Request.Files.Count > 0)
             {

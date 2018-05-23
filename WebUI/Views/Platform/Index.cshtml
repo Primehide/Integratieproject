@@ -92,6 +92,11 @@
                                                         Login
                                                     </a>
                                                 </li>
+                                                <li class="">
+                                                    <a class="nav-link" href="/Account/SuperAdminCp">
+                                                        Super Admin
+                                                    </a>
+                                                </li>
                                             </ul>
                                         </nav>
                                     </div>
@@ -108,23 +113,33 @@
         <div role="main" class="main">
             <div class="container">
                 <div class="row">
+                    <h1>Kies een platform</h1>
+                </div>
+                <div class="row">
                     @foreach (var dp in Model)
                     {
-                    <div class="col-md-4" style="margin-bottom:30px;">
-                        <h4 class="mb-0">@dp.Naam</h4>
-                        <a href="demo-construction-projects-detail.html">
-                            <span class="thumb-info thumb-info-centered-info thumb-info-no-borders">
-                                <span class="thumb-info-wrapper">
-                                    <img src="~/Content/Dashboard/assets/images/platform-image.png" class="img-fluid" alt="">
-                                    <span class="thumb-info-title">
-                                        <span class="thumb-info-inner">Enter platform</span>
+                        <div class="col-md-4" style="margin-bottom:30px;">
+                            <h4 class="mb-0">@dp.Naam</h4>
+                            <a href="/platform/DisplayPlatform/@dp.DeelplatformId">
+                                <span class="thumb-info thumb-info-centered-info thumb-info-no-borders">
+                                    <span class="thumb-info-wrapper">
+                                        @if (dp.Logo != null)
+                                        {
+                                            <img src="data:image;base64,@System.Convert.ToBase64String(dp.Logo)" class="" alt="" width="300" height="200">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Dashboard/assets/images/platform-image.png" class="" alt=""  width="300" height="200">
+                                        }
+                                        <span class="thumb-info-title">
+                                            <span class="thumb-info-inner">Enter platform</span>
+                                        </span>
                                     </span>
                                 </span>
-                            </span>
-                        </a>
-                        <h4 class="mt-3 mb-0"></h4>
-                        <a class="btn btn-outline btn-primary" href="/platform/DisplayPlatform/@dp.DeelplatformId">Enter</a>
-                    </div>
+                            </a>
+                            <h4 class="mt-3 mb-0"></h4>
+                            <a class="btn btn-outline btn-primary" href="/platform/DisplayPlatform/@dp.DeelplatformId">Enter</a>
+                        </div>
                     }
                 </div>
             </div>
@@ -197,46 +212,3 @@
 
 <!-- Theme Initialization Files -->
 <script src="~/Content/Homepagina/js/theme.init.js"></script>
-
-
-
-<!--
-<h2>Index</h2>
-
-<table>
-    <tr>
-    <thead>
-        PlatformID
-    </thead>
-    <thead>
-        Naam
-    </thead>
-    <thead>
-        Aantal Entiteiten
-    </thead>
-    </tr>
-    @foreach (Domain.Platform.Deelplatform deelplat in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => deelplat.DeelplatformId)
-            </td>
-            <td>
-                @Html.DisplayFor(m => deelplat.Naam)
-            </td>
-            <td>
-                @deelplat.Entiteiten.Count()
-            </td>
-            <td>
-                @Html.ActionLink("Change", "ChangePlatform", new { id = deelplat.DeelplatformId })
-            </td>
-            <td>
-                @Html.ActionLink("Enter", "DisplayPlatform", new { id = deelplat.DeelplatformId })
-            </td>
-        </tr>
-    }
-    <br />
-    @Html.ActionLink("Maak Nieuw Platform", "CreatePlatform", "Platform")<br />
-    @Html.ActionLink("Ik ben superadmin!", "SuperAdminCp", "Account")
-</table>
-//-->

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Domain.Platform.Deelplatform
+@{
     Layout = "";
 }
 
@@ -67,7 +68,14 @@
                             <div class="header-row">
                                 <div class="header-logo">
                                     <a href="index.html">
-                                        <img alt=@ViewBag.dpnaam width="150" height="50" src="~/Content/Homepagina/img/gallery/logo.png">
+                                        @if (Model.Logo != null)
+                                        {
+                                            <img alt=@ViewBag.dpnaam width="150" height="50" src="data:image;base64,@System.Convert.ToBase64String(Model.Logo)">
+                                        }
+                                        else
+                                        {
+                                            <img alt=@ViewBag.dpnaam width="150" height="50" src="">
+                                        }
                                     </a>
                                 </div>
                             </div>
@@ -128,328 +136,330 @@
                                  style="z-index: 5"
                                  data-transform_in="y:[-300%];opacity:0;s:500;">@ViewBag.tagline</div>
 
-                            <div class="tp-caption"
-                                 data-x="center" data-hoffset="220"
-                                 data-y="center" data-voffset="-95"
-                                 data-start="1000"
-                                 style="z-index: 5"
-                                 data-transform_in="x:[300%];opacity:0;s:500;"><img src="~/Content/Homepagina/img/slides/view.jpg" alt=""></div>
+                                <div class="tp-caption"
+                                     data-x="center" data-hoffset="220"
+                                     data-y="center" data-voffset="-95"
+                                     data-start="1000"
+                                     style="z-index: 5"
+                                     data-transform_in="x:[300%];opacity:0;s:500;"><img src="~/Content/Homepagina/img/slides/view.jpg" alt=""></div>
 
-                            <div class="tp-caption main-label"
-                                 data-x="center" data-hoffset="0"
-                                 data-y="center" data-voffset="-45"
-                                 data-start="1500"
-                                 data-whitespace="nowrap"
-                                 data-transform_in="y:[100%];s:500;"
-                                 data-transform_out="opacity:0;s:500;"
-                                 style="z-index: 5"
-                                 data-mask_in="x:0px;y:0px;">@ViewBag.dpnaam</div>
+                                <div class="tp-caption main-label"
+                                     data-x="center" data-hoffset="0"
+                                     data-y="center" data-voffset="-45"
+                                     data-start="1500"
+                                     data-whitespace="nowrap"
+                                     data-transform_in="y:[100%];s:500;"
+                                     data-transform_out="opacity:0;s:500;"
+                                     style="z-index: 5"
+                                     data-mask_in="x:0px;y:0px;">@ViewBag.dpnaam</div>
 
-                            <div class="tp-caption bottom-label"
-                                 data-x="center" data-hoffset="0"
-                                 data-y="center" data-voffset="5"
-                                 data-start="2000"
-                                 data-fontsize="['20','20','20','30']"
-                                 style="z-index: 5"
-                                 data-transform_in="y:[100%];opacity:0;s:500;"></div>
+                                    <div class="tp-caption bottom-label"
+                                         data-x="center" data-hoffset="0"
+                                         data-y="center" data-voffset="5"
+                                         data-start="2000"
+                                         data-fontsize="['20','20','20','30']"
+                                         style="z-index: 5"
+                                         data-transform_in="y:[100%];opacity:0;s:500;"></div>
 
-                            <a class="tp-caption btn btn-lg btn-primary btn-slider-action"
-                               data-hash
-                               data-hash-offset="85"
-                               href="#home-intro"
-                               data-x="center" data-hoffset="0"
-                               data-y="center" data-voffset="80"
-                               data-start="2200"
-                               data-whitespace="nowrap"
-                               data-fontsize="['22','22','22','32']"
-                               data-transform_in="y:[100%];s:500;"
-                               data-transform_out="opacity:0;s:500;"
-                               style="z-index: 5"
-                               data-mask_in="x:0px;y:0px;">Ontdek nu!</a>
+                                    <a class="tp-caption btn btn-lg btn-primary btn-slider-action"
+                                       data-hash
+                                       data-hash-offset="85"
+                                       href="#home-intro"
+                                       data-x="center" data-hoffset="0"
+                                       data-y="center" data-voffset="80"
+                                       data-start="2200"
+                                       data-whitespace="nowrap"
+                                       data-fontsize="['22','22','22','32']"
+                                       data-transform_in="y:[100%];s:500;"
+                                       data-transform_out="opacity:0;s:500;"
+                                       style="z-index: 5"
+                                       data-mask_in="x:0px;y:0px;">Ontdek nu!</a>
 
-                        </li>
+                                </li>
 
-                    </ul>
-                </div>
-            </div>
-            <img src="~/Content/Homepagina/img/icons/down-arrow.png" alt="down-arrow" class="center">
-            <div id="home-intro" class="container">
-                <div class="section group">
-                    <div class="col span_1_of_3">
-                        Personen meest positief/negatief
-                        <canvas id="myChart" width="400" height="400"></canvas>
-                    </div>
-                    <div class="col span_1_of_3">
-                        Trending personen<br />
-                        (aantal vermeldingen laatste 24 uur)
-                        <canvas id="myChart2" width="400" height="400"></canvas>
-                    </div>
-                    <div class="col span_1_of_3">
-                        Organisaties meest positief/negatief
-                        <canvas id="myChart3" width="400" height="400"></canvas>
-                    </div>
-                </div>
-                <div class="section group">
-                    <div class="col span_1_of_3">
-                        Trending Organisaties<br />
-                        (aantal vermeldingen laatste 24 uur)
-                        <canvas id="myChart4" width="400" height="400"></canvas>
-                    </div>
-                    <div class="col span_1_of_3">
-                        Themas meest positief/negatief
-                        <canvas id="myChart5" width="400" height="400"></canvas>
-                    </div>
-                    <div class="col span_1_of_3">
-                        Trending Themas<br />
-                        (aantal vermeldingen laatste 24 uur)
-                        <canvas id="myChart6" width="400" height="400"></canvas>
-                    </div>
-                </div>
-            </div>
-            <section class="section section-tertiary text-center text-lg-left pb-0 pb-lg-5 pb-xl-0 mb-0">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <h2 class="text-title">Maak een <strong>Account</strong> aan.	</h2>
-                            <p class="text-normal">Door een account aan te maken kan je meerdere grafieken bekijken, personaliseren & delen. Krijg een beter inzicht over wat er online leeft bij politici en verwante thema's. </p>
-                            <a href="/Account/Register" class="btn btn-secondary mt-4 mb-5 mb-lg-2">Registreren</a>
-                        </div>
-                        <div class="col-lg-4 ml-auto my-auto">
-                            <img class="img-fluid appear-animation" src="~/Content/Homepagina/img/gallery/logo-black.png" alt="" data-appear-animation="fadeInUp">
+                            </ul>
                         </div>
                     </div>
-                </div>
-            </section>
-            <footer id="footer" style="margin-top:0;">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="contact-details">
-                                <h4>Contact Us</h4>
-                                <ul class="contact">
-                                    <li><p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> Nationalestraat 5, 2000 Antwerpen</p></li>
-                                    <li><p><i class="fas fa-phone"></i> <strong>Phone:</strong> 03 613 16 00</p></li>
-                                </ul>
+                    <img src="~/Content/Homepagina/img/icons/down-arrow.png" alt="down-arrow" class="center">
+                    <div id="home-intro" class="container">
+                        <div class="section group">
+                            <div class=" row" style="margin-bottom: 100px;">
+                                <div class="col-md-4">
+                                    Personen meest positief/negatief
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    Trending personen<br />
+                                    (aantal vermeldingen laatste 24 uur)
+                                    <canvas id="myChart2"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    Organisaties meest positief/negatief
+                                    <canvas id="myChart3"></canvas>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    Trending Organisaties<br />
+                                    (aantal vermeldingen laatste 24 uur)
+                                    <canvas id="myChart4"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    Themas meest positief/negatief
+                                    <canvas id="myChart5"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    Trending Themas<br />
+                                    (aantal vermeldingen laatste 24 uur)
+                                    <canvas id="myChart6"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="footer-copyright">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-lg-1">
-                                <a href="index.html" class="logo">
-
-                                </a>
-                            </div>
-                            <div class="col-lg-7">
-                                <p>© Copyright 2018. All Rights Reserved.</p>
+                    <section class="section section-tertiary text-center text-lg-left pb-0 pb-lg-5 pb-xl-0 mb-0">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-7">
+                                    <h2 class="text-title">Maak een <strong>Account</strong> aan.	</h2>
+                                    <p class="text-normal">Door een account aan te maken kan je meerdere grafieken bekijken, personaliseren & delen. Krijg een beter inzicht over wat er online leeft bij politici en verwante thema's. </p>
+                                    <a href="/Account/Register" class="btn btn-secondary mt-4 mb-5 mb-lg-2">Registreren</a>
+                                </div>
+                                <div class="col-lg-4 ml-auto my-auto">
+                                    <img class="img-fluid appear-animation" src="~/Content/Homepagina/img/gallery/logo-black.png" alt="" data-appear-animation="fadeInUp">
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
+                    <footer id="footer" style="margin-top:0;">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="contact-details">
+                                        <h4>Contact Us</h4>
+                                        <ul class="contact">
+                                            <li><p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> Nationalestraat 5, 2000 Antwerpen</p></li>
+                                            <li><p><i class="fas fa-phone"></i> <strong>Phone:</strong> 03 613 16 00</p></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer-copyright">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-lg-1">
+                                        <a href="index.html" class="logo">
+
+                                        </a>
+                                    </div>
+                                    <div class="col-lg-7">
+                                        <p>© Copyright 2018. All Rights Reserved.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
-            </footer>
-        </div>
 
-        <!-- Vendor -->
-        <script src="~/Content/Homepagina/vendor/jquery/jquery.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.appear/jquery.appear.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.easing/jquery.easing.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery-cookie/jquery-cookie.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/popper/umd/popper.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/bootstrap/js/bootstrap.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/common/common.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.validation/jquery.validation.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.gmap/jquery.gmap.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/isotope/jquery.isotope.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/owl.carousel/owl.carousel.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/vide/vide.min.js"></script>
+                <!-- Vendor -->
+                <script src="~/Content/Homepagina/vendor/jquery/jquery.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.appear/jquery.appear.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.easing/jquery.easing.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery-cookie/jquery-cookie.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/popper/umd/popper.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/bootstrap/js/bootstrap.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/common/common.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.validation/jquery.validation.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.gmap/jquery.gmap.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/isotope/jquery.isotope.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/owl.carousel/owl.carousel.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/vide/vide.min.js"></script>
 
-        <!-- Theme Base, Components and Settings -->
-        <script src="~/Content/Homepagina/js/theme.js"></script>
+                <!-- Theme Base, Components and Settings -->
+                <script src="~/Content/Homepagina/js/theme.js"></script>
 
-        <!-- Current Page Vendor and Views -->
-        <script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
-        <script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+                <!-- Current Page Vendor and Views -->
+                <script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
+                <script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
 
-        <!-- Theme Custom -->
-        <script src="~/Content/Homepagina/js/custom.js"></script>
+                <!-- Theme Custom -->
+                <script src="~/Content/Homepagina/js/custom.js"></script>
 
-        <!-- Theme Initialization Files -->
-        <script src="~/Content/Homepagina/js/theme.init.js"></script>
+                <!-- Theme Initialization Files -->
+                <script src="~/Content/Homepagina/js/theme.init.js"></script>
 
-        <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
-        <script>
-            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
+                <script>
+                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-            ga('create', 'UA-12345678-1', 'auto');
-            ga('send', 'pageview');
-        </script>
-         -->
+                    ga('create', 'UA-12345678-1', 'auto');
+                    ga('send', 'pageview');
+                </script>
+                 -->
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-        <script>
-            var ctx = document.getElementById("myChart").getContext('2d');
-            var myChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
-                    datasets: [{
-                        data: [0.5, 0.7, -0.2],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        label: [
-                            'Maggie De Block',
-                            'Theo Francken',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+                <script>
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ["Bart De Wever", "Kris Peeters", "Ben Weyts"],
+                            datasets: [{
+                                data: [0.5, 0.7, -0.2],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                ],
+                                label: [
+                                    'Maggie De Block',
+                                    'Theo Francken',
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
                             }
-                        }]
-                    }
-                }
-            });
+                        }
+                    });
 
 
-            var ctx2 = document.getElementById("myChart2").getContext('2d');
-            var myChart = new Chart(ctx2, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [10, 20],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                        ],
-                    }],
-                    labels: [
-                        'Maggie De Block',
-                        'Theo Francken',
-                    ]
-                },
-            });
+                    var ctx2 = document.getElementById("myChart2").getContext('2d');
+                    var myChart = new Chart(ctx2, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: [10, 20],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                ],
+                            }],
+                            labels: [
+                                'Maggie De Block',
+                                'Theo Francken',
+                            ]
+                        },
+                    });
 
-            var ctx3 = document.getElementById("myChart3").getContext('2d');
-            var myChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: ["N-VA", "Vlaams belang", "CD&V"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [0.9, -0.7, -0.6],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
+                    var ctx3 = document.getElementById("myChart3").getContext('2d');
+                    var myChart = new Chart(ctx3, {
+                        type: 'bar',
+                        data: {
+                            labels: ["N-VA", "Vlaams belang", "CD&V"],
+                            datasets: [{
+                                label: 'Sentiment',
+                                data: [0.9, -0.7, -0.6],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
                             }
-                        }]
-                    }
-                }
-            });
+                        }
+                    });
 
-            var ctx4 = document.getElementById("myChart4").getContext('2d');
-            var myChart = new Chart(ctx4, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [12, 19],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                        ],
-                    }],
-                    labels: [
-                        'Groen',
-                        'Open-VLD',
-                    ]
-                },
-            });
+                    var ctx4 = document.getElementById("myChart4").getContext('2d');
+                    var myChart = new Chart(ctx4, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: [12, 19],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                ],
+                            }],
+                            labels: [
+                                'Groen',
+                                'Open-VLD',
+                            ]
+                        },
+                    });
 
-            var ctx5 = document.getElementById("myChart5").getContext('2d');
-            var myChart = new Chart(ctx5, {
-                type: 'bar',
-                data: {
-                    labels: ["Mobiliteit", "Immigratie", "Terrorisme"],
-                    datasets: [{
-                        label: 'Sentiment',
-                        data: [-0.8, -0.7, -0.2],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: true
+                    var ctx5 = document.getElementById("myChart5").getContext('2d');
+                    var myChart = new Chart(ctx5, {
+                        type: 'bar',
+                        data: {
+                            labels: ["Mobiliteit", "Immigratie", "Terrorisme"],
+                            datasets: [{
+                                label: 'Sentiment',
+                                data: [-0.8, -0.7, -0.2],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255,99,132,1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                yAxes: [{
+                                    ticks: {
+                                        beginAtZero: true
+                                    }
+                                }]
                             }
-                        }]
-                    }
-                }
-            });
+                        }
+                    });
 
-            var ctx6 = document.getElementById("myChart6").getContext('2d');
-            var myChart = new Chart(ctx6, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [25, 15],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                        ],
-                    }],
-                    labels: [
-                        'Onderwijs',
-                        'sociale zekerheid',
-                    ]
-                },
-            });
-        </script>
-</body>
-</html>
+                    var ctx6 = document.getElementById("myChart6").getContext('2d');
+                    var myChart = new Chart(ctx6, {
+                        type: 'doughnut',
+                        data: {
+                            datasets: [{
+                                data: [25, 15],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                ],
+                            }],
+                            labels: [
+                                'Onderwijs',
+                                'sociale zekerheid',
+                            ]
+                        },
+                    });
+                </script>
+        </body>
+    </html>
 

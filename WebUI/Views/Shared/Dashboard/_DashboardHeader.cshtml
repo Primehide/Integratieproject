@@ -1,11 +1,9 @@
-﻿
+﻿@model WebUI.Models.DashboardModel
 @{
     Layout = null;
 }
 
-
-
-<header class="topbar">
+<header class="topbar" style="background-color:@Model.ColorCodes.First()">
     <nav class="navbar top-navbar navbar-expand-md navbar-light">
         <!-- ============================================================== -->
         <!-- Logo -->
@@ -44,14 +42,14 @@
                 <li class="nav-item hidden-xs-down search-box">
 
                     <a class="nav-link hidden-sm-down waves-effect waves-dark" href="javascript:void(0)"><i class="ti-search"></i></a>
-                  
 
-                 <form class="app-search" action="~/Entiteit/ZoekEntiteit">
-                <input type="text" class="form-control" placeholder="Search &amp; enter" id="naam" name="naam"> <a class="srh-btn"><i class="ti-close"></i></a>
-                </form>
+
+                    <form class="app-search" action="~/Entiteit/ZoekEntiteit">
+                        <input type="text" class="form-control" placeholder="Search &amp; enter" id="naam" name="naam"> <a class="srh-btn"><i class="ti-close"></i></a>
+                    </form>
 
                 </li>
-                
+
                 <!-- ============================================================== -->
                 <!-- Comment -->
                 <!-- ============================================================== -->
@@ -68,10 +66,10 @@
                             <li>
                                 <div class="message-center ps ps--theme_default" data-ps-id="9be782a0-1077-d492-9acc-37f8cebcc34e">
                                     <!-- Message -->
-                                   
+
                                     @Html.Action("Notifications", "Alert")
 
-                       
+
                                     </a>
 
                                     <div class="ps__scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps__scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__scrollbar-y-rail" style="top: 0px; right: 0px;"><div class="ps__scrollbar-y" tabindex="0" style="top: 0px; height: 0px;"></div></div>

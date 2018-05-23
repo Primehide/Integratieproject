@@ -38,10 +38,11 @@ namespace WebUI.Controllers
         {
             try
             {
+                IPlatformManager platformManager = new PlatformManager();
                 ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
                 ViewBag.dpnaam = gekozenplatform;
                 ViewBag.tagline = tagline;
-                return View();
+                return View(platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]));
             } catch ( NullReferenceException e )
             {
                 return RedirectToAction("Index", "Platform", null);
