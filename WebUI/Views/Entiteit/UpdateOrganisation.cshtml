@@ -1,56 +1,120 @@
 ﻿@model WebUI.Models.UpdateOrganisatieVM
-
 @{
-    ViewBag.Title = "UpdateOrganisation";
+    Layout = null;
 }
 
-<h2>UpdateOrganisation</h2>
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Wijzig Organisatie</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Home</li>
 
-    <div class="form-horizontal">
-        <h4>Persoon</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.EditorFor(model => model.RequestedOrganisatie.EntiteitId, new { htmlAttributes = new { type = "hidden" } })
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RequestedOrganisatie.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RequestedOrganisatie.Naam, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Naam, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RequestedOrganisatie.Gemeente, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RequestedOrganisatie.Gemeente, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Gemeente, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        @foreach (var item in Model.PeopleChecks.People)
-        {
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                           name="SelectedPeople"
-                           value="@item.Value" /> @item.Text
-                    </label>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
                 </div>
-        }
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                @using (Html.BeginForm("UpdateOrganisation", "Entiteit", FormMethod.Post, new {  id = Model.RequestedOrganisatie.EntiteitId, enctype = "multipart/form-data" }))
+                                {
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="form-horizontal">
+                                        <h4>Persoon</h4>
+                                        <hr />
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.RequestedOrganisatie.EntiteitId, new { htmlAttributes = new { type = "hidden" } })
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.RequestedOrganisatie.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.RequestedOrganisatie.Naam, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Naam, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.RequestedOrganisatie.Gemeente, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.RequestedOrganisatie.Gemeente, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.RequestedOrganisatie.Gemeente, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.RequestedOrganisatie.Image, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            <div class="col-md-10">
+                                                <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                            </div>
+                                        </div>
+
+
+                                        @foreach (var item in Model.PeopleChecks.People)
+                                        {
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox"
+                                                           name="SelectedPeople"
+                                                           value="@item.Value" /> @item.Text
+                                                    </label>
+                                                </div>
+                                            }
+                                        <div class="form-group">
+                                            <div class="col-md-offset-2 col-md-10">
+                                                <input type="submit" value="Save" class="btn btn-default" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div>
+                                    @Html.ActionLink("Back to List", "AdminBeheerEntiteiten", "Account", new { id = Model.RequestedOrganisatie.PlatformId }, null)
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
             </div>
         </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
     </div>
-}
+</body>
 
-<div>
-    @Html.ActionLink("Back to List", "ChangePlatform", "Platform", new { id = Model.RequestedOrganisatie.PlatformId }, null)
-</div>
+
+
+
+
+
+

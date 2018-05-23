@@ -1,43 +1,126 @@
-﻿@model Domain.Platform.Deelplatform
-
-@{
-    ViewBag.Title = "CreatePlatform";
+﻿@{
+    Layout = null;
 }
 
-<h2>CreatePlatform</h2>
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
-<div class="form-horizontal">
-    <h4>Deelplatform</h4>
-    <hr />
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(model => model.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.Naam, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.Naam, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-    @Html.LabelFor(model => model.Tagline, htmlAttributes: new { @class = "control-label col-md-2" })
-    <div class="col-md-10">
-        @Html.EditorFor(model => model.Tagline, new { htmlAttributes = new { @class = "form-control" } })
-        @Html.ValidationMessageFor(model => model.Tagline, "", new { @class = "text-danger" })
-    </div>
-</div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_SuperAdminCpLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">SuperAdmin Control Panel</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Platform aanmaken</a></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-md-5 align-self-center">
+                        <h4 class="text-themecolor">Deelplatformen</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Platform aanmaken</h4>
+                                <form class="form-horizontal p-t-20" action="/Platform/CreatePlatform" enctype="multipart/form-data" method="post">
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Naam</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                                <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Tagline</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                                <input type="text" class="form-control" placeholder="Tagline" name="Tagline">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Kleur 1</label>
+                                        <div class="col-sd-9" style="margin-left:15px;">
+                                            <input type="text" class="colorpicker form-control" value="#7ab2fa" name="ColorCode1"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Kleur 2</label>
+                                        <div class="col-sd-9" style="margin-left:15px;">
+                                            <input type="text" class="colorpicker form-control" value="#7ab2fa" name="ColorCode2" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 control-label">Upload json van entiteiten</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <input type="file" id="input-file-max-fs" name="file" class="dropify" data-max-file-size="2M" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 control-label">Logo</label>
+                                        <input type="file" name="ImgLogo" class="btn waves-effect waves-light btn-secondary" />
+                                    </div>
+                                    <div class="form-group row m-b-0">
+                                        <div class="offset-sm-3 col-sm-9">
+                                            <button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- ============================================================== -->
+            <!-- End Page Content -->
+            <!-- ============================================================== -->
         </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
     </div>
-}
+    @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    <script>
+        // Colorpicker
+        $(".colorpicker").asColorPicker();
+        $(".complex-colorpicker").asColorPicker({
+            mode: 'complex'
+        });
+        $(".gradient-colorpicker").asColorPicker({
+            mode: 'gradient'
+        });
+    </script>
+    </div>
+</body>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
+
+
+
+
+

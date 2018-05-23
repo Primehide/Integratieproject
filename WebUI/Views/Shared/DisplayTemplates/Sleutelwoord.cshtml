@@ -1,11 +1,22 @@
-﻿@model IEnumerable<Domain.Entiteit.Sleutelwoord>
+﻿@model  IEnumerable<Domain.Entiteit.Sleutelwoord>
 
+@Styles.Render("~/Content/TagMarkup.css")   
 <dl class="dl-horizontal">
+    <br />
     @foreach (var sleutelwoord in Model)
     {
-        <dd>@Html.DisplayFor(m => sleutelwoord.woord)</dd>
-        <td>
-            @Html.ActionLink("Delete", "DeleteThemaSleutelwoord", new { id = sleutelwoord.SleutelwoordId })
-        </td>
+
+        <span class="tag tag-info">
+
+            @Html.DisplayFor(m => sleutelwoord.woord)
+            <b>  <u>  @Html.ActionLink("[delete]", "DeleteThemaSleutelwoord", "Entiteit", new { id = sleutelwoord.SleutelwoordId, themaID = TempData["themaID"] }, new {onclick = "return confirm('Weet je zeker dat je dit sleutelwoord wil verwijderen?');" })</u></b>
+        </span>
+        <span>
+            &nbsp;
+        </span>
+
+
+
+
     }
 </dl>

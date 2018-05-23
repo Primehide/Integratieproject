@@ -18,8 +18,13 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public async System.Threading.Tasks.Task SyncDataAsync()
         {
+            //alle deelplatform, alle entiteiten updaten
             IPostManager postManager = new PostManager();
-            await postManager.SyncDataAsync();
+            IPlatformManager platformManager = new PlatformManager();
+            foreach (var dp in platformManager.GetAllDeelplatformen())
+            {
+                await postManager.SyncDataAsync(dp.DeelplatformId);
+            }
         }
 
         protected override void OnException(ExceptionContext filterContext)

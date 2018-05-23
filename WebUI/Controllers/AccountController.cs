@@ -772,7 +772,99 @@ namespace WebUI.Controllers
             Account model = accountManager.getAccount(id);
             return View(model);
         }
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminDeleteEntiteit(int id)
+        {
+            EntiteitManager eM = new EntiteitManager();
+            Entiteit entiteit = eM.GetEntiteit(id);
+            switch (entiteit.GetType().Name)
+            {
+                case "Organisatie":
+                    eM.RemoveOrganisatie(id);
+                    break;
+                case "Persoon":
+                    eM.RemovePerson(id);
+                    break;
+                case "Thema":
+                    eM.DeleteThema(id);
+                    break;
+            }
+            
+            return Redirect("~/Account/AdminBeheerEntiteiten");
+        }
+     
+        [Authorize(Roles = "SuperAdmin, Admin")]
+        public ActionResult AdminEditEntiteiten(int id)
+        {
+            EntiteitManager eM = new EntiteitManager();
+          Entiteit entiteit =   eM.GetEntiteit(id);
+                             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
+            switch (entiteit.GetType().Name)
+            {
+                case "Organisatie":
+   
 
+                    List<Persoon> AllPeople = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+                    foreach (Persoon p in AllPeople)
+                    {
+                        SelectListItem Person = new SelectListItem()
+                        {
+                            Text = p.FirstName + " " + p.LastName,
+                            Value = p.EntiteitId.ToString(),
+
+                        };
+                        ListBoxItems.Add(Person);
+                    }
+
+                    UpdateOrganisatieVM UOVM = new UpdateOrganisatieVM
+                    {
+                        RequestedOrganisatie = eM.GetOrganisatie(id),
+                        PeopleChecks = new SelectedPeopleVM
+                        {
+                            People = ListBoxItems
+                        }
+                    };
+
+                  
+                    return View("~/Views/Entiteit/UpdateOrganisation.cshtml", UOVM);
+   
+                case "Persoon":
+                   
+
+                    List<Organisatie> AllOrganisations = eM.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+                    foreach (Organisatie o in AllOrganisations)
+                    {
+                        SelectListItem Organisation = new SelectListItem()
+                        {
+                            Text = o.Naam,
+                            Value = o.EntiteitId.ToString(),
+
+                        };
+                        ListBoxItems.Add(Organisation);
+                    }
+
+                    UpdatePersonVM UPVM = new UpdatePersonVM
+                    {
+                        RequestedPerson = eM.GetPerson(id),
+                        OrganisationChecks = new SelectedOrganisationVM
+                        {
+                            Organisations = ListBoxItems
+                        }
+                    };
+
+
+                    return View("~/Views/Entiteit/UpdatePerson.cshtml", UPVM);
+             
+                case "Thema":
+                 
+                    Thema thema = eM.GetThema(id);
+                    TempData["ThemaID"] = thema.EntiteitId;
+                    return View("~/Views/Entiteit/EditThema.cshtml" , thema);
+                 
+            }
+         
+            return View(entiteit);
+        }
         [HttpPost]
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUserAdmin(Domain.Account.Account model)
