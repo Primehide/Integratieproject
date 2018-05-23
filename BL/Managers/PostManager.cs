@@ -105,7 +105,6 @@ namespace BL
                 {
 
                 }
-<<<<<<< HEAD
 
             }*/
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.

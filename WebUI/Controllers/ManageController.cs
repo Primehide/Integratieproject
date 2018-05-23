@@ -81,7 +81,7 @@ namespace WebUI.Controllers
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
                 GrafiekLabels = new Dictionary<string, string>(),
                 GrafiekDataSets = new Dictionary<string, string>(),
-                ColorCodes = new List<string>()
+                ColorCodes = new List<string>(),
             };
 
             model.ColorCodes.Add("#2E2EFE");
@@ -178,11 +178,13 @@ namespace WebUI.Controllers
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
             List<Entiteit> AlleEntiteiten = entiteitManager.getAlleEntiteiten(false);
+            IPlatformManager platformManager = new PlatformManager();
+            var dp = platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
                 Personen = AlleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
                 Organisaties = AlleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
-                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
+                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
             };
             return View(model);
         }

@@ -1,47 +1,214 @@
 ﻿@model IEnumerable<Domain.Platform.Deelplatform>
 @{
-    ViewBag.Title = "Index";
+    Layout = null;
 }
 
-<h2>Index</h2>
+<!DOCTYPE html>
 
-<table>
-    <tr>
-    <thead>
-        PlatformID
-    </thead>
-    <thead>
-        Naam
-    </thead>
-    <thead>
-        Aantal Entiteiten
-    </thead>
-    </tr>
-    @foreach (Domain.Platform.Deelplatform deelplat in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(m => deelplat.DeelplatformId)
-            </td>
-            <td>
-                @Html.DisplayFor(m => deelplat.Naam)
-            </td>
-            <td>
-               @deelplat.Entiteiten.Count()
-            </td>
-            <td>
-                @Html.ActionLink("Change", "ChangePlatform", new { id = deelplat.DeelplatformId})
-            </td>
-            <td>
-                @Html.ActionLink("Enter", "DisplayPlatform", new { id = deelplat.DeelplatformId })
-            </td>
-        </tr>
-    }
+<head>
 
-    @Html.ActionLink("Maak Nieuw Platform","CreatePlatform","Platform")
-</table>
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+    <title>Demo Construction | Porto - Responsive HTML5 Template 6.2.1</title>
 
+    <meta name="keywords" content="HTML5 Template" />
+    <meta name="description" content="Porto - Responsive HTML5 Template">
+    <meta name="author" content="okler.net">
 
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
 
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/font-awesome/css/fontawesome-all.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/animate/animate.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/simple-line-icons/css/simple-line-icons.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/owl.carousel/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/owl.carousel/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/magnific-popup/magnific-popup.min.css">
+
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-elements.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-blog.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/css/theme-shop.css">
+
+    <!-- Current Page CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/settings.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/layers.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/rs-plugin/css/navigation.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/nivo-slider/nivo-slider.css">
+    <link rel="stylesheet" href="~/Content/Homepagina/vendor/nivo-slider/default/default.css">
+
+    <!-- Demo CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/demos/demo-construction.css">
+
+    <!-- Skin CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/skins/skin-construction.css">
+
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="~/Content/Homepagina/css/custom.css">
+
+    <!-- Head Libs -->
+    <script src="~/Content/Homepagina/vendor/modernizr/modernizr.min.js"></script>
+</head>
+<body data-spy="scroll" data-target="#sidebar" data-offset="120">
+    <div class="body">
+        <header id="header" style="background-color:black;" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 1, 'stickySetTop': '1'}">
+            <div class="header-body">
+                <div class="header-container container">
+                    <div class="header-row">
+                        <div class="header-column">
+                            <div class="header-row">
+                                <div class="header-logo">
+                                    <a href="index.html">
+                                        <img width="150" height="50" src="~/Content/Homepagina/img/gallery/logo.png">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-column justify-content-end">
+                            <div class="header-row">
+                                <div class="header-nav header-nav-dark-dropdown">
+                                    <div class="header-nav-main header-nav-main-square header-nav-main-effect-2 header-nav-main-sub-effect-1">
+                                        <nav class="collapse">
+                                            <ul class="nav nav-pills" id="mainNav">
+                                                <li class="">
+                                                    <a class="nav-link" href="/Account/Register">
+                                                        Registreren
+                                                    </a>
+                                                </li>
+                                                <li class="">
+                                                    <a class="nav-link" href="/Account/Login">
+                                                        Login
+                                                    </a>
+                                                </li>
+                                                <li class="">
+                                                    <a class="nav-link" href="/Account/SuperAdminCp">
+                                                        Super Admin
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main nav">
+                                        <i class="fas fa-bars"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div role="main" class="main">
+            <div class="container">
+                <div class="row">
+                    <h1>Kies een platform</h1>
+                </div>
+                <div class="row">
+                    @foreach (var dp in Model)
+                    {
+                        <div class="col-md-4" style="margin-bottom:30px;">
+                            <h4 class="mb-0">@dp.Naam</h4>
+                            <a href="/platform/DisplayPlatform/@dp.DeelplatformId">
+                                <span class="thumb-info thumb-info-centered-info thumb-info-no-borders">
+                                    <span class="thumb-info-wrapper">
+                                        @if (dp.Logo != null)
+                                        {
+                                            <img src="data:image;base64,@System.Convert.ToBase64String(dp.Logo)" class="" alt="" width="300" height="200">
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Content/Dashboard/assets/images/platform-image.png" class="" alt=""  width="300" height="200">
+                                        }
+                                        <span class="thumb-info-title">
+                                            <span class="thumb-info-inner">Enter platform</span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <h4 class="mt-3 mb-0"></h4>
+                            <a class="btn btn-outline btn-primary" href="/platform/DisplayPlatform/@dp.DeelplatformId">Enter</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <footer id="footer" style="margin-top:0;">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="contact-details">
+                            <h4>Contact Us</h4>
+                            <ul class="contact">
+                                <li><p><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> Nationalestraat 5, 2000 Antwerpen</p></li>
+                                <li><p><i class="fas fa-phone"></i> <strong>Phone:</strong> 03 613 16 00</p></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-1">
+                            <a href="index.html" class="logo">
+
+                            </a>
+                        </div>
+                        <div class="col-lg-7">
+                            <p>© Copyright 2018. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+
+<!-- Vendor -->
+<script src="~/Content/Homepagina/vendor/jquery/jquery.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.appear/jquery.appear.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.easing/jquery.easing.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery-cookie/jquery-cookie.min.js"></script>
+<script src="~/Content/Homepagina/vendor/popper/umd/popper.min.js"></script>
+<script src="~/Content/Homepagina/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/Content/Homepagina/vendor/common/common.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.validation/jquery.validation.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.gmap/jquery.gmap.min.js"></script>
+<script src="~/Content/Homepagina/vendor/jquery.lazyload/jquery.lazyload.min.js"></script>
+<script src="~/Content/Homepagina/vendor/isotope/jquery.isotope.min.js"></script>
+<script src="~/Content/Homepagina/vendor/owl.carousel/owl.carousel.min.js"></script>
+<script src="~/Content/Homepagina/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="~/Content/Homepagina/vendor/vide/vide.min.js"></script>
+
+<!-- Theme Base, Components and Settings -->
+<script src="~/Content/Homepagina/js/theme.js"></script>
+
+<!-- Current Page Vendor and Views -->
+<script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.tools.min.js"></script>
+<script src="~/Content/Homepagina/vendor/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+<!-- Current Page Vendor and Views -->
+<script src="~/Content/Homepagina/vendor/nivo-slider/jquery.nivo.slider.min.js"></script>
+<script src="~/Content/Homepagina/js/views/view.contact.js"></script>
+
+<!-- Demo -->
+<script src="~/Content/Homepagina/js/demos/demo-construction.js"></script>
+
+<!-- Theme Custom -->
+<script src="~/Content/Homepagina/js/custom.js"></script>
+
+<!-- Theme Initialization Files -->
+<script src="~/Content/Homepagina/js/theme.init.js"></script>
