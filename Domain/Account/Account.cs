@@ -19,5 +19,6 @@ namespace Domain.Account
         public Dashboard Dashboard { get; set; }
         public string DeviceId { get; set; }
         public List<Entiteit.Item> Items { get; set; }
+        public List<Entiteit.Entiteit> ReviewEntiteiten { get; set; }
     }
 }

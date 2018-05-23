@@ -76,7 +76,7 @@ namespace BL
             /*
             List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(0);
 
-           PostRequest postRequest1 = new PostRequest()
+         /*  PostRequest postRequest1 = new PostRequest()
             {
                since = gisteren,
                until = vandaag
@@ -105,8 +105,9 @@ namespace BL
                 {
 
                 }
-            }
-            */
+<<<<<<< HEAD
+
+            }*/
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
             foreach (var Persoon in AllePersonen)
             {
@@ -135,8 +136,8 @@ namespace BL
                         var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                              //ConvertAndSaveToDb(posts, Persoon.EntiteitId);
-                            System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
+                              ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                          //  System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
                     }
                     catch (Newtonsoft.Json.JsonReaderException)

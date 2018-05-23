@@ -315,6 +315,7 @@
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
+    <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\ZoekModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\CustomJwtFormat.cs" />
@@ -4375,6 +4376,7 @@
     <Content Include="Views\Entiteit\ThemaPagina.cshtml" />
     <Content Include="Views\Entiteit\DisplayTheme.cshtml" />
     <Content Include="Views\Shared\DataTextGain4.json" />
+    <Content Include="Views\Manage\ShowReview.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\SleutelwoordNaam.cshtml" />
     <Content Include="Views\Home\Faq.cshtml" />
     <Content Include="Views\Account\AdminBeheerFaq.cshtml" />

@@ -261,7 +261,8 @@ namespace DAL
 
         public Entiteit ReadEntiteit(int id)
         {
-            return ctx.Entiteiten.Include(p => p.Posts).SingleOrDefault(e => e.EntiteitId == id);
+            return ctx.Entiteiten.Include(e => e.Posts.Select(y => y.Urls)).Include(e => e.Trends).SingleOrDefault(e => e.EntiteitId == id);
+
         }
 
 
