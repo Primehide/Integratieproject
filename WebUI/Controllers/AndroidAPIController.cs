@@ -43,16 +43,5 @@ namespace WebUI.Controllers
             DashboardBlok[] dbs = acc.Dashboard.Configuratie.DashboardBlokken.ToArray();
             return dbs;
         }
-
-        //Change on which platform you are
-        //return HttpStatusCode.OK if success
-        [HttpPost]
-        public string PostPlatform([FromBody] string username)
-        {
-
-            return username;
-
-        }
-
     }
 }

@@ -33,8 +33,9 @@ namespace WebUI.Controllers
             };
             return View(overview);
         }
-
         // Index Page for all Entities.
+        [Authorize(Roles = "SuperAdmin, Admin")]
+
         public virtual ActionResult Test()
         {
             //List<Entiteit> AllEntities = new List<Entiteit>();
@@ -58,6 +59,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddPersoon(Persoon p, string organisatie, HttpPostedFileBase uploadFile)
         {
             fillOrganisaties();
@@ -69,17 +71,15 @@ namespace WebUI.Controllers
             entiteitManager.AddPerson(p,uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
         {
-
             EntiteitManager entiteitManager = new EntiteitManager();
             o.Leden = new List<Persoon>();
-           
             entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
-      
+
         public ActionResult PersoonPagina(int id)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
@@ -116,6 +116,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddThema(Thema t, string woorden, HttpPostedFileBase uploadFile)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
@@ -141,6 +142,7 @@ namespace WebUI.Controllers
 
         // This region is for adding a person to the database and persisting.
         #region
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult AddPerson(int platformId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
@@ -170,6 +172,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult AddPerson(PersoonVM pvm, IEnumerable<string> SelectedOrganisations)
         {
 
@@ -213,6 +216,15 @@ namespace WebUI.Controllers
 
         }
         #endregion
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
 
         // This region is for displaying a certain person, given that a certain entityId is given.
         #region
@@ -247,6 +259,7 @@ namespace WebUI.Controllers
 
         // This region will handle the updating of a certain person. After the update you will be redirected to the Display page of the updated person;
         #region
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult UpdatePerson(int EntityId)
         {
 
@@ -278,9 +291,10 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult UpdatePerson(UpdatePersonVM EditedPerson, IEnumerable<string> SelectedOrganisations, HttpPostedFileBase uploadFile)
         {
-            
+
 
             if (SelectedOrganisations != null)
             {
@@ -337,6 +351,7 @@ namespace WebUI.Controllers
 
         // This region will add a newly created Organisatie object to the database and persist
         #region
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult AddOrganisation(int platformId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
@@ -366,6 +381,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult AddOrganisation(OrganisatieVM newOrganisation, IEnumerable<string> SelectedPeople)
         {
             if (!ModelState.IsValid)
@@ -413,6 +429,7 @@ namespace WebUI.Controllers
 
         // This region will handle the updating of a certain Organisation. After the update you will be redirected to the Display page of the updated organisation;
         #region
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult UpdateOrganisation(int EntityId)
         {
             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
@@ -442,9 +459,10 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult UpdateOrganisation(UpdateOrganisatieVM vm, IEnumerable<string> SelectedPeople, HttpPostedFileBase uploadFile)
         {
-            
+
             if (SelectedPeople != null)
             {
                 eM.ChangeOrganisatie(vm.RequestedOrganisatie, SelectedPeople, uploadFile);
@@ -468,13 +486,13 @@ namespace WebUI.Controllers
             return RedirectToAction("Index");
         }
         #endregion
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public void CreateTestData()
         {
             BL.EntiteitManager entiteitManager = new BL.EntiteitManager();
             entiteitManager.CreateTestData();
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult IndexThema()
         {
             IEnumerable<Thema> themas = eM.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]);
@@ -482,6 +500,7 @@ namespace WebUI.Controllers
         }
 
         // GET: Thema/Create
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult CreateThema(int platid)
         {
 
@@ -489,6 +508,7 @@ namespace WebUI.Controllers
         }
         // POST: Thema/Create
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult CreateThema(Thema thema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase uploadFile)
         {
             // sleutelwoorden.RemoveAll(item => item.woord == null);
@@ -510,16 +530,18 @@ namespace WebUI.Controllers
 
 
         // GET: Thema/Edit/
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult EditThema(int id)
         {
             return View(eM.GetThema(id));
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult EditThema(Thema thema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase uploadFile)
         {
 
-          //  TempData["themaID"] = thema.EntiteitId;
+            //  TempData["themaID"] = thema.EntiteitId;
             var mijnThema = eM.GetThema(thema.EntiteitId);
             string woorden = sleutelwoorden[0].woord;
             if (woorden != null)
@@ -537,7 +559,7 @@ namespace WebUI.Controllers
             return Redirect("~/Account/AdminBeheerEntiteiten");
         }
 
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult DeleteThema(int id)
         {
             
@@ -546,13 +568,14 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult DeleteThema(int id,  FormCollection collection)
         {
             eM.DeleteThema(id);
             return RedirectToAction("IndexThema");                                        
         }
 
-        // Sleutelwoord Rechstreeks verwijderen
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID)
         {
             TempData["themaID"] = themaID ;
@@ -561,9 +584,10 @@ namespace WebUI.Controllers
             return View("~/Views/Entiteit/EditThema.cshtml", thema);
         }
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID, FormCollection collection)
         {
-       
+
             return RedirectToAction("IndexThema");
             // return View();
         }

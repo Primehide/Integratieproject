@@ -47,5 +47,6 @@ namespace DAL
         void DeleteEntiteitenVanDeelplatform(int id);
 
         void addEntiteit(Entiteit entiteit);
+        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
     }
 }

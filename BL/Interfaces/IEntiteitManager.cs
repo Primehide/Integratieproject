@@ -32,6 +32,7 @@ namespace BL
         Entiteit GetEntiteit(int id);
         List<Entiteit> GetEntiteiten(string naam);
 
+        void UpdateGrafieken();
 
      
         void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase imageFile);
@@ -50,6 +51,7 @@ namespace BL
         void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
 
         void BerekenVasteGrafiekenAlleEntiteiten();
+        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
 
     }
 }

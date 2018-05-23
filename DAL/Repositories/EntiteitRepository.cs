@@ -176,6 +176,26 @@ namespace DAL
                 .ToList();
         }
 
+        public List<Entiteit> getAlleEntiteiten(bool IncludePosts)
+        {
+            if (IncludePosts)
+            {
+                return ctx.Entiteiten
+                .Include(x => x.Posts)
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
+            } else
+            {
+                return ctx.Entiteiten
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
+            }
+        }
+
         public void updateEntiteit(Entiteit entiteit)
         {
             ctx.Entry(entiteit).State = EntityState.Modified;
@@ -241,7 +261,7 @@ namespace DAL
 
         public Entiteit ReadEntiteit(int id)
         {
-            return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
+            return ctx.Entiteiten.Include(p => p.Posts).SingleOrDefault(e => e.EntiteitId == id);
         }
 
 

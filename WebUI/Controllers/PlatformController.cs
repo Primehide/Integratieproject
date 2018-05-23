@@ -46,6 +46,8 @@ namespace WebUI.Controllers
         #endregion
         //Changing of a SubPlatform (Admin)
         #region
+
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public  ActionResult ChangePlatform(int id)
         {
             List<Persoon> deelplatformPersonen = new List<Persoon>();
@@ -84,7 +86,7 @@ namespace WebUI.Controllers
             return View(CPVM);
 
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         [HttpPost]
         public  ActionResult ChangePlatform(ChangePlatformViewModel dp)
         {
@@ -145,6 +147,17 @@ namespace WebUI.Controllers
 
         }
         #endregion
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
         //Deletion of a SubPlatform
         #region
         public  ActionResult DeletePlatform()
@@ -163,13 +176,14 @@ namespace WebUI.Controllers
 
         }
         #endregion
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();         
             return View(accounts);
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public FileResult DownloadReport()
         {
             IPlatformManager platformManager = new PlatformManager();
