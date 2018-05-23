@@ -1,15 +1,5 @@
-<<<<<<< HEAD
-
-﻿using BL;
-
-
-﻿using Domain.Platform;
-
-
-=======
 using BL;
-﻿using Domain.Platform;
->>>>>>> master
+using Domain.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
