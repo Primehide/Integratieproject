@@ -21,6 +21,7 @@ using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
 using Domain.Post;
+using EmailAddress = SendGrid.Helpers.Mail.EmailAddress;
 
 namespace WebUI.Controllers
 {
@@ -220,6 +221,30 @@ namespace WebUI.Controllers
             };
         }
         */
+        [HttpPost]
+        public async Task<ViewResult> SetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = true;
+            am.updateUser(a);
+            await um.AddToRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+
+        }
+
+        [HttpPost]
+        public async Task<ViewResult> UnsetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = false;
+            am.updateUser(a);
+            await um.RemoveFromRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+        }
 
         //
         // POST: /Account/Login

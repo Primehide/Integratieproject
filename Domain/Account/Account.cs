@@ -20,5 +20,6 @@ namespace Domain.Account
         public string DeviceId { get; set; }
         public List<Entiteit.Item> Items { get; set; }
         public List<Entiteit.Entiteit> ReviewEntiteiten { get; set; }
+        public bool IsAdmin { get; set; } = false;
     }
 }

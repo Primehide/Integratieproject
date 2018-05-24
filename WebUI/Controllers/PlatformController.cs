@@ -4,10 +4,8 @@ using Domain.Entiteit;
 using Domain.Platform;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -42,10 +40,19 @@ namespace WebUI.Controllers
         public  ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase ImgLogo)
         {
             //I have to be able to create a SubPlatform
-            byte[] imageBytes = null;
-            BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
-            imageBytes = reader.ReadBytes((int)ImgLogo.ContentLength);
-            dp.Logo = imageBytes;
+            if (ImgLogo != null)
+            {
+                byte[] imageBytes = null;
+                BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
+                imageBytes = reader.ReadBytes((int) ImgLogo.ContentLength);
+                dp.Logo = imageBytes;
+            }
+            else
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes("C:/Users/WaffleDealer/Desktop/IP/Integratieproject/WebUI/Controllers/default.png");
+                dp.Logo = imageBytes;
+            }
+
             pM.AddDeelplatform(dp);
             EntiteitManager entiteitManager = new EntiteitManager();
             if (Request.Files.Count > 0)

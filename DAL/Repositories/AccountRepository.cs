@@ -128,7 +128,7 @@ namespace DAL
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
             updated.Email = account.Email;
-
+            updated.IsAdmin = account.IsAdmin;
             updated.ReviewEntiteiten = account.ReviewEntiteiten;
 
             ctx.SaveChanges();
