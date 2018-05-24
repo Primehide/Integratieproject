@@ -1,0 +1,460 @@
+﻿/* Grid */
+.grid {
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+    z-index:2;
+}
+
+.item, .visit-item {
+    position: absolute;
+    padding: 5px;
+    line-height: 100px;
+    margin: 10px;
+    z-index: 1;
+    will-change: transform;
+    min-width: 200px;
+    min-height: 200px;
+}
+
+.item {
+    resize: both;
+    overflow: hidden;
+}
+
+    .item.muuri-item-positioning {
+        z-index: 2;
+    }
+
+    .item.muuri-item-dragging,
+    .item.muuri-item-releasing {
+        z-index: 9999;
+    }
+
+    .item.muuri-item-dragging {
+        cursor: move;
+    }
+
+    .item.muuri-item-hidden {
+        z-index: 0;
+    }
+
+    .item.h2 {
+        height: 220px;
+        line-height: 220px;
+    }
+
+    .item.w2 {
+        width: 220px;
+    }
+
+    .item.NORMAAL {
+        width: 400px;
+        height: 400px;
+    }
+
+    .item.LANG {
+        width: 300px;
+        height: 550px;
+    }
+
+    .item.BREED {
+        width: 550px;
+        height: 300px;
+    }
+
+    .item.GROOT {
+        width: 600px;
+        height: 600px;
+    }
+
+.item-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.muuri-card {
+    position: absolute;
+    overflow: hidden;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 7px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 300;
+    background-color: rgba(255,255,255,0.9);
+    border: 1px solid;
+    color: #333;
+    border-radius: 4px;
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.item.blue .muuri-card, .visit-item.blue .muuri-card {
+    color: #4A9FF9;
+}
+
+.muuri-card-title {
+    cursor: pointer;
+}
+
+.muuri-card-id {
+    position: absolute;
+    visibility: hidden;
+    left: 7px;
+    top: 0;
+    height: 30px;
+    line-height: 30px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.muuri-card-remove, .muuri-card-resize, .muuri-card-edit {
+    position: absolute;
+    visibility: visible;
+    z-index: 4;
+    right: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 400;
+    cursor: pointer;
+    -moz-transform: scale(0);
+    -webkit-transform: scale(0);
+    -o-transform: scale(0);
+    -ms-transform: scale(0);
+    transform: scale(0);
+    -webkit-transition: all 0.15s ease-out;
+    -moz-transition: all 0.15s ease-out;
+    -ms-transition: all 0.15s ease-out;
+    -o-transition: all 0.15s ease-out;
+    transition: all 0.15s ease-out;
+    
+}
+
+.muuri-card-resize {
+    right: 22px;    
+}
+
+.muuri-card-edit {
+    right: 44px;
+}
+
+.muuri-card:hover > .muuri-card-remove, .muuri-card:hover > .muuri-card-resize, .muuri-card:hover > .muuri-card-edit {
+    -moz-transform: scale(1);
+    -webkit-transform: scale(1);
+    -o-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+}
+
+/* Muuri dropdown */
+    .muuri-dropdown {
+    display: none;
+}
+
+/* Grid Footer */
+
+.grid-footer {
+    margin: 60px 0;
+    text-align: center;
+}
+
+    .grid-footer .btn .material-icons {
+        margin-right: 10px;
+        font-size: 24px;
+    }
+
+
+
+/* Icons in the selector */
+/* fallback */
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(https://fonts.gstatic.com/s/materialicons/v29/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2) format('woff2');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    display: inline-block;
+    vertical-align: top;
+    line-height: inherit;
+    font-size: inherit;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+    .title-icon {
+        cursor: pointer;
+        font-size: 18px;
+        margin-top: 6px;
+        margin-left: 10px;
+    }
+
+
+
+/* main.css */
+/* Base */
+
+
+/* Clearfix */
+
+.cf:before,
+.cf:after {
+    content: " ";
+    display: table;
+}
+
+.no-padding {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100%;
+}
+
+.cf:after {
+    clear: both;
+}
+
+
+/* Sections */
+
+section {
+    margin: 0 auto;
+    padding: 0;
+    max-width: 100%;
+    border-top: 2px solid #e5e5e5;
+    text-align: left;
+}
+
+    section.demo {
+        margin-top: 5px;
+        width: 100%;
+    }
+
+    section h4 {
+        margin: 0 0 15px 0;
+        font-weight: 500;
+        font-size: 20px;
+        color: #3e3e3e;
+    }
+
+@media (max-width: 600px) {
+    section.demo {
+        border-top: 0;
+    }
+}
+
+/* Section titles */
+
+.section-title {
+    color: #3e3e3e;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 40px 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+    .section-title > span {
+        position: relative;
+        display: inline-block;
+        vertical-align: top;
+    }
+
+        .section-title > span:after {
+            content: "";
+            display: block;
+            position: absolute;
+            left: 10px;
+            bottom: 0;
+            right: 10px;
+            height: 2px;
+            background: #3e3e3e;
+        }
+
+/* The container <div> - needed to position the dropdown content */
+.muuri-dropdown {
+    position: absolute;
+}
+
+.resize-items {
+    font-size: 13px;
+    padding: 0;
+    min-width: 50px;
+    background-color: lightgrey;
+    list-style-type: none;
+    margin: 0 auto;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.muuri-dropdown-content {
+    display: none;
+    position: relative;
+    font-size: 16px;
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    
+}
+
+/* Links inside the dropdown */
+.muuri-dropdown-content a {
+    color: black;
+    width: 100%;
+    text-decoration: none;
+    display: block;
+}
+
+/* Change color of dropdown links on hover */
+    .muuri-dropdown-content a:hover {
+        background-color: #ddd;
+    }
+
+.show {
+    display: block;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 9; /* Sit on top */
+    left: 3%;
+    top: 0;
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    color: #aaa;
+    left: 97%;
+    top: -7px;
+    font-size: 40px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+.edit-indicator:focus {
+    font-style: italic;
+    color: black !important;
+}
+
+.in-line-left {
+    float: left;
+}
+
+/*Switch button*/
+/* The switch - the box around the slider */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    top: 10px;
+    width: 35px;
+    height: 15px;
+}
+
+    /* Hide default HTML checkbox */
+    .toggle-switch input {
+        display: none;
+    }
+
+/* The slider */
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 11px;
+        width: 11px;
+        left: 3px;
+        bottom: 2px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .toggle-slider {
+    background-color: #2196F3;
+}
+
+input:focus + .toggle-slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .toggle-slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+/* Rounded sliders */
+.toggle-slider.rounded-slider {
+    border-radius: 34px;
+}
+
+    .toggle-slider.rounded-slider:before {
+        border-radius: 50%;
+    }
+
+
+.dashboard-options, #visit-link {
+    margin-left: 25px;
+    height: 1px;
+    overflow: hidden;
+    transition: height 0.15s ease-out;
+}
