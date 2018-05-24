@@ -15,6 +15,7 @@ namespace WebUI.Models
         public List<Entiteit> AlleEntiteiten { get; set; }
         public List<Account> Users { get; set; }
         public List<Faq> Faqs { get; set; }
+        public int platId { get; set; }
         public SelectedPeopleVM PeopleChecks { get; set; }
     }
 

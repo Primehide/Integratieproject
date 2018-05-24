@@ -113,7 +113,7 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerFaq()
         {
             AccountManager accountManager = new AccountManager();
-            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(faqs);
         }
 
@@ -125,7 +125,7 @@ namespace WebUI.Controllers
 
 
 
-            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
 
             return View("AdminBeheerFaq", faqs);
         }
@@ -163,6 +163,7 @@ namespace WebUI.Controllers
 
             AdminViewModel model = new AdminViewModel()
             {
+                platId = (int)System.Web.HttpContext.Current.Session["PlatformID"],
                 AlleEntiteiten = entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]),
                 PeopleChecks = new SelectedPeopleVM()
                 {
@@ -175,6 +176,7 @@ namespace WebUI.Controllers
         public ActionResult AddFaq(Faq f)
         {
             AccountManager acm = new AccountManager();
+            f.PlatformId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
             acm.addFaq(f);
             return RedirectToAction("AdminBeheerFaq", "Account");
         }
@@ -213,12 +215,14 @@ namespace WebUI.Controllers
 
         public async Task<bool> CheckIfAdminAsync(LoginViewModel model)
         {
-            int oldplat = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+
+            int oldplat = (int?)System.Web.HttpContext.Current.Session["PlatformID"] ?? 0;
 
             System.Web.HttpContext.Current.Session["PlatformID"] = 0;
             var adminUM = makeUserManager();
             var user = await adminUM.FindByEmailAsync(model.Email);
             System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
+
             if (user != null)
             {
                 return true;
@@ -276,9 +280,17 @@ namespace WebUI.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-
-            var user = await UserManager.FindByEmailAsync(model.Email);
-            var superadmin = UserManager.Users.Single(x => x.Email == model.Email);
+            if (await CheckIfAdminAsync(model))
+            {
+                int oldplat = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                System.Web.HttpContext.Current.Session["PlatformID"] = 0;
+                ApplicationSignInManager asm = makeSignInManager();
+                result = await asm.PasswordSignInAsync(model.Email, model.Password, false, true);
+                System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
+            }
+            else
+            {
+                var user = await UserManager.FindByEmailAsync(model.Email);
 
             if (user != null)
             {
@@ -293,11 +305,13 @@ namespace WebUI.Controllers
             // In case of Admin trying to login
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            if (superadmin != null)
-            {
-                HttpContext.Session["PlatformID"] = superadmin.TenantId;
+            //if (superadmin != null)
+            //{
+            //    HttpContext.Session["PlatformID"] = superadmin.TenantId;
+            //}
+            
+                result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             }
-            result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
 
             switch (result)
             {

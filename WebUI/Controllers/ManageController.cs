@@ -12,6 +12,7 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
@@ -538,6 +539,7 @@ namespace WebUI.Controllers
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();
+            
             IEntiteitManager entiteitManager = new EntiteitManager();
             foreach (Account acc in accounts)
             {
