@@ -506,7 +506,7 @@ namespace WebUI.Controllers
             List<Entiteit> entiteits = new List<Entiteit>();
 
             EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.getAlleEntiteiten();
+            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             if (NaamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)

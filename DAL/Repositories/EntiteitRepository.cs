@@ -104,7 +104,7 @@ namespace DAL
         {
             foreach (Persoon p in o.Leden)
             {
-                ctx.Entry(p).State = EntityState.Unchanged;
+                ctx.Entry(p).State = EntityState.Modified;
             }
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();
@@ -112,6 +112,10 @@ namespace DAL
 
         public void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase ImageFile)
         {
+            foreach (Persoon p in o.Leden)
+            {
+                ctx.Entry(p).State = EntityState.Modified;
+            }
             o.Image = ConvertToBytes(ImageFile);
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();

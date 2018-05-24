@@ -163,7 +163,7 @@ namespace WebUI.Controllers
 
             AdminViewModel model = new AdminViewModel()
             {
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten(),
+                AlleEntiteiten = entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]),
                 PeopleChecks = new SelectedPeopleVM()
                 {
                     People = listBoxItems
@@ -1020,7 +1020,7 @@ namespace WebUI.Controllers
             ArrayList organisaties = new ArrayList();
             List<Entiteit> entiteits = new List<Entiteit>();
             EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.getAlleEntiteiten();
+            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             if (NaamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)
