@@ -12,5 +12,6 @@ namespace WebUI.Models
         public int AantalPosts { get; set; }
         public int AantalPositieve { get; set; }
         public int AantalNegatieve { get; set; }
+        public int AantalMentions { get; set; }
     }
 }

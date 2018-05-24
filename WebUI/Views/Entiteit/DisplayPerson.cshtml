@@ -52,6 +52,7 @@
                                     }
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>
                                     <h6 class="card-subtitle">@Html.DisplayFor(m => m.Persoon.Organisations[0].Naam, "Organisation")</h6>
+                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.AantalMentions, new { @class = "control-label col-md-6" })</h6>
                                 </center>
                             </div>
                             <a href="/Account/FollowEntiteit?id=@Model.Persoon.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>

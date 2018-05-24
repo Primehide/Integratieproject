@@ -70,7 +70,7 @@ namespace BL
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
             DateTime gisteren = DateTime.Today.AddDays(-30).Date;
-            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(0);
+            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(platformid);
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             /*
