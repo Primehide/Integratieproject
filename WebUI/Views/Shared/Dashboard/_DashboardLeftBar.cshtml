@@ -1,19 +1,21 @@
-﻿@{
+﻿@model WebUI.Models.DashboardModel
+@{
     Layout = null;
 }
-<aside class="left-sidebar">
+<div style="background-color:aqua">
+    <aside class="left-sidebar">
     <!-- Sidebar scroll-->
     <div class="scroll-sidebar ps ps--theme_default ps--active-y" data-ps-id="4c5a2eb6-e3a7-85b6-eb90-61cad3a7fa95">
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav active">
             <ul id="sidebarnav" class="in">
                 <li class="user-profile">
-                    <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><span class="hide-menu">@User.Identity.Name </span></a>
+                    <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><span class="hide-menu">@User.Identity.Name</span></a>
                     <ul aria-expanded="false" class="collapse">
                         <li><a href="/manage/updateprofile">Account Setting</a></li>
                         @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                         {
-                        <li><a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
+                            <li><a href="javascript:document.getElementById('logoutForm').submit()">Logout</a></li>
                         }
                     </ul>
                 </li>
@@ -24,7 +26,7 @@
                     <a class="waves-effect waves-dark" href="/Manage/AddGrafiek" aria-expanded="false"><i class="mdi mdi-chart-bar"></i><span class="hide-menu">Nieuwe Grafiek</span></a>
                     <a class="waves-effect waves-dark" href="/Manage/UpdateAlerts" aria-expanded="false"><i class="mdi mdi-bell"></i><span class="hide-menu">Alerts Beheren</span></a>
                     <a class="waves-effect waves-dark" href="/Manage/VolgItems" aria-expanded="false"><i class="mdi mdi-plus"></i><span class="hide-menu">Items volgen</span></a>
-                    <a class="waves-effect waves-dark" href="/Manage/GenereerReview" aria-expanded="false"><i class="mdi mdi-plus"></i><span class="hide-menu">Weekly Review</span></a>
+                    <a class="waves-effect waves-dark" href="/Manage/ShowReview" aria-expanded="false"><i class="mdi mdi-plus"></i><span class="hide-menu">Weekly Review</span></a>
                 </li>
             </ul>
         </nav>
@@ -33,3 +35,4 @@
     </div>
     <!-- End Sidebar scroll-->
 </aside>
+</div>

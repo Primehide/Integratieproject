@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using DAL;
 using Domain.Account;
 using Domain.Entiteit;
+using Domain.Enum;
+using Domain.Post;
 
 namespace BL
 {
@@ -20,6 +22,7 @@ namespace BL
         void DeleteAlert(int alertID);
         Account getAccount(string ID);
         void updateUser(Account account);
+        void DeleteGrafiekWaardes(int grafiekID);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
         List<Account> GetAccounts();
         void UpdateUser(Account account);
@@ -29,5 +32,7 @@ namespace BL
         void addFaq(Faq faq);
         void deleteFaq(int id);
         void UpdateAlert(int id);
+        void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, Domain.Enum.GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort);
+        void UpdateGrafiek(int grafiekId);
     }
 }

@@ -12,7 +12,7 @@ namespace Domain.Entiteit
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public List<Organisatie> Organisations { get; set; }
-        public byte[] Image { get; set; }
+      //  public byte[] Image { get; set; }
         public string Disctrict { get; set; }
         public string Level { get; set; }
         public string Gender { get; set; }

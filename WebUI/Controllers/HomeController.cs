@@ -1,20 +1,14 @@
-
-﻿using BL;
-
-
-﻿using Domain.Platform;
-
-
+using BL;
+using Domain.Platform;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using BL;
 
 namespace WebUI.Controllers
 {
-    [RequireHttps]
+    //[RequireHttps]
     public partial class HomeController : Controller
     {
         public ActionResult Faq()
@@ -28,17 +22,27 @@ namespace WebUI.Controllers
         {
             return View();
         }
-       
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
 
         public virtual ActionResult Index(string gekozenplatform,string tagline)
 
         {
             try
             {
+                IPlatformManager platformManager = new PlatformManager();
                 ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
                 ViewBag.dpnaam = gekozenplatform;
                 ViewBag.tagline = tagline;
-                return View();
+                return View(platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]));
             } catch ( NullReferenceException e )
             {
                 return RedirectToAction("Index", "Platform", null);

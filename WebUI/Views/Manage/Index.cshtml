@@ -37,6 +37,20 @@
                 <!-- Start Page Content -->
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
+                @if(Model.Configuratie.DashboardBlokken.Count == 0)
+                {
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Geen grafieken :(</h4>
+                                    <p class="card-text">Je hebt nog geen enkele grafiek. Maak jou eerste grafiek!</p>
+                                    <a href="/manage/addgrafiek" class="btn btn-primary">Start</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
                 <div class="row">
                     @foreach (var blok in Model.Configuratie.DashboardBlokken)
                     {
@@ -87,7 +101,7 @@
                                         <div>
                                             <canvas id="chart @Model.CanvasCounter"></canvas>
                                         </div>
-                                        <button type="button" class="btn waves-effect waves-light btn-success">Edit</button>
+                                        <a href="/Account/EditGrafiek?id=@blok.Grafiek.GrafiekId" class="btn waves-effect waves-light btn-success">Edit</a>
                                     </div>
                                 </div>
                             </div>

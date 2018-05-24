@@ -76,8 +76,10 @@ namespace DAL
             return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
         }
 
-        public Persoon UpdatePerson(Persoon UpdatedPerson)
+        public Persoon UpdatePerson(Persoon UpdatedPerson )
         {
+
+        
             ctx.Entry(UpdatedPerson).State = EntityState.Modified;
             ctx.SaveChanges();
             return UpdatedPerson;
@@ -114,7 +116,9 @@ namespace DAL
 
         public Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie)
         {
-            //ctx.Entry(UpdatedOrganisatie).State = EntityState.Modified;
+       
+
+       
             ctx.SaveChanges();
             return UpdatedOrganisatie;
         }
@@ -172,28 +176,47 @@ namespace DAL
                 .ToList();
         }
 
+        public List<Entiteit> getAlleEntiteiten(bool IncludePosts)
+        {
+            if (IncludePosts)
+            {
+                return ctx.Entiteiten
+                .Include(x => x.Posts)
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
+            } else
+            {
+                return ctx.Entiteiten
+                .Include(x => x.Trends)
+                .Include(x => x.Grafieken)
+                .Include(x => x.Grafieken.Select(y => y.Waardes))
+                .ToList();
+            }
+        }
+
         public void updateEntiteit(Entiteit entiteit)
         {
             ctx.Entry(entiteit).State = EntityState.Modified;
             ctx.SaveChanges();
         }
 
-        public void CreateThema(Thema thema)
+        public void CreateThema(Thema thema, HttpPostedFileBase ImageFile)
         {
+            thema.Image = ConvertToBytes(ImageFile);
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }
-    
 
-        public void UpdateThema(Thema thema)
+
+        public Thema UpdateThema(Thema UpdatedThema)
         {
-            var result = ReadThema(thema.EntiteitId);
-         
-            if (result != null)
-            {
-                result.Naam = thema.Naam;
-                ctx.SaveChanges();
-            }
+
+
+          ctx.Entry(UpdatedThema).State = EntityState.Modified;
+            ctx.SaveChanges();
+            return UpdatedThema;
         }
 
         public void DeleteThema(int entiteitsId)
@@ -238,7 +261,8 @@ namespace DAL
 
         public Entiteit ReadEntiteit(int id)
         {
-            return ctx.Entiteiten.SingleOrDefault(e => e.EntiteitId == id);
+            return ctx.Entiteiten.Include(e => e.Posts.Select(y => y.Urls)).Include(e => e.Trends).SingleOrDefault(e => e.EntiteitId == id);
+
         }
 
 

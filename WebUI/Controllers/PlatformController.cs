@@ -3,8 +3,10 @@ using Domain.Account;
 using Domain.Entiteit;
 using Domain.Platform;
 using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -25,27 +27,49 @@ namespace WebUI.Controllers
         public  ActionResult Index()
         {
             //I have to be able to see a list of created SubPlatforms
-
-
             return View(pM.GetAllDeelplatformen());
         }
         //Creation of a SubPlatform (SuperAdmin)
         #region
+        [Authorize(Roles = "SuperAdmin")]
         public  ActionResult CreatePlatform()
         {
             return View();
         }
 
         [HttpPost]
-        public  ActionResult CreatePlatform(Deelplatform dp)
+        [Authorize(Roles = "SuperAdmin")]
+        public  ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase ImgLogo)
         {
             //I have to be able to create a SubPlatform
+            byte[] imageBytes = null;
+            BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
+            imageBytes = reader.ReadBytes((int)ImgLogo.ContentLength);
+            dp.Logo = imageBytes;
             pM.AddDeelplatform(dp);
+            EntiteitManager entiteitManager = new EntiteitManager();
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    string str = (new StreamReader(file.InputStream)).ReadToEnd();
+                    List<Domain.Entiteit.Persoon> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.Entiteit.Persoon>>(str);
+                    foreach (var p in JsonEntiteiten)
+                    {
+                        p.PlatformId = dp.DeelplatformId;
+                    }
+                    entiteitManager.ConvertJsonToEntiteit(JsonEntiteiten);
+                }
+            }
             return RedirectToAction("Index");
         }
         #endregion
         //Changing of a SubPlatform (Admin)
         #region
+
+        [Authorize(Roles = "SuperAdmin")]
         public  ActionResult ChangePlatform(int id)
         {
             List<Persoon> deelplatformPersonen = new List<Persoon>();
@@ -84,7 +108,7 @@ namespace WebUI.Controllers
             return View(CPVM);
 
         }
-
+        [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         public  ActionResult ChangePlatform(ChangePlatformViewModel dp)
         {
@@ -145,6 +169,17 @@ namespace WebUI.Controllers
 
         }
         #endregion
+
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
         //Deletion of a SubPlatform
         #region
         public  ActionResult DeletePlatform()
@@ -163,13 +198,14 @@ namespace WebUI.Controllers
 
         }
         #endregion
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();         
             return View(accounts);
         }
-
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public FileResult DownloadReport()
         {
             IPlatformManager platformManager = new PlatformManager();

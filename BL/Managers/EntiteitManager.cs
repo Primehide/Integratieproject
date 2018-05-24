@@ -8,8 +8,12 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using System.Web;
+
+using Domain.Account;
+
 using Domain.TextGain;
 using System.Collections;
+
 
 namespace BL
 {
@@ -119,6 +123,12 @@ namespace BL
         {
             initNonExistingRepo();
             return entiteitRepository.getAlleEntiteiten();
+        }
+
+        public List<Entiteit> getAlleEntiteiten(bool IncludePosts)
+        {
+            initNonExistingRepo();
+            return entiteitRepository.getAlleEntiteiten(IncludePosts);
         }
 
         public Entiteit GetEntiteit(int id)
@@ -313,7 +323,7 @@ namespace BL
         }
 
         #region
-        public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden)
+        public void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase ImageFile)
         {
             initNonExistingRepo();
             Thema thema = new Thema()
@@ -321,15 +331,27 @@ namespace BL
                 Naam = nieuwThema.Naam,
                 PlatformId = nieuwThema.PlatformId,
                 SleutenWoorden = sleutelwoorden
+            
+              
             };
-            entiteitRepository.CreateThema(thema);
+            entiteitRepository.CreateThema(thema, ImageFile);
         }
 
 
-        public void UpdateThema(Thema thema)
+        public void UpdateThema(Thema thema, HttpPostedFileBase ImageFile)
         {
-            initNonExistingRepo();
-            entiteitRepository.UpdateThema(thema);
+            initNonExistingRepo(false);
+            Thema toUpdate = GetThema(thema.EntiteitId);
+            if (ImageFile != null)
+            {
+                EntiteitRepository repo = new EntiteitRepository();
+                toUpdate.Image = repo.ConvertToBytes(ImageFile);
+
+            }
+            toUpdate.SleutenWoorden = thema.SleutenWoorden;
+            toUpdate.Naam = thema.Naam;
+            
+            entiteitRepository.UpdateThema(toUpdate);
         }
 
         public void DeleteThema(int entiteitsId)
@@ -348,6 +370,11 @@ namespace BL
         {
             initNonExistingRepo();
             return entiteitRepository.ReadThema(entiteitsId);
+        }
+
+        public void UpdateGrafieken()
+        {
+          
         }
 
         public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten, List<string> CijferOpties, string VergelijkOptie)
@@ -440,18 +467,25 @@ namespace BL
             }
         }
 
-        public Persoon ChangePerson(Persoon ChangedPerson)
+        public Persoon ChangePerson(Persoon ChangedPerson,  HttpPostedFileBase ImageFile)
         {
+          
             initNonExistingRepo(false);
-            Persoon toUpdated = GetPerson(ChangedPerson.EntiteitId);
-
-            toUpdated.FirstName = ChangedPerson.FirstName;
-            toUpdated.LastName = ChangedPerson.LastName;
-            foreach (Organisatie o in toUpdated.Organisations)
+            Persoon toUpdate = GetPerson(ChangedPerson.EntiteitId);
+            if (ImageFile != null)
             {
-                ChangeOrganisatie(o);
+                EntiteitRepository repo = new EntiteitRepository();
+                toUpdate.Image = repo.ConvertToBytes(ImageFile);
+
             }
-            return entiteitRepository.UpdatePerson(toUpdated);
+            toUpdate.FirstName = ChangedPerson.FirstName;
+            toUpdate.LastName = ChangedPerson.LastName;
+            toUpdate.Naam = ChangedPerson.FirstName + " " + ChangedPerson.LastName;
+            foreach (Organisatie o in toUpdate.Organisations)
+            {
+                ChangeOrganisatie(o, ImageFile);
+            }
+            return entiteitRepository.UpdatePerson(toUpdate);
         }
 
         public List<Persoon> GetAllPeople(int platId)
@@ -478,7 +512,8 @@ namespace BL
         {
             initNonExistingRepo(false);
             if (ImageFile != null)
-            {
+            { 
+            
                 entiteitRepository.CreateOrganisatieWithPhoto(o, ImageFile);
             } else
             {
@@ -486,10 +521,17 @@ namespace BL
             }
         }
 
-        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie)
+        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, HttpPostedFileBase ImageFile)
         {
             initNonExistingRepo(false);
+      
             Organisatie toUpdate = GetOrganisatie(ChangedOrganisatie.EntiteitId);
+            if (ImageFile != null)
+            {
+                EntiteitRepository repo = new EntiteitRepository();
+                toUpdate.Image = repo.ConvertToBytes(ImageFile);
+
+            }
             toUpdate.Naam = ChangedOrganisatie.Naam;
             toUpdate.Gemeente = ChangedOrganisatie.Gemeente;
             toUpdate.Posts = ChangedOrganisatie.Posts;
@@ -516,7 +558,7 @@ namespace BL
             entiteitRepository.DeleteOrganisatie(id);
         }
 
-        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, IEnumerable<string> selectedPeople)
+        public Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, IEnumerable<string> selectedPeople, HttpPostedFileBase ImageFile)
         {
             initNonExistingRepo(false);
             Organisatie toUpdate = GetOrganisatie(ChangedOrganisatie.EntiteitId);
@@ -546,20 +588,24 @@ namespace BL
             toUpdate.Gemeente = ChangedOrganisatie.Gemeente;
             toUpdate.Posts = ChangedOrganisatie.Posts;
             toUpdate.Trends = ChangedOrganisatie.Trends;
-
             toUpdate.AantalLeden = toUpdate.Leden.Count();
-
+            
             return entiteitRepository.UpdateOrganisatie(toUpdate);
         }
 
-        public void ChangePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations)
+        public void ChangePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations, HttpPostedFileBase ImageFile)
         {
             initNonExistingRepo(false);
             Persoon toUpdated = GetPerson(changedPerson.EntiteitId);
 
             //Remove all references
             toUpdated.Organisations = new List<Organisatie>();
+            if (ImageFile != null)
+            {
+                EntiteitRepository repo = new EntiteitRepository();
+                toUpdated.Image = repo.ConvertToBytes(ImageFile);
 
+            }
             //Add new References
             foreach (string oId in selectedOrganisations)
             {
@@ -608,10 +654,7 @@ namespace BL
             entiteitRepository.DeleteEntiteitenVanDeelplatform(id);
         }
 
-        public void AddThema(string naam, List<Sleutelwoord> sleutelwoorden)
-        {
-            throw new NotImplementedException();
-        }
+     
 
         public List<Entiteit> GetEntiteiten(string naam)
         {

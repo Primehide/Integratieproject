@@ -10,6 +10,7 @@ using BL;
 using Domain.Account;
 using Domain.Entiteit;
 using Domain.Enum;
+using Domain.Post;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -80,7 +81,7 @@ namespace WebUI.Controllers
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
                 GrafiekLabels = new Dictionary<string, string>(),
                 GrafiekDataSets = new Dictionary<string, string>(),
-                ColorCodes = new List<string>()
+                ColorCodes = new List<string>(),
             };
 
             model.ColorCodes.Add("#2E2EFE");
@@ -176,12 +177,14 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
+            List<Entiteit> AlleEntiteiten = entiteitManager.getAlleEntiteiten(false);
+            IPlatformManager platformManager = new PlatformManager();
+            var dp = platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
+                Personen = AlleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Organisaties = AlleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
             };
             return View(model);
         }
@@ -200,118 +203,14 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        //
-        // GET: /Manage/AddPhoneNumber
-        public virtual ActionResult AddPhoneNumber()
+        protected override void OnException(ExceptionContext filterContext)
         {
-            return View();
-        }
+            filterContext.ExceptionHandled = true;
 
-        //
-        // POST: /Manage/AddPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> AddPhoneNumber(AddPhoneNumberViewModel model)
-        {
-            if (!ModelState.IsValid)
+            filterContext.Result = new ViewResult
             {
-                return View(model);
-            }
-            // Generate the token and send it
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), model.Number);
-            if (UserManager.SmsService != null)
-            {
-                var message = new IdentityMessage
-                {
-                    Destination = model.Number,
-                    Body = "Your security code is: " + code
-                };
-                await UserManager.SmsService.SendAsync(message);
-            }
-            return RedirectToAction("VerifyPhoneNumber", new { PhoneNumber = model.Number });
-        }
-
-        //
-        // POST: /Manage/EnableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> EnableTwoFactorAuthentication()
-        {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), true);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", "Manage");
-        }
-
-        //
-        // POST: /Manage/DisableTwoFactorAuthentication
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> DisableTwoFactorAuthentication()
-        {
-            await UserManager.SetTwoFactorEnabledAsync(User.Identity.GetUserId(), false);
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", "Manage");
-        }
-
-        //
-        // GET: /Manage/VerifyPhoneNumber
-        public virtual async Task<ActionResult> VerifyPhoneNumber(string phoneNumber)
-        {
-            var code = await UserManager.GenerateChangePhoneNumberTokenAsync(User.Identity.GetUserId(), phoneNumber);
-            // Send an SMS through the SMS provider to verify the phone number
-            return phoneNumber == null ? View("Error") : View(new VerifyPhoneNumberViewModel { PhoneNumber = phoneNumber });
-        }
-
-        //
-        // POST: /Manage/VerifyPhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> VerifyPhoneNumber(VerifyPhoneNumberViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-            var result = await UserManager.ChangePhoneNumberAsync(User.Identity.GetUserId(), model.PhoneNumber, model.Code);
-            if (result.Succeeded)
-            {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                if (user != null)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-                }
-                return RedirectToAction("Index", new { Message = ManageMessageId.AddPhoneSuccess });
-            }
-            // If we got this far, something failed, redisplay form
-            ModelState.AddModelError("", "Failed to verify phone");
-            return View(model);
-        }
-
-        //
-        // POST: /Manage/RemovePhoneNumber
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public virtual async Task<ActionResult> RemovePhoneNumber()
-        {
-            var result = await UserManager.SetPhoneNumberAsync(User.Identity.GetUserId(), null);
-            if (!result.Succeeded)
-            {
-                return RedirectToAction("Index", new { Message = ManageMessageId.Error });
-            }
-            var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            if (user != null)
-            {
-                await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-            }
-            return RedirectToAction("Index", new { Message = ManageMessageId.RemovePhoneSuccess });
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
 
         //
@@ -592,6 +491,12 @@ namespace WebUI.Controllers
 
         }
 
+        public void updateGrafieken()
+        {
+            PostManager postManager = new PostManager();
+            
+        }
+
         Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
         private void fillNamen()
         {
@@ -631,21 +536,62 @@ namespace WebUI.Controllers
 
         public ActionResult genereerReview()
         {
-            string id = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();
             IEntiteitManager entiteitManager = new EntiteitManager();
             foreach (Account acc in accounts)
             {
+                //Review aanmaken
+                
                 List<Entiteit> entiteiten = new List<Entiteit>();
                 List<Item> items = acc.Items;
                 foreach(Item item in items)
                 {
+                   
                     entiteiten.Add(entiteitManager.GetEntiteit(item.EntiteitId));
                 }
-                return View(entiteiten);
+             
+                acc.ReviewEntiteiten = entiteiten;
+                accountManager.UpdateUser(acc);
             }
             return View();
+        }
+
+        public ActionResult ShowReview()
+        {
+            string id = User.Identity.GetUserId();
+            IAccountManager accountManager = new AccountManager();
+            Account account = accountManager.getAccount(id);
+            List<Entiteit> entiteiten = account.ReviewEntiteiten;
+            List<Persoon> deelplatformPersonen = new List<Persoon>();
+            List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
+            List<Thema> deelplatformThemas = new List<Thema>();
+
+            foreach (Entiteit e in entiteiten)
+            {
+                if (e is Persoon)
+                {
+                    deelplatformPersonen.Add((Persoon)e);
+                }
+                else
+                if (e is Organisatie)
+                {
+                    deelplatformOrganisaties.Add((Organisatie)e);
+                }
+                else
+                if (e is Thema)
+                {
+                    deelplatformThemas.Add((Thema)e);
+                }
+            }
+
+            ReviewModel reviewModel = new ReviewModel()
+            {
+                Organisaties = deelplatformOrganisaties,
+                Personen = deelplatformPersonen,
+                Themas = deelplatformThemas
+            };
+            return View(reviewModel);
         }
 
         #region Helpers

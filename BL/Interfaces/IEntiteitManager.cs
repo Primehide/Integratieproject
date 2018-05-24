@@ -13,13 +13,13 @@ namespace BL
     {
         void AddPerson(Persoon p, HttpPostedFileBase ImageFile);
         Persoon GetPerson(int id);
-        Persoon ChangePerson(Persoon ChangedPerson);
+        Persoon ChangePerson(Persoon ChangedPerson, HttpPostedFileBase ImageFile);
         void RemovePerson(int id);
         List<Persoon> GetAllPeople(int platId);
         byte[] GetPersonImageFromDataBase(int id);
 
         void AddOrganisatie(Organisatie o, HttpPostedFileBase ImageFile);
-        Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie);
+        Organisatie ChangeOrganisatie(Organisatie ChangedOrganisatie, HttpPostedFileBase ImageFile);
         List<Organisatie> GetAllOrganisaties(int platId);
         Organisatie GetOrganisatie(int id);
         void RemoveOrganisatie(int id);
@@ -32,10 +32,11 @@ namespace BL
         Entiteit GetEntiteit(int id);
         List<Entiteit> GetEntiteiten(string naam);
 
+        void UpdateGrafieken();
 
-        void AddThema(string naam, List<Sleutelwoord> sleutelwoorden);
-        void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden);
-        void UpdateThema(Thema thema);
+     
+        void AddThema(Thema nieuwThema, List<Sleutelwoord> sleutelwoorden, HttpPostedFileBase imageFile);
+        void UpdateThema(Thema thema, HttpPostedFileBase ImageFile);
         void DeleteThema(int entiteitsId);
         void DeleteSleutelwoord(int sleutelId);
         IEnumerable<Thema> GetThemas(int platId);
@@ -50,6 +51,7 @@ namespace BL
         void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten);
 
         void BerekenVasteGrafiekenAlleEntiteiten();
+        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
 
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Account;
 using Domain.Entiteit;
 using System.Data.Entity;
+using Domain.Post;
 
 namespace DAL
 {
@@ -127,7 +128,27 @@ namespace DAL
             updated.Achternaam = account.Achternaam;
             updated.GeboorteDatum = account.GeboorteDatum;
             updated.Email = account.Email;
+
+            updated.ReviewEntiteiten = account.ReviewEntiteiten;
+
             ctx.SaveChanges();
+
+            updated.Dashboard = account.Dashboard;
+            foreach (DashboardBlok b in updated.Dashboard.Configuratie.DashboardBlokken)
+            {
+                if (b.Grafiek.Entiteiten != null)
+                {
+                    foreach (Entiteit e in b.Grafiek.Entiteiten)
+                    {
+                        ctx.Entry(e).State = EntityState.Modified;
+                    }
+                }
+            }
+            
+                ctx.SaveChanges();
+           
+            
+
         }
 
         public Account ReadAccount(string ID)
@@ -135,6 +156,9 @@ namespace DAL
             //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
             Account account = ctx.Accounts
                 .Include(x => x.Dashboard)
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Posts))
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Posts.Select(z => z.Urls)))
+                .Include(x => x.ReviewEntiteiten.Select(y => y.Trends))
                 .Include("Alerts")
                 .Include("Items")
                 .Include(x => x.Dashboard.Configuratie)
@@ -151,6 +175,13 @@ namespace DAL
             return ctx.Accounts
                 .Include(x => x.Alerts)
                 .Include(x => x.Items)
+                .Include(x => x.ReviewEntiteiten)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Entiteiten))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.CijferOpties))
                 .ToList();
         }
         
@@ -200,6 +231,10 @@ namespace DAL
             ctx.SaveChanges();
         }
 
-    
+        public void DeleteGrafiekWaardes(int grafiekID)
+        {
+            Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
+            teverwijderenwaardes.Waardes = null;
+        }
     }
 }

@@ -1,0 +1,195 @@
+﻿@model WebUI.Models.ReviewModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Weekly Review</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">pages</li>
+                            <li class="breadcrumb-item active">Home</li>
+
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+              
+                <div class="row">
+                    <h1>Personen</h1>
+                    @foreach (var persoon in Model.Personen)
+                    {
+                        var teller = 0;
+                        <div class="col-4">
+                            <div class="card">
+                                <div class="card-body">
+                                        @if (persoon.Image != null) {   
+                                <img src="data:image;base64,@System.Convert.ToBase64String(persoon.Image)" , width="150" , height="150" , class="img-circle" />
+                                } else {
+                                <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" , width="150" , height="150" , class="img-circle" />
+                                    }
+                                    <br />
+                                    </div>
+                                <div class="col-8">
+                                    <h3>@Html.ActionLink(persoon.Naam, "DisplayPerson", new { EntityId = persoon.EntiteitId }, null)</h3>
+                                    <h4><b>Aantal posts: </b> @Html.DisplayFor(modelItem => persoon.Posts.Count) </h4>
+                                    @if (persoon.Trends.Count != 0)
+                                    {
+                                        <h4><b>Soort Trend: </b> @Html.DisplayFor(modelItem => persoon.Trends[0].Type) </h4>
+                                    }
+                                    else
+                                    {
+                                        <h4><b>Soort Trend: </b> Geen Trend Beschikbaar </h4>
+                                    }
+                                    <h4><b>Meest recente verhalen: </b></h4>
+
+                                    @foreach (var post in persoon.Posts)
+                                    {
+
+                                        if (post.Urls.Count > 0 && teller < 5)
+                                        {
+                                            foreach (var url in post.Urls)
+                                            {
+                                                <a href="@url.Link"><h5> - @Html.DisplayFor(modelItem => url.Link) </h5></a>
+
+
+
+                                            }
+                                            teller++;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row">
+                    <h1>Thema's</h1>
+                    @foreach (var thema in Model.Themas)
+                    {
+                        var teller = 0;
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+
+                                    <h3>@Html.ActionLink(thema.Naam, "DisplayPerson", new { EntityId = thema.EntiteitId }, null)</h3>
+                                    <h4><b>Aantal posts: </b> @Html.DisplayFor(modelItem => thema.Posts.Count) </h4>
+                                    @if (thema.Trends.Count != 0)
+                                    {
+                                        <h4><b>Soort Trend: </b> @Html.DisplayFor(modelItem => thema.Trends[0].Type) </h4>
+                                    }
+                                    else
+                                    {
+                                        <h4><b>Soort Trend: </b> Geen Trend Beschikbaar </h4>
+                                    }
+                                    <h4><b>Meest recente verhalen: </b></h4>
+
+                                    @foreach (var post in thema.Posts)
+                                    {
+
+                                        if (post.Urls.Count > 0 && teller < 5)
+                                        {
+                                            foreach (var url in post.Urls)
+                                            {
+                                                <a href="@url.Link"><h5> - @Html.DisplayFor(modelItem => url.Link) </h5></a>
+
+
+
+                                            }
+                                            teller++;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row">
+                    <h1>Organisaties</h1>
+                    @foreach (var organisatie in Model.Organisaties)
+                    {
+                        var teller = 0;
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                      @if (organisatie.Image != null) {   
+                                <img src="data:image;base64,@System.Convert.ToBase64String(organisatie.Image)" , width="150" , height="150" , class="img-circle" />
+                                } else {
+                                <img src="~/Content/Dashboard/assets/images/default_profile_pic.gif" , width="150" , height="150" , class="img-circle" />
+                                    }
+                                    <br />
+                                    <h3>@Html.ActionLink(organisatie.Naam, "DisplayPerson", new { EntityId = organisatie.EntiteitId }, null)</h3>
+                                    <h4><b>Aantal posts: </b> @Html.DisplayFor(modelItem => organisatie.Posts.Count) </h4>
+                                    @if (organisatie.Trends.Count != 0)
+                                    {
+                                        <h4><b>Soort Trend: </b> @Html.DisplayFor(modelItem => organisatie.Trends[0].Type) </h4>
+                                    }
+                                    else
+                                    {
+                                        <h4><b>Soort Trend: </b> Geen Trend Beschikbaar </h4>
+                                    }
+                                    <h4><b>Meest recente verhalen: </b></h4>
+
+                                    @foreach (var post in organisatie.Posts)
+                                    {
+
+                                        if (post.Urls.Count > 0 && teller < 5)
+                                        {
+                                            foreach (var url in post.Urls)
+                                            {
+                                                <a href="@url.Link"><h5> - @Html.DisplayFor(modelItem => url.Link) </h5></a>
+
+
+
+                                            }
+                                            teller++;
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+
