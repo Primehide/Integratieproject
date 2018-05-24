@@ -105,11 +105,11 @@
                                             <button type="submit" class="btn btn-success waves-effect waves-light">Save</button>
                                             @if (Model.IsAdmin == false)
                                             {
-                                                <input type="button" id="setAdmin" value="set Admin" onclick="location.href='@Url.Action("SetAdmin","account", new {accountId = Model.IdentityId})'" />
+                                                <input type="button" id="setAdmin" value="set Admin" onclick="location.href='@Url.Action("SetAdmin","Account", new {accountId = Model.IdentityId})'" />
                                             }
                                             else
                                             {
-                                                <input type="button" id="use" value="unset Admin" onclick="location.href='@Url.Action("UnsetAdmin","account", new {accountId = Model.IdentityId})'" />
+                                                <input type="button" id="use" value="unset Admin" onclick="location.href='@Url.Action("UnsetAdmin","Account", new {accountId = Model.IdentityId})'" />
                                             }
                                         </div>
                                     </div>

@@ -221,7 +221,6 @@ namespace WebUI.Controllers
             };
         }
         */
-        [HttpPost]
         public async Task<ViewResult> SetAdmin(string accountId)
         {
             var um = makeUserManager();
@@ -234,7 +233,6 @@ namespace WebUI.Controllers
 
         }
 
-        [HttpPost]
         public async Task<ViewResult> UnsetAdmin(string accountId)
         {
             var um = makeUserManager();
