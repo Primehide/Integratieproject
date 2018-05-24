@@ -146,9 +146,28 @@ namespace WebUI.Controllers
         {
             fillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
+
+            List<SelectListItem> listBoxItems = new List<SelectListItem>();
+
+            List<Persoon> AllPeople = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            foreach (Persoon p in AllPeople)
+            {
+                SelectListItem Person = new SelectListItem()
+                {
+                    Text = p.Naam,
+                    Value = p.EntiteitId.ToString(),
+                    
+                };
+                listBoxItems.Add(Person);
+            }
+
             AdminViewModel model = new AdminViewModel()
             {
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten(),
+                PeopleChecks = new SelectedPeopleVM()
+                {
+                    People = listBoxItems
+                }
             };
             return View(model);
         }

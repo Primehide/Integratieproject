@@ -72,10 +72,18 @@ namespace WebUI.Controllers
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
+        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile, IEnumerable<string> SelectedPeople)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
-            o.Leden = new List<Persoon>();
+            if (SelectedPeople != null)
+            {
+                o.Leden = new List<Persoon>();
+                foreach (string pId in SelectedPeople)
+                {
+                    o.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
+                }
+            }
+
             entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
