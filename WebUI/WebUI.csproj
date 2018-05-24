@@ -4954,6 +4954,7 @@
     <Content Include="Content\Homepagina\vendor\simple-line-icons\gulpfile.js" />
     <Content Include="Content\Homepagina\vendor\vide\vide.js" />
     <Content Include="Content\Homepagina\vendor\vide\vide.min.js" />
+    <Content Include="Content\Muuri.css" />
     <Content Include="Content\TagMarkup.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -5995,7 +5996,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54057</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

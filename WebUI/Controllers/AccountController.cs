@@ -21,6 +21,7 @@ using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
 using Domain.Post;
+using Domain.Enum;
 
 namespace WebUI.Controllers
 {
@@ -995,6 +996,56 @@ namespace WebUI.Controllers
             }
             NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
             ViewBag.Organisaties = organisaties;
+        }
+
+        public ActionResult DeleteDashboardBlok(int id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            var account = accountManager.getAccount(User.Identity.GetUserId());
+            accountManager.DeleteDashboardBlok(account, id);
+            return new EmptyResult();
+        }
+
+        public ActionResult UpdateLocatie(int blokId, int locatie)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateLocatie(blokId, locatie);
+            return new EmptyResult();
+        }
+
+        public ActionResult UpdateSize(int blokId, BlokGrootte blokGrootte)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateSize(blokId, blokGrootte);
+            return new EmptyResult();
+        }
+
+        public ActionResult UpdateTitel(int blokId, String titel)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateTitel(blokId, titel);
+            return new EmptyResult();
+        }
+
+        public ActionResult UpdateSizeDimensions(int blokId, int sizeX, int sizeY)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateSizeDimensions(blokId, sizeX, sizeY);
+            return new EmptyResult();
+        }
+
+        public ActionResult UpdateConfiguratieTitle(int configuratieId, String title)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.UpdateConfiguratieTitle(configuratieId, title);
+            return new EmptyResult();
+        }
+
+        public ActionResult SetPublic(int dashboardId, bool shared)
+        {
+            IAccountManager accountManager = new AccountManager();
+            accountManager.SetPublic(dashboardId, shared);
+            return new EmptyResult();
         }
     }
 
