@@ -98,7 +98,7 @@ namespace BL
                     {
                        // ConvertAndSaveToDb(posts);
 
-                        System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
+                      //  System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
                     }
                 }
                 catch (Newtonsoft.Json.JsonReaderException)
