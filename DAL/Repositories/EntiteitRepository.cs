@@ -102,6 +102,10 @@ namespace DAL
 
         public void CreateOrganisatieWithoutPhoto(Organisatie o)
         {
+            foreach (Persoon p in o.Leden)
+            {
+                ctx.Entry(p).State = EntityState.Unchanged;
+            }
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();
         }

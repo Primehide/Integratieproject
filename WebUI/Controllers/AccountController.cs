@@ -21,6 +21,7 @@ using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
 using Domain.Post;
+using EmailAddress = SendGrid.Helpers.Mail.EmailAddress;
 
 namespace WebUI.Controllers
 {
@@ -145,9 +146,28 @@ namespace WebUI.Controllers
         {
             fillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
+
+            List<SelectListItem> listBoxItems = new List<SelectListItem>();
+
+            List<Persoon> AllPeople = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            foreach (Persoon p in AllPeople)
+            {
+                SelectListItem Person = new SelectListItem()
+                {
+                    Text = p.Naam,
+                    Value = p.EntiteitId.ToString(),
+                    
+                };
+                listBoxItems.Add(Person);
+            }
+
             AdminViewModel model = new AdminViewModel()
             {
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+                AlleEntiteiten = entiteitManager.getAlleEntiteiten(),
+                PeopleChecks = new SelectedPeopleVM()
+                {
+                    People = listBoxItems
+                }
             };
             return View(model);
         }
@@ -220,6 +240,28 @@ namespace WebUI.Controllers
             };
         }
         */
+        public async Task<ViewResult> SetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = true;
+            am.updateUser(a);
+            await um.AddToRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+
+        }
+
+        public async Task<ViewResult> UnsetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = false;
+            am.updateUser(a);
+            await um.RemoveFromRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+        }
 
         //
         // POST: /Account/Login

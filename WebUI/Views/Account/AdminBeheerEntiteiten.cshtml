@@ -71,7 +71,15 @@
                                 <div class="col-sm-12 col-xs-12">
                                     @using (Html.BeginForm("AddOrganisatie", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
-
+                                        foreach (var item in Model.PeopleChecks.People)
+                                         {
+                                             <div>
+                                                 <label>
+                                                     <input id="@item.Value" name="SelectedPeople" value="@item.Value" type="checkbox">
+                                                     <label for="@item.Value"> @item.Text </label>
+                                                 </label>
+                                             </div>
+                                         }
                                 <div class="form-group">
                                     <label>Naam</label>
                                     <input type="text" class="form-control" placeholder="Naam" name="Naam">
