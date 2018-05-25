@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,6 +14,7 @@ using Domain.Entiteit;
 using System.Collections;
 using Domain.Post;
 using Domain.Enum;
+using Domain.Platform;
 
 namespace WebUI.Controllers
 {
@@ -123,17 +123,16 @@ namespace WebUI.Controllers
 
             foreach (var item in userstore.GetAllUser())
             {
-                if(item.TenantId == (int)System.Web.HttpContext.Current.Session["PlatformID"])
+                if (item.TenantId == (int)System.Web.HttpContext.Current.Session["PlatformID"])
                 {
                     domainUsers.Add(accountManager.getAccount(item.Id));
                 }
             }
 
-            AdminViewModel model =
-                new AdminViewModel()
-                {
-                    Users = domainUsers
-                };
+            AdminViewModel model = new AdminViewModel()
+            {
+                Users = domainUsers
+            };
             return View(model);
         }
 
@@ -142,38 +141,18 @@ namespace WebUI.Controllers
         {
             FillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
-
-            List<SelectListItem> listBoxItems = new List<SelectListItem>();
-
-            List<Persoon> allPeople = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-            foreach (Persoon p in allPeople)
-            {
-                SelectListItem person = new SelectListItem()
-                {
-                    Text = p.Naam,
-                    Value = p.EntiteitId.ToString(),
-
-                };
-                listBoxItems.Add(person);
-            }
-
             AdminViewModel model = new AdminViewModel()
             {
                 platId = (int)System.Web.HttpContext.Current.Session["PlatformID"],
                 AlleEntiteiten = entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                PeopleChecks = new SelectedPeopleVM()
-                {
-                    People = listBoxItems
-                }
             };
             return View(model);
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddFaq(Faq f)
         {
-            AccountManager acm = new AccountManager();
-            f.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
-            acm.addFaq(f);
+            IPlatformManager platformManager = new PlatformManager();
+            platformManager.AddFaq(f, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return RedirectToAction("AdminBeheerFaq", "Account");
         }
 
@@ -201,14 +180,11 @@ namespace WebUI.Controllers
 
         public async Task<bool> CheckIfAdminAsync(LoginViewModel model)
         {
-
             int oldplat = (int?)System.Web.HttpContext.Current.Session["PlatformID"] ?? 0;
-
             System.Web.HttpContext.Current.Session["PlatformID"] = 0;
             var adminUm = MakeUserManager();
             var user = await adminUm.FindByEmailAsync(model.Email);
             System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
-
             if (user != null)
             {
                 return true;
@@ -222,13 +198,12 @@ namespace WebUI.Controllers
         public async Task<ViewResult> SetAdmin(string accountId)
         {
             var um = MakeUserManager();
-            AccountManager am = new AccountManager();
-            Account a = am.getAccount(accountId);
+            AccountManager accountManager = new AccountManager();
+            Account a = accountManager.getAccount(accountId);
             a.IsAdmin = true;
-            am.updateUser(a);
+            accountManager.updateUser(a);
             await um.AddToRoleAsync(accountId, "Admin");
-            return View("EditUserAdmin", am.getAccount(accountId));
-
+            return View("EditUserAdmin", accountManager.getAccount(accountId));
         }
 
         public async Task<ViewResult> UnsetAdmin(string accountId)
@@ -393,6 +368,7 @@ namespace WebUI.Controllers
             return View("Register", model);
         }
 
+        //USER GRAFIEKEN
         [HttpGet]
         public ActionResult EditGrafiek(int id)
         {
@@ -433,6 +409,7 @@ namespace WebUI.Controllers
             accountManager.AddUserGrafiek(opties, model.EntiteitIds, model.TypeGrafiek, (int)System.Web.HttpContext.Current.Session["PlatformID"], User.Identity.GetUserId(), model.Naam, model.GrafiekSoort);
             return RedirectToAction("Index", "Manage");
         }
+        //END USER GRAFIEKEN
 
         //
         // GET: /Account/ConfirmEmail
@@ -828,7 +805,7 @@ namespace WebUI.Controllers
                 };
                 return View("~/Views/Entiteit/EditPerson.cshtml", model);
             }
-            else if(entiteit.GetType() == typeof(Domain.Entiteit.Organisatie))
+            else if (entiteit.GetType() == typeof(Domain.Entiteit.Organisatie))
             {
                 Organisatie organisatie = entiteitManager.GetOrganisatie(id);
                 return View("~/Views/Entiteit/UpdateOrganisation.cshtml", organisatie);

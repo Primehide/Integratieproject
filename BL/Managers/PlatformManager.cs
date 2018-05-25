@@ -93,5 +93,31 @@ namespace BL
             }
             return sb;
         }
+
+        //refactor sander
+        public void AddFaq(Faq faq, int platId)
+        {
+            initNonExistingRepo();
+            faq.PlatformId = platId;
+            platformRepository.AddFaq(faq);
+        }
+
+        public void UpdateFaq(Faq faq)
+        {
+            initNonExistingRepo();
+            platformRepository.UpdateFaq(faq);
+
+        }
+        public void DeleteFaq(int faqID)
+        {
+            initNonExistingRepo();
+            platformRepository.DeleteFaq(faqID);
+
+        }
+        public List<Faq> GetAlleFaqs(int PlatId)
+        {
+            initNonExistingRepo();
+            return platformRepository.GetAlleFaqs(PlatId);
+        }
     }
 }
