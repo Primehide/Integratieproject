@@ -8,6 +8,7 @@ using System.Web.Http;
 
 namespace WebUI.Controllers
 {
+    //De API controller die zal aangesproken worden door de Android App
     public class AndroidApiController : ApiController
     {
         PlatformManager _pM;
@@ -22,6 +23,7 @@ namespace WebUI.Controllers
             return _pM.GetAllDeelplatformen().ToArray();
 
         }
+
         //Neemt de request van een ingelogde user, en zal deze gebruiken om een dashboard terug te sturen
         //Dit dashboard zal worden getekend op de app zelf
         [Route("api/Blokken")]

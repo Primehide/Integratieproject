@@ -109,7 +109,7 @@ namespace BL
 
 
       
-        public StringBuilder ConvertToCsv(List<Account> accounts)
+        public StringBuilder ConvertToCSV(List<Account> accounts)
         {
             InitNonExistingRepo();
             var lstData = accounts;
@@ -119,6 +119,32 @@ namespace BL
                 sb.AppendLine(data.AccountId + "," + data.Voornaam + "," + data.Achternaam + ", " + data.Email + ", " + data.GeboorteDatum);
             }
             return sb;
+        }
+
+        //refactor sander
+        public void AddFaq(Faq faq, int platId)
+        {
+            InitNonExistingRepo();
+            faq.PlatformId = platId;
+            _platformRepository.AddFaq(faq);
+        }
+
+        public void UpdateFaq(Faq faq)
+        {
+            InitNonExistingRepo();
+            _platformRepository.UpdateFaq(faq);
+
+        }
+        public void DeleteFaq(int faqID)
+        {
+            InitNonExistingRepo();
+            _platformRepository.DeleteFaq(faqID);
+
+        }
+        public List<Faq> GetAlleFaqs(int PlatId)
+        {
+            InitNonExistingRepo();
+            return _platformRepository.GetAlleFaqs(PlatId);
         }
     }
 }

@@ -27,8 +27,7 @@ namespace WebUI.Controllers
             return View(_pM.GetAllDeelplatformen());
         }
 
-        //Creation of a SubPlatform (SuperAdmin)
-
+        //Alleen de Superadmin meg een Platform Creëren
         [Authorize(Roles = "SuperAdmin")]
         public ActionResult CreatePlatform()
         {
@@ -36,6 +35,24 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
+        public ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase imgLogo)
+        {
+            //I have to be able to create a SubPlatform
+
+            _pM.AddDeelplatform(dp, imgLogo);
+            EntiteitManager entiteitManager = new EntiteitManager();
+
+            if (Request.Files.Count > 0)
+            {
+                entiteitManager.FileToJson(Request.Files[0], dp.DeelplatformId);
+            }
+            return RedirectToAction("Index");
+        }
+        
+        //De volgende twee methodes zorgt voor het promoveren/demoveren van een user naar/van een Admin
+        [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
         public ActionResult PromoteAdmin(string identityId)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
@@ -46,6 +63,7 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
         public ActionResult DemoteAdmin(string identityId)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
@@ -55,6 +73,7 @@ namespace WebUI.Controllers
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
+        //Het veranderen van Platform Eigenschappen wordt behandelt door deze methodes
         [HttpGet]
         [Authorize(Roles = "SuperAdmin")]
         public ActionResult EditPlatform(int id)
@@ -89,25 +108,9 @@ namespace WebUI.Controllers
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin")]
-        public ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase imgLogo)
-        {
-            //I have to be able to create a SubPlatform
-            
-            _pM.AddDeelplatform(dp,imgLogo);
-            EntiteitManager entiteitManager = new EntiteitManager();
+        
 
-            if (Request.Files.Count > 0)
-            {
-                entiteitManager.FileToJson(Request.Files[0], dp.DeelplatformId);
-            }
-            return RedirectToAction("Index");
-        }
-
-        //Display of a SubPlatform (Gebruiker)
-        #region
-
+        //Het binnenkomen van een deelplatform
         public ActionResult DisplayPlatform(int id)
         {
 
@@ -117,7 +120,6 @@ namespace WebUI.Controllers
             Deelplatform p = _pM.GetDeelplatform(id);
             return RedirectToAction("Index", "Home", new { gekozenplatform = p.Naam, tagline = p.Tagline });
         }
-        #endregion
 
         protected override void OnException(ExceptionContext filterContext)
         {
@@ -128,10 +130,9 @@ namespace WebUI.Controllers
             };
         }
 
-        //Deletion of a SubPlatform
-        #region
-
+        //Het verwijderen van een Deelplatform
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
         public ActionResult DeletePlatform(Deelplatform dp)
         {
             //All the entities that are related to the SubPlatform and the SubPlatform itself get deleted.
@@ -141,7 +142,6 @@ namespace WebUI.Controllers
 
         }
 
-        #endregion
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult ExportUsers()
         {
@@ -150,13 +150,14 @@ namespace WebUI.Controllers
             return View(accounts);
         }
 
+        //Admins en SuperAdmins moeten een Report kunnen downloaden
         [Authorize(Roles = "SuperAdmin, Admin")]
         public FileResult DownloadReport()
         {
             IPlatformManager platformManager = new PlatformManager();
             IAccountManager accountManager = new AccountManager();
             List<Account> list = accountManager.GetAccounts();
-            StringBuilder sb = platformManager.ConvertToCsv(list);
+            StringBuilder sb = platformManager.ConvertToCSV(list);
             return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "export.csv");
         }
     }

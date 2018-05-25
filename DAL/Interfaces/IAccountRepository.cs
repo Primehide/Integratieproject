@@ -13,7 +13,6 @@ namespace DAL
     {
         void addUser(Domain.Account.Account account);
         List<Alert> getAlleAlerts();
-        List<Faq> getAlleFaqs();
         Alert ReadAlert(int alertID);
         void UpdateAlert(Alert alert);
         void AddAlert(Alert alert);
@@ -27,9 +26,6 @@ namespace DAL
         void DeleteUser(string accountId);
         void FollowEntiteit(string accountId, int entiteitID);
         void UnFollowEntiteit(string accountId, int EntiteitID);
-        void addFaq(Faq faq);
-        void UpdateFaq(Faq faq);
-        void DeleteFaq(int FaqID);
         void DeleteDashboardBlok(Account account, int id);
         void UpdateLocatie(int blokId, int locatie);
         void UpdateSize(int blokId, BlokGrootte blokGrootte);

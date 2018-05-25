@@ -17,6 +17,9 @@ namespace BL
         Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo);
         IEnumerable<Deelplatform> GetAllDeelplatformen();
         void RemoveDeelplatform(int platformId);
-        StringBuilder ConvertToCsv(List<Account> accounts);
+        StringBuilder ConvertToCSV(List<Account> accounts);
+        void AddFaq(Domain.Platform.Faq faq, int platId);
+        void DeleteFaq(int id);
+        List<Faq> GetAlleFaqs(int PlatId);
     }
 }
