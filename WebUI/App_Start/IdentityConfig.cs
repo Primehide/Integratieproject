@@ -149,8 +149,8 @@ namespace WebUI
 
         public override Task<TUser> FindByEmailAsync(string email)
         {
-            return this.GetUserAggregateAsync(u => u.Email.ToUpper() == email.ToUpper()
-                && u.TenantId == this.TenantId);
+            return this.GetUserAggregateAsync(x => x.Email.ToUpper() == email.ToUpper()
+                && x.TenantId == this.TenantId);
         }
 
         public override Task<TUser> FindByNameAsync(string userName)

@@ -31,7 +31,7 @@ namespace DAL
 
         public void DeleteDeelplatform(int id)
         {
-            ctx.DeelPlatformen.Remove(ReadDeelplatform(id)); ;
+            ctx.DeelPlatformen.Remove(ReadDeelplatform(id));
         }
 
         public Deelplatform ReadDeelplatform(int id)

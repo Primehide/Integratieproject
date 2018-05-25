@@ -12,6 +12,7 @@ using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
@@ -632,7 +633,7 @@ namespace WebUI.Controllers
             List<Entiteit> entiteits = new List<Entiteit>();
 
             EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.getAlleEntiteiten();
+            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             if (NaamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)
@@ -664,6 +665,7 @@ namespace WebUI.Controllers
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();
+            
             IEntiteitManager entiteitManager = new EntiteitManager();
             foreach (Account acc in accounts)
             {

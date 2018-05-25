@@ -68,14 +68,23 @@ namespace WebUI.Controllers
             p.Organisations = new List<Organisatie>();
             int organisationId = NaamType.Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
             p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
+            p.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             entiteitManager.AddPerson(p,uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile)
+        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile, IEnumerable<string> SelectedPeople)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
-            o.Leden = new List<Persoon>();
+            if (SelectedPeople != null)
+            {
+                o.Leden = new List<Persoon>();
+                foreach (string pId in SelectedPeople)
+                {
+                    o.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
+                }
+            }
+            o.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             entiteitManager.AddOrganisatie(o, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
@@ -128,6 +137,7 @@ namespace WebUI.Controllers
                 sleutelwoord.woord = woord;
                 sleutelWoorden.Add(sleutelwoord);
             }
+            t.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             entiteitManager.AddThema(t, sleutelWoorden, uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }

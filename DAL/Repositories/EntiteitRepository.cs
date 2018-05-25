@@ -102,12 +102,20 @@ namespace DAL
 
         public void CreateOrganisatieWithoutPhoto(Organisatie o)
         {
+            foreach (Persoon p in o.Leden ?? new List<Persoon>())
+            {
+                ctx.Entry(p).State = EntityState.Modified;
+            }
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();
         }
 
         public void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase ImageFile)
         {
+            foreach (Persoon p in o.Leden ?? new List<Persoon>())
+            {
+                ctx.Entry(p).State = EntityState.Modified;
+            }
             o.Image = ConvertToBytes(ImageFile);
             ctx.Organisaties.Add(o);
             ctx.SaveChanges();

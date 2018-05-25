@@ -47,11 +47,6 @@ namespace WebUI.Models
         public SelectedPeopleVM PeopleChecks { get; set; }
     }
 
-
-    public class SelectedPeopleVM
-    {
-        public IEnumerable<SelectListItem> People { get; set; }
-    }
     #endregion
 
     //Region regarding the overview page (Testing)
