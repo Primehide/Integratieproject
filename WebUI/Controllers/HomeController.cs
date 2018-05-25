@@ -1,7 +1,8 @@
-using BL;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
+using BL.Interfaces;
+using BL.Managers;
 
 namespace WebUI.Controllers
 {

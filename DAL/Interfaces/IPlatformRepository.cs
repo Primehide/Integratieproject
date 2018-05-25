@@ -1,12 +1,7 @@
-﻿using Domain.Entiteit;
+﻿using System.Collections.Generic;
 using Domain.Platform;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DAL
+namespace DAL.Interfaces
 {
     public interface IPlatformRepository
     {
@@ -19,7 +14,7 @@ namespace DAL
         //refactor sander
         void AddFaq(Faq faq);
         void UpdateFaq(Faq faq);
-        void DeleteFaq(int FaqId);
-        List<Faq> GetAlleFaqs(int PlatId);
+        void DeleteFaq(int faqId);
+        List<Faq> GetAlleFaqs(int platId);
     }
 }

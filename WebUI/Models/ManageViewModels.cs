@@ -9,12 +9,12 @@ namespace WebUI.Models
 
     public class AlertViewModel
     {
-        public Domain.Account.Alert alert { get; set; }
-        public string type { get; set; }
+        public Domain.Account.Alert Alert { get; set; }
+        public string Type { get; set; }
        
-        public bool android { get; set; }
-        public bool web { get; set; }
-        public bool mail { get; set; }
+        public bool Android { get; set; }
+        public bool Web { get; set; }
+        public bool Mail { get; set; }
     }
     public class IndexViewModel
     {

@@ -1,79 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using DAL;
-using Domain.Platform;
+using BL.Interfaces;
+using DAL.Repositories;
 using Domain.Account;
+using Domain.Platform;
 
-namespace BL
+namespace BL.Managers
 {
     public class PlatformManager : IPlatformManager
     {
-        private PlatformRepository platformRepository;
-        private UnitOfWorkManager uowManager;
+        private PlatformRepository _platformRepository;
+        private UnitOfWorkManager _uowManager;
 
         public PlatformManager()
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
         }
 
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
 
-            uowManager = uofMgr;
+            _uowManager = uofMgr;
         }
 
         public void AddDeelplatform(Deelplatform newPlatform)
         {
-            initNonExistingRepo();
-            platformRepository.CreateDeelplatform(newPlatform);
+            InitNonExistingRepo();
+            _platformRepository.CreateDeelplatform(newPlatform);
         }
 
         public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
         {
-            initNonExistingRepo();
-            return platformRepository.UpdateDeelplatform(changedDeelplatform);
+            InitNonExistingRepo();
+            return _platformRepository.UpdateDeelplatform(changedDeelplatform);
         }
 
         public Deelplatform GetDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            return platformRepository.ReadDeelplatform(platformId);
+            InitNonExistingRepo();
+            return _platformRepository.ReadDeelplatform(platformId);
         }
 
         public void RemoveDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            platformRepository.DeleteDeelplatform(platformId);
+            InitNonExistingRepo();
+            _platformRepository.DeleteDeelplatform(platformId);
         }
 
         public IEnumerable<Deelplatform> GetAllDeelplatformen()
         {
-            initNonExistingRepo();
-            return platformRepository.ReadAllDeelplatformen();
+            InitNonExistingRepo();
+            return _platformRepository.ReadAllDeelplatformen();
         }
 
         #region
-        public void initNonExistingRepo(bool withUnitOfWork = false)
+        public void InitNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
             // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
 
             if (withUnitOfWork)
             {
-                if (uowManager == null)
+                if (_uowManager == null)
                 {
-                    uowManager = new UnitOfWorkManager();
-                    platformRepository = new PlatformRepository(uowManager.UnitOfWork);
+                    _uowManager = new UnitOfWorkManager();
+                    _platformRepository = new PlatformRepository(_uowManager.UnitOfWork);
                 }
             }
             // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
             else
             {
-                platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
+                _platformRepository = (_platformRepository == null) ? new PlatformRepository() : _platformRepository;
             }
         }
 
@@ -84,7 +82,7 @@ namespace BL
       
         public StringBuilder ConvertToCSV(List<Account> accounts)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             var lstData = accounts;
             var sb = new StringBuilder();
             foreach (var data in lstData)
@@ -97,27 +95,27 @@ namespace BL
         //refactor sander
         public void AddFaq(Faq faq, int platId)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             faq.PlatformId = platId;
-            platformRepository.AddFaq(faq);
+            _platformRepository.AddFaq(faq);
         }
 
         public void UpdateFaq(Faq faq)
         {
-            initNonExistingRepo();
-            platformRepository.UpdateFaq(faq);
+            InitNonExistingRepo();
+            _platformRepository.UpdateFaq(faq);
 
         }
-        public void DeleteFaq(int faqID)
+        public void DeleteFaq(int faqId)
         {
-            initNonExistingRepo();
-            platformRepository.DeleteFaq(faqID);
+            InitNonExistingRepo();
+            _platformRepository.DeleteFaq(faqId);
 
         }
-        public List<Faq> GetAlleFaqs(int PlatId)
+        public List<Faq> GetAlleFaqs(int platId)
         {
-            initNonExistingRepo();
-            return platformRepository.GetAlleFaqs(PlatId);
+            InitNonExistingRepo();
+            return _platformRepository.GetAlleFaqs(platId);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿using Domain.Post;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace WebUI.Models
 {
@@ -10,8 +6,8 @@ namespace WebUI.Models
     {
         public string IdentityId { get; set; }
         public Domain.Enum.GrafiekType TypeGrafiek { get; set; }
-        public bool aantalPosts { get; set; }
-        public bool aantalRetweets { get; set; }
+        public bool AantalPosts { get; set; }
+        public bool AantalRetweets { get; set; }
         public int Entiteit1 { get; set; }
 
         public string Naam { get; set; }

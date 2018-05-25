@@ -1,30 +1,25 @@
-﻿using BL;
-using Domain.Account;
+﻿using Domain.Account;
 using Domain.Platform;
-using Microsoft.Owin.Security.OAuth;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
-using WebUI.Providers;
+using BL.Managers;
 
 namespace WebUI.Controllers
 {
     public class AndroidAPIController : ApiController
     {
-        PlatformManager pM;
-        AccountManager aM;
+        PlatformManager _pM;
+        AccountManager _aM;
 
         //Get all deelplatformen for android app
         [Route("api/deelplatformen")]
         [HttpGet]
         public Deelplatform[] GetDeelplatformen()
         {
-            pM = new PlatformManager();
-            return pM.GetAllDeelplatformen().ToArray();
+            _pM = new PlatformManager();
+            return _pM.GetAllDeelplatformen().ToArray();
 
         }
         //Get all DashboardBlokken (from specific user) for android app
@@ -37,9 +32,9 @@ namespace WebUI.Controllers
 
             string userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-            aM = new AccountManager();
+            _aM = new AccountManager();
 
-            var acc = aM.getAccount(userId);
+            var acc = _aM.GetAccount(userId);
             DashboardBlok[] dbs = acc.Dashboard.Configuratie.DashboardBlokken.ToArray();
             return dbs;
         }

@@ -19,6 +19,8 @@ using System.Configuration;
 using Microsoft.Owin.Security;
 using System.Web.Configuration;
 using BL;
+using BL.Interfaces;
+using BL.Managers;
 
 namespace WebUI
 {

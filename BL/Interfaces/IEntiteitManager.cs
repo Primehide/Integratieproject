@@ -1,11 +1,10 @@
-﻿using Domain.Entiteit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using Domain.Entiteit;
 using Domain.Post;
 
-
-namespace BL
+namespace BL.Interfaces
 {
     public interface IEntiteitManager
     {
@@ -22,7 +21,7 @@ namespace BL
         void RemoveOrganisatie(int id);
         byte[] GetOrganisationImageFromDataBase(int id);
         void CreateTestData();
-        List<Domain.Entiteit.Entiteit> GetAlleEntiteiten();
+        List<Entiteit> GetAlleEntiteiten();
         void UpdateEntiteit(Entiteit entiteit);
         Entiteit GetEntiteit(int id);
         List<Entiteit> GetEntiteiten(string naam);

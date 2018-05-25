@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using BL.Managers;
 using WebUI.Models;
 
 namespace WebUI.Providers
@@ -49,7 +50,7 @@ namespace WebUI.Providers
             ApplicationUser user = await userManager.FindAsync(context.UserName, context.Password);
 
             AccountManager aM = new AccountManager();
-            aM.addDeviceId(user.Id, deviceId);
+            aM.AddDeviceId(user.Id, deviceId);
 
             if (user == null)
             {

@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Entiteit
+﻿namespace Domain.Entiteit
 {
    public class Item
     {
-        public Item(int EntiteitsID)
+        public Item(int entiteitsId)
         {
-          
-
-            EntiteitId = EntiteitsID;
-      
+            EntiteitId = entiteitsId;
         }
         public Item()
         {

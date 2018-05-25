@@ -1,91 +1,89 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Claims;
 using System.Text;
-using DAL;
+using System.Web.Script.Serialization;
+using BL.Interfaces;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain.Account;
 using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using System.Web.Script.Serialization;
 
-
-namespace BL
+namespace BL.Managers
 {
     public class AccountManager : IAccountManager
     {
-        private readonly IAccountRepository repo;
+        private readonly IAccountRepository _repo;
 
-        private IAccountRepository accountRepository;
-        private UnitOfWorkManager uowManager;
+        private IAccountRepository _accountRepository;
+        private UnitOfWorkManager _uowManager;
 
         public AccountManager()
         {
-            repo = new AccountRepository();
+            _repo = new AccountRepository();
         }
 
         public AccountManager(UnitOfWorkManager uofMgr)
         {
-            uowManager = uofMgr;
+            _uowManager = uofMgr;
 
         }
 
-        public void addUser(Account account)
+        public void AddUser(Account account)
         {
-            initNonExistingRepo();
-            accountRepository.addUser(account);
+            InitNonExistingRepo();
+            _accountRepository.AddUser(account);
 
             // uowManager.Save();
 
         }
 
-        public Account getAccount(string ID)
+        public Account GetAccount(string id)
         {
-            initNonExistingRepo();
-            return repo.ReadAccount(ID);
+            InitNonExistingRepo();
+            return _repo.ReadAccount(id);
         }
 
-        public Account getAccount(int ID)
+        public Account GetAccount(int id)
         {
-            initNonExistingRepo();
-            return repo.ReadAccount(ID);
+            InitNonExistingRepo();
+            return _repo.ReadAccount(id);
         }
 
         public List<Account> GetAccounts()
         {
-            initNonExistingRepo();
-            return accountRepository.readAccounts(); ;
+            InitNonExistingRepo();
+            return _accountRepository.ReadAccounts();
         }
    
-        public void genereerAlerts()
+        public void GenereerAlerts()
         {
-            initNonExistingRepo(true);
-            EntiteitManager entiteitMgr = new EntiteitManager(uowManager);
-            List<Alert> Alerts = getAlleAlerts();
+            InitNonExistingRepo(true);
+            EntiteitManager entiteitMgr = new EntiteitManager(_uowManager);
+            List<Alert> alerts = GetAlleAlerts();
             List<Alert> mailAlerts = new List<Alert>();
             List<Alert> androidalerts = new List<Alert>();
-            Entiteit e;
             //1 keer alle trends resetten om vandaag te kunnen kijken of er een trend aanwezig is
             entiteitMgr.ResetTrends();
-            foreach (var alert in Alerts)
+            foreach (var alert in alerts)
             {
-                e = alert.Entiteit;
-                if (entiteitMgr.berekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
+                var e = alert.Entiteit;
+                if (entiteitMgr.BerekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
                 {
                     alert.Triggered = true;
                     UpdateAlert(alert);
-                    if(alert.PlatformType == Domain.Enum.PlatformType.EMAIL)
+                    if(alert.PlatformType == PlatformType.EMAIL)
                     {
                         mailAlerts.Add(alert);  
                     }
-                    if(alert.PlatformType == Domain.Enum.PlatformType.ANDROID)
+                    if(alert.PlatformType == PlatformType.ANDROID)
                     {
                         androidalerts.Add(alert);
                     }
@@ -95,25 +93,23 @@ namespace BL
             //Alerts (mail & android) verzenden naar de gebruiker.
             if(mailAlerts.Count > 0)
             {
-                sendMailAlerts(mailAlerts);
+                SendMailAlerts(mailAlerts);
             }
             if(androidalerts.Count > 0)
             {
-                sendAndroidAlerts(androidalerts);
+                SendAndroidAlerts(androidalerts);
             }
         }
 
         // Android alerts verzenden
-        public async void sendAndroidAlerts(List<Alert> androidalerts)
+        public async void SendAndroidAlerts(List<Alert> androidalerts)
         {
             AccountManager acm = new AccountManager();
             foreach (Alert alert in androidalerts)
             {
 
                 try
-                {
-                    AccountManager mgr = new AccountManager();
-                
+                {           
                     string deviceId = alert.Account.DeviceId;
                     WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
                     tRequest.Headers.Add("Authorization", "key=AAAAqR7gPVE:APA91bE_doWC0ah6uYH2KnM3djCI8E0rp4QJ4T6P5X1hL5KVCgofzr_c39psDcACiNYCrpy1TU5fIk8YpXQ_VqOHnfFRANR7uaHmKDtodm9iIa0fPczE4dED0G0zzYP7N4UUvm_qwtWB");
@@ -144,7 +140,7 @@ namespace BL
                         {
                             using (Stream dataStreamResponse = tResponse.GetResponseStream())
                             {
-                                using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                using (StreamReader tReader = new StreamReader(dataStreamResponse ?? throw new InvalidOperationException()))
                                 {
                                     String sResponseFromServer = await tReader.ReadToEndAsync();
                                     string str = sResponseFromServer;
@@ -165,19 +161,19 @@ namespace BL
         }
 
         // Email alerts verzenden 
-       public async void sendMailAlerts(List<Alert> mailalerts)
+       public async void SendMailAlerts(List<Alert> mailalerts)
         {
             List<Alert> tempAlerts = mailalerts;
 
             AccountManager acm = new AccountManager();
 
             var apiKey = ConfigurationManager.AppSettings["SendGridApiKey"];
-            string Mail = ConfigurationManager.AppSettings["mailAccount"];
+            string mail = ConfigurationManager.AppSettings["mailAccount"];
 
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress(Mail, "Politieke Barometer"),
+                From = new EmailAddress(mail, "Politieke Barometer"),
                 Subject = "U heeft nieuwe alerts op Politieke Barometer",
 
 
@@ -206,209 +202,200 @@ namespace BL
         }
 
 
-        public void addDeviceId(string userId,string device)
+        public void AddDeviceId(string userId,string device)
         {
-            repo.addDeviceId(userId, device);
+            _repo.AddDeviceId(userId, device);
         }
 
 
-        public Alert GetAlert(int alertID)
+        public Alert GetAlert(int alertId)
         {
-            return repo.ReadAlert(alertID);
+            return _repo.ReadAlert(alertId);
         }
+
         public void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail)
         {
-            initNonExistingRepo(true);
-        EntiteitManager emg = new EntiteitManager(uowManager);
+            InitNonExistingRepo(true);
+            EntiteitManager emg = new EntiteitManager(_uowManager);
 
-             alert.Entiteit = emg.getEntiteit(entiteitId);
-         
-            // var entiteit = emg.getEntiteit(1);
-             //entiteit.Alerts.Add(alert);
-
-
-
-            if (android == true)
+             alert.Entiteit = emg.GetEntiteit(entiteitId);
+             if (android)
             {
-                alert.PlatformType = Domain.Enum.PlatformType.ANDROID;
-                repo.AddAlert(alert);
+                alert.PlatformType = PlatformType.ANDROID;
+                _repo.AddAlert(alert);
 
             }
 
-            if (web == true)
+            if (web)
             {
-                alert.PlatformType = Domain.Enum.PlatformType.WEB;
-                repo.AddAlert(alert);
+                alert.PlatformType = PlatformType.WEB;
+                _repo.AddAlert(alert);
 
             }
 
-            if (mail == true)
+            if (mail)
             {
-                alert.PlatformType = Domain.Enum.PlatformType.EMAIL;
-                repo.AddAlert(alert);
+                alert.PlatformType = PlatformType.EMAIL;
+                _repo.AddAlert(alert);
 
             }
 
-
-
-           
-             uowManager.Save();
+             _uowManager.Save();
         }
         
 
         public void UpdateAlert(Alert alert)
         {
 
-            initNonExistingRepo();
-            accountRepository.UpdateAlert(alert);
+            InitNonExistingRepo();
+            _accountRepository.UpdateAlert(alert);
             
 
         }
-        public void DeleteAlert(int alertID)
+        public void DeleteAlert(int alertId)
         {
-            initNonExistingRepo();
-            accountRepository.DeleteAlert(alertID);
+            InitNonExistingRepo();
+            _accountRepository.DeleteAlert(alertId);
         }
-        public void addUser(Alert alert)
+        public void AddUser(Alert alert)
         {
-            initNonExistingRepo();
-            accountRepository.AddAlert(alert);
-            uowManager.Save();
+            InitNonExistingRepo();
+            _accountRepository.AddAlert(alert);
+            _uowManager.Save();
         }
 
-        public List<Alert> getAlleAlerts()
+        public List<Alert> GetAlleAlerts()
         {
-            initNonExistingRepo();
-            return accountRepository.getAlleAlerts();
+            InitNonExistingRepo();
+            return _accountRepository.GetAlleAlerts();
         }
        public List<Alert> GetUserAlerts(string userId)
         {
-            return getAlleAlerts().Where(x => x.Account.IdentityId == userId).ToList();
+            return GetAlleAlerts().Where(x => x.Account.IdentityId == userId).ToList();
         }
 
-        public void initNonExistingRepo(bool withUnitOfWork = false)
+        public void InitNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
             // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
 
             if (withUnitOfWork)
             {
-                if (uowManager == null)
+                if (_uowManager == null)
                 {
-                    uowManager = new UnitOfWorkManager();
-                    accountRepository = new AccountRepository(uowManager.UnitOfWork);
+                    _uowManager = new UnitOfWorkManager();
+                    _accountRepository = new AccountRepository(_uowManager.UnitOfWork);
                 }
             }
             // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
             else
             {
-                accountRepository = (accountRepository == null) ? new AccountRepository() : accountRepository;
+                _accountRepository = (_accountRepository == null) ? new AccountRepository() : _accountRepository;
             }
         }
 
 
         public void DeleteUser(string accountId)
         {
-            initNonExistingRepo();
-            accountRepository.DeleteUser(accountId);
+            InitNonExistingRepo();
+            _accountRepository.DeleteUser(accountId);
         }
 
-        public void FollowEntity(string identityID, int entiteitID)
+        public void FollowEntity(string identityId, int entiteitId)
         {
 
-            initNonExistingRepo();
-            accountRepository.FollowEntiteit(identityID, entiteitID);
-        }
-
-
-
-        public void UnfollowEntity(string identityID, int entiteitID)
-        {
-            initNonExistingRepo();
-            accountRepository.UnFollowEntiteit(identityID, entiteitID);
+            InitNonExistingRepo();
+            _accountRepository.FollowEntiteit(identityId, entiteitId);
         }
 
 
 
-        public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
+        public void UnfollowEntity(string identityId, int entiteitId)
         {
-            initNonExistingRepo(true);
+            InitNonExistingRepo();
+            _accountRepository.UnFollowEntiteit(identityId, entiteitId);
+        }
+
+
+
+        public void GrafiekAanGebruikerToevoegen(string identityId, GrafiekType typeGrafiek, List<int> entiteitInts, List<string> cijferOpties, string vergelijkOptie, GrafiekSoort grafiekSoort)
+        {
+            InitNonExistingRepo(true);
             //IPostManager postManager = new PostManager(uowManager);
-            IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            Domain.Account.Account user = accountRepository.ReadAccount(IdentityId);
-            Domain.Post.Grafiek grafiek = new Domain.Post.Grafiek();
-            grafiek.Entiteiten = new List<Entiteit>();
+            IEntiteitManager entiteitManager = new EntiteitManager(_uowManager);
+            Account user = _accountRepository.ReadAccount(identityId);
+            var grafiek = new Grafiek {Entiteiten = new List<Entiteit>()};
             List<Entiteit> entiteiten = new List<Entiteit>();
 
             foreach (var i in entiteitInts)
             {
-                var e = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == i);
+                var e = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == i);
                 entiteiten.Add(e);
                 grafiek.Entiteiten.Add(e);
             }
-            Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(TypeGrafiek,entiteiten,CijferOpties, VergelijkOptie);
-            List<Domain.Post.GrafiekWaarde> grafiekWaardes = new List<Domain.Post.GrafiekWaarde>();
+            Dictionary<string, double> waardes = entiteitManager.BerekenGrafiekWaarde(typeGrafiek,entiteiten,cijferOpties, vergelijkOptie);
+            List<GrafiekWaarde> grafiekWaardes = new List<GrafiekWaarde>();
             
             foreach (var item in waardes)
             {
-                Domain.Post.GrafiekWaarde w = new Domain.Post.GrafiekWaarde()
+                GrafiekWaarde w = new GrafiekWaarde()
                 {
                     Naam = item.Key,
                     Waarde = item.Value
                 };
                 grafiekWaardes.Add(w);
             }
-            if (CijferOpties != null)
+            if (cijferOpties != null)
             {
-                grafiek.CijferOpties = new List<Domain.Post.CijferOpties>();
-                foreach (var opt in CijferOpties)
+                grafiek.CijferOpties = new List<CijferOpties>();
+                foreach (var opt in cijferOpties)
                 {
                     if (opt.ToLower() == "aantalposts")
                     {
-                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        grafiek.CijferOpties.Add(new CijferOpties
                         {
-                            optie = opt
+                            Optie = opt
                         });
                     }
                     if (opt.ToLower() == "aantalretweets")
                     {
-                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        grafiek.CijferOpties.Add(new CijferOpties
                         {
-                            optie = opt
+                            Optie = opt
                         });
                     }
                     if (opt.ToLower() == "aanwezigetrends")
                     {
-                        grafiek.CijferOpties.Add(new Domain.Post.CijferOpties
+                        grafiek.CijferOpties.Add(new CijferOpties
                         {
-                            optie = opt
+                            Optie = opt
                         });
                     }
                 }
             }
-            grafiek.Type = TypeGrafiek;
+            grafiek.Type = typeGrafiek;
             grafiek.Waardes = grafiekWaardes;
             grafiek.GrafiekSoort = grafiekSoort;
-            if(VergelijkOptie.ToLower() == "populariteit")
+            if(vergelijkOptie.ToLower() == "populariteit")
             {
-                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POPULARITEIT;
-            } else if(VergelijkOptie.ToLower() == "postfrequentie")
+                grafiek.SoortGegevens = SoortGegevens.POPULARITEIT;
+            } else if(vergelijkOptie.ToLower() == "postfrequentie")
             {
-                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POSTFREQUENTIE;
+                grafiek.SoortGegevens = SoortGegevens.POSTFREQUENTIE;
             }
 
 
             //cijfers
-            switch (TypeGrafiek)
+            switch (typeGrafiek)
             {
-                case Domain.Enum.GrafiekType.CIJFERS:
+                case GrafiekType.CIJFERS:
                     grafiek.Naam = "Cijfer gegevens - " + entiteiten.First().Naam;
                     break;
-                case Domain.Enum.GrafiekType.VERGELIJKING:
-                    if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                case GrafiekType.VERGELIJKING:
+                    if(grafiek.SoortGegevens == SoortGegevens.POSTFREQUENTIE)
                     {
                         grafiek.Naam = "Vergelijking post frequentie";
-                    } else if(grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                    } else if(grafiek.SoortGegevens == SoortGegevens.POPULARITEIT)
                     {
                         grafiek.Naam = "Vergelijking populariteit";
                     }
@@ -418,7 +405,7 @@ namespace BL
             {
                 e.Posts = null;
             }
-            Domain.Account.DashboardBlok dashboardBlok = new Domain.Account.DashboardBlok()
+            DashboardBlok dashboardBlok = new DashboardBlok()
             {
                 Grafiek = grafiek
             };
@@ -426,14 +413,14 @@ namespace BL
             if (user.Dashboard.Configuratie.DashboardBlokken == null)
                 user.Dashboard.Configuratie.DashboardBlokken = new List<DashboardBlok>();
             user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
-            accountRepository.updateUser(user);
-            uowManager.Save();
+            _accountRepository.UpdateUser(user);
+            _uowManager.Save();
         }
 
         public void UpdateUser(Account account)
         {
-            initNonExistingRepo();
-            Account accountToUpdate = accountRepository.ReadAccount(account.IdentityId);
+            InitNonExistingRepo();
+            Account accountToUpdate = _accountRepository.ReadAccount(account.IdentityId);
             accountToUpdate.Achternaam = account.Achternaam;
             accountToUpdate.Voornaam = account.Voornaam;
             accountToUpdate.Email = account.Email;
@@ -441,35 +428,35 @@ namespace BL
             {
                 accountToUpdate.ReviewEntiteiten = account.ReviewEntiteiten;
             }
-            accountRepository.updateUser(accountToUpdate);
+            _accountRepository.UpdateUser(accountToUpdate);
         }
 
-        public void DeleteGrafiekWaardes(int grafiekID)
+        public void DeleteGrafiekWaardes(int grafiekId)
         {
-            accountRepository.DeleteGrafiekWaardes(grafiekID);
+            _accountRepository.DeleteGrafiekWaardes(grafiekId);
         }
 
         public void UpdateAlert(int id)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             Alert alertToUpdate = GetAlert(id);
             alertToUpdate.Triggered = false;
-            repo.UpdateAlert(alertToUpdate);
+            _repo.UpdateAlert(alertToUpdate);
         }
 
-        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort)
+        public void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId, string identityId, string naam, GrafiekSoort grafiekSoort)
         {
-            initNonExistingRepo(true);
-            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            IPostManager postManager = new PostManager(uowManager);
+            InitNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(_uowManager);
+            IPostManager postManager = new PostManager(_uowManager);
             List<Entiteit> entiteiten = new List<Entiteit>();
 
-            Account user = accountRepository.ReadAccount(IdentityId);
+            Account user = _accountRepository.ReadAccount(identityId);
 
             //geselecteerde entiteiten opzoeken
             foreach (var i in entiteitIds)
             {
-                entiteiten.Add(entiteitManager.getEntiteit(i));
+                entiteiten.Add(entiteitManager.GetEntiteit(i));
             }
 
             //nieuwe grafiek aanmaken
@@ -483,17 +470,17 @@ namespace BL
                 GrafiekSoort = grafiekSoort
             };
 
-            if (opties.First().optie.ToLower() == "populariteit")
+            if (opties.First().Optie.ToLower() == "populariteit")
             {
-                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POPULARITEIT;
+                grafiek.SoortGegevens = SoortGegevens.POPULARITEIT;
             }
-            else if (opties.First().optie.ToLower() == "postfrequentie")
+            else if (opties.First().Optie.ToLower() == "postfrequentie")
             {
-                grafiek.soortGegevens = Domain.Enum.SoortGegevens.POSTFREQUENTIE;
+                grafiek.SoortGegevens = SoortGegevens.POSTFREQUENTIE;
             }
-            else if (opties.First().optie.ToLower() == "sentiment")
+            else if (opties.First().Optie.ToLower() == "sentiment")
             {
-                grafiek.soortGegevens = Domain.Enum.SoortGegevens.SENTIMENT;
+                grafiek.SoortGegevens = SoortGegevens.SENTIMENT;
             }
 
             //waardes voor de grafiek berekenen
@@ -502,7 +489,7 @@ namespace BL
             foreach (var e in entiteiten)
             {
                 e.Posts.Clear();
-            };
+            }
 
             //kijkt na of de gebruiker al een lijst van blokken heeft om nullpointer te vermijden
             if (user.Dashboard.Configuratie.DashboardBlokken == null)
@@ -514,66 +501,66 @@ namespace BL
                 Grafiek = grafiek,
             };
             user.Dashboard.Configuratie.DashboardBlokken.Add(dashboardBlok);
-            accountRepository.updateUser(user);
-            uowManager.Save();
+            _accountRepository.UpdateUser(user);
+            _uowManager.Save();
         }
 
         public void UpdateGrafiek(int grafiekId)
         {
-            initNonExistingRepo(true);
-            PostManager postManager = new PostManager(uowManager);
+            InitNonExistingRepo(true);
+            PostManager postManager = new PostManager(_uowManager);
             Grafiek grafiekToUpdate = postManager.GetGrafiek(grafiekId);
             grafiekToUpdate.Waardes = postManager.BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, grafiekToUpdate.Entiteiten);
             //postManager.UpdateGrafiek(grafiekToUpdate);
-            uowManager.Save();
+            _uowManager.Save();
         }
 
         public void DeleteDashboardBlok(Account account, int positie)
         {
-            initNonExistingRepo(false);
-            repo.DeleteDashboardBlok(account, positie);
+            InitNonExistingRepo();
+            _repo.DeleteDashboardBlok(account, positie);
         }
 
         public void UpdateLocatie(int blokId, int locatie)
         {
-            initNonExistingRepo(false);
-            repo.UpdateLocatie(blokId, locatie);
+            InitNonExistingRepo();
+            _repo.UpdateLocatie(blokId, locatie);
         }
 
         public void UpdateSize(int blokId, BlokGrootte blokGrootte)
         {
-            initNonExistingRepo(false);
-            repo.UpdateSize(blokId, blokGrootte);
+            InitNonExistingRepo();
+            _repo.UpdateSize(blokId, blokGrootte);
         }
 
         public void UpdateTitel(int blokId, String titel)
         {
-            initNonExistingRepo(false);
-            repo.UpdateTitel(blokId, titel);
+            InitNonExistingRepo();
+            _repo.UpdateTitel(blokId, titel);
         }
 
         public void UpdateSizeDimensions(int blokId, int x, int y)
         {
-            initNonExistingRepo(false);
-            repo.UpdateSizeDimensions(blokId, x, y);
+            InitNonExistingRepo();
+            _repo.UpdateSizeDimensions(blokId, x, y);
         }
 
         public Dashboard GetPublicDashboard(int id)
         {
-            initNonExistingRepo(false);
-            return repo.GetPublicDashboard(id);
+            InitNonExistingRepo();
+            return _repo.GetPublicDashboard(id);
         }
 
         public void SetPublic(int dashboardId, bool shared)
         {
-            initNonExistingRepo(false);
-            repo.SetPublic(dashboardId, shared);
+            InitNonExistingRepo();
+            _repo.SetPublic(dashboardId, shared);
         }
 
         public void UpdateConfiguratieTitle(int configuratieId, String title)
         {
-            initNonExistingRepo(false);
-            repo.UpdateConfiguratieTitle(configuratieId, title);
+            InitNonExistingRepo();
+            _repo.UpdateConfiguratieTitle(configuratieId, title);
         }
 
         public List<CijferOpties> CreateCijferOpties(List<string> stringOpties)
@@ -583,7 +570,7 @@ namespace BL
             {
                 CijferOpties o = new CijferOpties()
                 {
-                    optie = optie
+                    Optie = optie
                 };
                 opties.Add(o);
             }
@@ -593,8 +580,8 @@ namespace BL
 
         public void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
         {
-            initNonExistingRepo();
-            Domain.Account.Account domainAccount = new Domain.Account.Account()
+            InitNonExistingRepo();
+            Account domainAccount = new Account()
             {
                 IdentityId = identityId,
                 Email = email,
@@ -603,8 +590,8 @@ namespace BL
                 GeboorteDatum = geboorteDatum,
                 Dashboard = new Dashboard()
             };
-            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
-            accountRepository.addUser(domainAccount);
+            domainAccount.Dashboard.Configuratie = new DashboardConfiguratie();
+            _accountRepository.AddUser(domainAccount);
         }
     }
 }

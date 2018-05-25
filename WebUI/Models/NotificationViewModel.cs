@@ -8,7 +8,7 @@ namespace WebUI.Models
     public class NotificationViewModel
     {
 
-        public virtual IEnumerable<Domain.Account.Alert> valerts { get; set; }
+        public virtual IEnumerable<Domain.Account.Alert> Valerts { get; set; }
 
         
     }

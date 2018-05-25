@@ -1,137 +1,129 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using DAL;
-using Newtonsoft.Json;
-using Domain.TextGain;
-using Domain.Post;
+using BL.Interfaces;
+using DAL.Interfaces;
+using DAL.Repositories;
 using Domain.Entiteit;
-using System.Globalization;
-using System.IO;
+using Domain.Post;
+using Domain.TextGain;
+using Newtonsoft.Json;
 
-namespace BL
+namespace BL.Managers
 {
     public class PostManager : IPostManager
     {
-        private IPostRepository postRepository;
-        private UnitOfWorkManager uowManager;
+        private IPostRepository _postRepository;
+        private UnitOfWorkManager _uowManager;
 
         public PostManager()
         {
-            postRepository = new PostRepository();
+            _postRepository = new PostRepository();
         }
 
         public PostManager(UnitOfWorkManager uofMgr)
         {
-            postRepository = new PostRepository();
-            uowManager = uofMgr;
+            _postRepository = new PostRepository();
+            _uowManager = uofMgr;
         }
 
-        public void initNonExistingRepo(bool withUnitOfWork = false)
+        public void InitNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
             // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
 
             if (withUnitOfWork)
             {
-                if (uowManager == null)
+                if (_uowManager == null)
                 {
-                    uowManager = new UnitOfWorkManager();
-                    postRepository = new PostRepository(uowManager.UnitOfWork);
+                    _uowManager = new UnitOfWorkManager();
+                    _postRepository = new PostRepository(_uowManager.UnitOfWork);
                 }
             }
             // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
             else
             {
-                postRepository = (postRepository == null) ? new PostRepository() : postRepository;
+                _postRepository = (_postRepository == null) ? new PostRepository() : _postRepository;
             }
         }
 
         public void AddPost(Post post)
         {
-            initNonExistingRepo();
-            postRepository.AddPost(post);
+            InitNonExistingRepo();
+            _postRepository.AddPost(post);
         }
-        public List<String> getTopPersonWords(Persoon person)
+        public List<String> GetTopPersonWords(Persoon person)
         {
             EntiteitRepository erepo = new EntiteitRepository();
-        Entiteit entiteit =    erepo.ReadEntiteit(person.EntiteitId);
-            initNonExistingRepo();
+            Entiteit entiteit = erepo.ReadEntiteit(person.EntiteitId);
+            InitNonExistingRepo();
             List<Post> posts = person.Posts;
             List<Word> persoonWords = new List<Word>();
            foreach(Post post in posts)
             {
-               persoonWords.AddRange( postRepository.GetAllWordsFromPost(post));
+               persoonWords.AddRange( _postRepository.GetAllWordsFromPost(post));
             }
 
-            Dictionary<string, int> WordCountDic = new Dictionary<string, int>();
+            Dictionary<string, int> wordCountDic = new Dictionary<string, int>();
             foreach (Word item in persoonWords)
             {
-                if (!WordCountDic.ContainsKey(item.word))
+                if (!wordCountDic.ContainsKey(item.word))
                 {
-                    WordCountDic.Add(item.word, 1);
+                    wordCountDic.Add(item.word, 1);
                 }
                 else
                 {
-                    int count = 0;
-                    WordCountDic.TryGetValue(item.word, out count);
-                    WordCountDic.Remove(item.word);
-                    WordCountDic.Add(item.word, count + 1);
+                    wordCountDic.TryGetValue(item.word, out var count);
+                    wordCountDic.Remove(item.word);
+                    wordCountDic.Add(item.word, count + 1);
                 }
             }
 
 
-            var sortedDict = WordCountDic.OrderByDescending(entry => entry.Value)
+            var sortedDict = wordCountDic.OrderByDescending(entry => entry.Value)
                    .Take(10)
                    .ToDictionary(pair => pair.Key, pair => pair.Value);
             var values = sortedDict.Keys.ToList();
 
-
-
             return values;
-         
-
-
+        
         }
 
-
-
-
-        public List<Post> getAllPosts()
+        public List<Post> GetAllPosts()
         {
-            initNonExistingRepo();
-            return postRepository.getAllPosts();
+            InitNonExistingRepo();
+            return _postRepository.GetAllPosts();
         }
-        public List<Mention> getAllMentions()
+        public List<Mention> GetAllMentions()
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             List<Mention> allMentions = new List<Mention>();
-            postRepository.getAllPosts().ForEach(x => allMentions.AddRange(x.Mentions));
+            _postRepository.GetAllPosts().ForEach(x => allMentions.AddRange(x.Mentions));
             return allMentions;
         }
 
 
-        public int getAantalMentions(Persoon persoon)
+        public int GetAantalMentions(Persoon persoon)
         {
             string naam = persoon.Naam;
            naam=  naam.Replace(" ", "");
 
         
-            return getAllMentions().Where(x => x.mention.ToLower() == naam.ToLower()).Count();
+            return GetAllMentions().Count(x => x.mention.ToLower() == naam.ToLower());
 
         }
         public async Task SyncDataAsync(int platformid)
         {
-            initNonExistingRepo(true);
-            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            InitNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(_uowManager);
             //Sync willen we datum van vandaag en gisteren.
             DateTime vandaag = DateTime.Today.Date;
             DateTime gisteren = DateTime.Today.AddDays(-30).Date;
-            List<Domain.Entiteit.Persoon> AllePersonen = entiteitManager.GetAllPeople(platformid);
+            List<Persoon> allePersonen = entiteitManager.GetAllPeople(platformid);
 
             //Enkele test entiteiten, puur voor debug, later vragen we deze op uit onze repository//
             /*
@@ -169,11 +161,11 @@ namespace BL
 
             }*/
             //Voor elke entiteit een request maken, momenteel gebruikt het test data, later halen we al onze entiteiten op.
-            foreach (var Persoon in AllePersonen)
+            foreach (var persoon in allePersonen)
             {
                 PostRequest postRequest = new PostRequest()
                 {
-                    name = Persoon.Naam,
+                    name = persoon.Naam,
                     //since = new DateTime(2018, 04, 01),
                     //until = new DateTime(2018, 04, 30)
                     since = gisteren,
@@ -184,7 +176,7 @@ namespace BL
 
                 using (HttpClient http = new HttpClient())
                 {
-                    string uri = "https://kdg.textgain.com/query";
+                    const string uri = "https://kdg.textgain.com/query";
                     http.DefaultRequestHeaders.Add("X-API-Key", "aEN3K6VJPEoh3sMp9ZVA73kkr");
                     var myContent = JsonConvert.SerializeObject(postRequest);
                     var buffer = System.Text.Encoding.UTF8.GetBytes(myContent);
@@ -196,11 +188,11 @@ namespace BL
                         var posts = JsonConvert.DeserializeObject<List<TextGainResponse>>(result);
                         if (posts.Count != 0)
                         {
-                              ConvertAndSaveToDb(posts, Persoon.EntiteitId);
+                              ConvertAndSaveToDb(posts, persoon.EntiteitId);
                           //  System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\controllers\DataTextGain" + Persoon.EntiteitId + ".json", result);
                         }
                     }
-                    catch (Newtonsoft.Json.JsonReaderException)
+                    catch (JsonReaderException)
                     {
 
                     }
@@ -211,10 +203,10 @@ namespace BL
        
         private void ConvertAndSaveToDb(List<TextGainResponse> response, int entiteitId)
         {
-            initNonExistingRepo(true);
-            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            InitNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(_uowManager);
             Entiteit entiteit = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
-            List<Post> PostsToAdd = new List<Post>();
+            List<Post> postsToAdd = new List<Post>();
             foreach (var post in response)
             {
                 Post newPost = new Post()
@@ -225,11 +217,11 @@ namespace BL
                     Date = post.date,
                     Persons = new List<Person>(),
                     Sentiment = new Sentiment(),
-                    retweet = post.retweet,
-                    source = post.source,
+                    Retweet = post.retweet,
+                    Source = post.source,
                     Urls = new List<URL>(),
                     Mentions = new List<Mention>(),
-                    postNummer = post.id
+                    PostNummer = post.id
                 };
 
                 //alle hashtags in ons object steken
@@ -265,11 +257,11 @@ namespace BL
                 //alle urls in ons object steken
                 foreach (var url in post.urls)
                 {
-                    URL newURL = new URL()
+                    URL newUrl = new URL()
                     {
                         Link = url
                     };
-                    newPost.Urls.Add(newURL);
+                    newPost.Urls.Add(newUrl);
                 }
 
                 foreach (var mention in post.mentions)
@@ -286,27 +278,27 @@ namespace BL
                 {
                     double polariteit = double.Parse(post.sentiment.ElementAt(0), CultureInfo.InvariantCulture);
                     double subjectiviteit = double.Parse(post.sentiment.ElementAt(1), CultureInfo.InvariantCulture);
-                    newPost.Sentiment.polariteit = polariteit;
-                    newPost.Sentiment.subjectiviteit = subjectiviteit;
+                    newPost.Sentiment.Polariteit = polariteit;
+                    newPost.Sentiment.Subjectiviteit = subjectiviteit;
                 }
 
-                newPost.retweet = post.retweet;
-                newPost.source = post.source;
+                newPost.Retweet = post.retweet;
+                newPost.Source = post.source;
 
                 entiteit.Posts.Add(newPost);
-                PostsToAdd.Add(newPost);
+                postsToAdd.Add(newPost);
             }
 
             //linkt de juist entiteit en voegt nieuwe posts toe.
             //postRepository.AddPosts(PostsToAdd);
-            entiteitManager.updateEntiteit(entiteit);
-            uowManager.Save();
+            entiteitManager.UpdateEntiteit(entiteit);
+            _uowManager.Save();
         }
 
         public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)
         {
-            initNonExistingRepo(true);
-            IEntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            InitNonExistingRepo(true);
+            IEntiteitManager entiteitManager = new EntiteitManager(_uowManager);
             Dictionary<string, double> grafiekMap = new Dictionary<string, double>();
 
             switch (grafiekType)
@@ -315,7 +307,7 @@ namespace BL
                     Entiteit e1 = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
                     List<Post> postsEerste = e1.Posts;
                     int aantalPosts = postsEerste.Count;
-                    int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                    int retweets = postsEerste.Count(x => x.Retweet);
                     //grafiek.Entiteiten.First().Trends;
 
                     grafiekMap.Add("aantalPosts", aantalPosts);
@@ -325,24 +317,24 @@ namespace BL
             return grafiekMap;
         }
 
-        public List<Post> getRecentePosts()
+        public List<Post> GetRecentePosts()
         {
-            return getAllPosts().Skip(Math.Max(0, getAllPosts().Count() - 3)).ToList();
+            return GetAllPosts().Skip(Math.Max(0, GetAllPosts().Count() - 3)).ToList();
         }
 
 
-        public List<Grafiek> getAllGrafieken()
+        public List<Grafiek> GetAllGrafieken()
         {
-            return postRepository.GetAllGrafieken().ToList();
+            return _postRepository.GetAllGrafieken().ToList();
         }
 
-        public void maakVasteGrafieken()
+        public void MaakVasteGrafieken()
         {
-            initNonExistingRepo(true);
+            InitNonExistingRepo(true);
             DateTime since = new DateTime(2018, 04, 01);
             DateTime until = new DateTime(2018, 04, 30);
-            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            AccountManager accountManager = new AccountManager(uowManager);
+            EntiteitManager entiteitManager = new EntiteitManager(_uowManager);
+            AccountManager accountManager = new AccountManager(_uowManager);
             Dictionary<int, double> dictionarySentiment = new Dictionary<int, double>();
             Dictionary<int, int> dictionaryPopulariteit = new Dictionary<int, int>();
             Dictionary<string, int> dictionaryWords = new Dictionary<string, int>();
@@ -352,7 +344,7 @@ namespace BL
                 double sentiment = 0;
                 foreach (var post in p.Posts)
                 {
-                    sentiment += (post.Sentiment.polariteit * post.Sentiment.subjectiviteit) / p.Posts.Count();
+                    sentiment += (post.Sentiment.Polariteit * post.Sentiment.Subjectiviteit) / p.Posts.Count();
                 }
                 dictionarySentiment.Add(p.EntiteitId, sentiment);
                 dictionaryPopulariteit.Add(p.EntiteitId, p.Posts.Count);
@@ -381,18 +373,18 @@ namespace BL
 
             var orderedSentiment = dictionarySentiment.OrderBy(x => x.Value);
             var orderedPopulariteit = dictionaryPopulariteit.OrderByDescending(x => x.Value);
-            var frequency = postRepository.GetAllWords().GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count()).OrderByDescending(x => x.Value);
+            var frequency = _postRepository.GetAllWords().GroupBy(x => x).ToDictionary(x => x.Key, x => x.Count()).OrderByDescending(x => x.Value);
 
             for (int i = 0; i < 4; i++)
             {
                 GrafiekWaarde waarde = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
                     Waarde = orderedSentiment.ElementAt(i).Value
                 };
                 GrafiekWaarde waardePop = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
                     Waarde = orderedPopulariteit.ElementAt(i).Value
                 };
 
@@ -406,50 +398,50 @@ namespace BL
                 grafiekPopulair.Waardes.Add(waardePop);
                 grafiekPopulairWords.Waardes.Add(waardeWords);
             }
-            postRepository.AddGrafiek(grafiekSentiment);
-            postRepository.AddGrafiek(grafiekPopulair);
-            postRepository.AddGrafiek(grafiekPopulairWords);
-            uowManager.Save();
+            _postRepository.AddGrafiek(grafiekSentiment);
+            _postRepository.AddGrafiek(grafiekPopulair);
+            _postRepository.AddGrafiek(grafiekPopulairWords);
+            _uowManager.Save();
         }
 
-        public void addGrafiek(Grafiek grafiek)
+        public void AddGrafiek(Grafiek grafiek)
         {
-            initNonExistingRepo();
-            postRepository.AddGrafiek(grafiek);
+            InitNonExistingRepo();
+            _postRepository.AddGrafiek(grafiek);
         }
 
         public List<Grafiek> GetVasteGrafieken()
         {
-            initNonExistingRepo();
-            return postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
+            InitNonExistingRepo();
+            return _postRepository.AlleGrafieken().Where(x => x.Type == Domain.Enum.GrafiekType.VASTE).ToList();
 
         }
 
-        public void updateGrafiek(int id)
+        public void UpdateGrafiek(int id)
         {
-            initNonExistingRepo();
-            Grafiek grafiekToUpdate = postRepository.GetAllGrafieken().Single(x => x.GrafiekId == id);
+            InitNonExistingRepo();
+            Grafiek grafiekToUpdate = _postRepository.GetAllGrafieken().Single(x => x.GrafiekId == id);
             BerekenGrafiekWaarde(grafiekToUpdate.Type, null);
         }
 
         public Grafiek GetGrafiek(int id)
         {
-            initNonExistingRepo();
-            return postRepository.ReadGrafiek(id);
+            InitNonExistingRepo();
+            return _postRepository.ReadGrafiek(id);
         }
 
-        public void UpdateGrafiek(List<int> EntiteitIds, Grafiek grafiek)
+        public void UpdateGrafiek(List<int> entiteitIds, Grafiek grafiek)
         {
-            initNonExistingRepo(true);
-            EntiteitManager entiteitManager = new EntiteitManager(uowManager);
+            InitNonExistingRepo(true);
+            EntiteitManager entiteitManager = new EntiteitManager(_uowManager);
 
             Grafiek grafiekToUpdate = GetGrafiek(grafiek.GrafiekId);
             List<Entiteit> entiteiten = new List<Entiteit>();
 
             grafiekToUpdate.Entiteiten.Clear();
-            foreach (var i in EntiteitIds)
+            foreach (var i in entiteitIds)
             {
-                var e = postRepository.getAlleEntiteiten().Single(x => x.EntiteitId == i);
+                var e = _postRepository.GetAlleEntiteiten().Single(x => x.EntiteitId == i);
                 entiteiten.Add(e);
                 grafiekToUpdate.Entiteiten.Add(e);
             }
@@ -461,21 +453,21 @@ namespace BL
             //grafiekToUpdate.Entiteiten = entiteiten;
             //entiteiten.Clear();
             //grafiekToUpdate.Entiteiten.Add(entiteitManager.getEntiteit(4));
-            postRepository.UpdateGrafiek(grafiekToUpdate);
-            uowManager.Save();
+            _postRepository.UpdateGrafiek(grafiekToUpdate);
+            _uowManager.Save();
         }
 
         public List<GrafiekWaarde> BerekenGrafiekWaardes(List<CijferOpties> opties, List<Entiteit> entiteiten)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             //EntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            List<GrafiekWaarde> GrafiekWaardes = new List<GrafiekWaarde>();
+            List<GrafiekWaarde> grafiekWaardes = new List<GrafiekWaarde>();
 
             //Alle opties overlopen
             foreach (var o in opties)
             {
                 //Als optie aantal posts is, voor elke entiteit het totaal aantal posts ophalen
-                if(o.optie.ToLower() == "aantalposts" || o.optie.ToLower() == "populariteit")
+                if(o.Optie.ToLower() == "aantalposts" || o.Optie.ToLower() == "populariteit")
                 {
                     foreach (var e in entiteiten)
                     {
@@ -484,22 +476,22 @@ namespace BL
                             Naam = "# Posts " + e.Naam,
                             Waarde = e.Posts.Count
                         };
-                        GrafiekWaardes.Add(waarde);
+                        grafiekWaardes.Add(waarde);
                     }
                 }
-                else if(o.optie.ToLower() == "aantalretweets")
+                else if(o.Optie.ToLower() == "aantalretweets")
                 {
                     foreach (var e in entiteiten)
                     {
                         GrafiekWaarde waarde = new GrafiekWaarde()
                         {
                             Naam = "# Retweets " + e.Naam,
-                            Waarde = e.Posts.Where(x => x.retweet == true).Count()
+                            Waarde = e.Posts.Where(x => x.Retweet == true).Count()
                         };
-                        GrafiekWaardes.Add(waarde);
+                        grafiekWaardes.Add(waarde);
                     }
                 }
-                else if (o.optie.ToLower() == "aanwezigetrends")
+                else if (o.Optie.ToLower() == "aanwezigetrends")
                 {
                     foreach (var e in entiteiten)
                     {
@@ -514,11 +506,11 @@ namespace BL
                                 Naam = "Trend " + t.Voorwaarde,
                                 Waarde = 1 //1 van true, aanwezig
                             };
-                            GrafiekWaardes.Add(waarde);
+                            grafiekWaardes.Add(waarde);
                         }
                     }
                 }
-                else if(o.optie.ToLower() == "postfrequentie")
+                else if(o.Optie.ToLower() == "postfrequentie")
                 {
                     foreach (var e in entiteiten)
                     {
@@ -529,17 +521,17 @@ namespace BL
                                 Naam = "Posts " + e.Naam,
                                 Waarde = e.Posts.Where(x => x.Date.Date == DateTime.Today.AddDays(-i).Date).Count()
                             };
-                            GrafiekWaardes.Add(waarde);
+                            grafiekWaardes.Add(waarde);
                         }
                         GrafiekWaarde end = new GrafiekWaarde()
                         {
                             Naam = "endpostfrequentie"
                         };
-                        GrafiekWaardes.Add(end);
+                        grafiekWaardes.Add(end);
                     }
                 }
             }
-            return GrafiekWaardes;
+            return grafiekWaardes;
         }
     }
 }

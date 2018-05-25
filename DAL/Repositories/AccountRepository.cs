@@ -1,60 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL.Interfaces;
 using Domain.Account;
 using Domain.Entiteit;
-using System.Data.Entity;
-using Domain.Post;
 using Domain.Enum;
+using Domain.Post;
 
-namespace DAL
+namespace DAL.Repositories
 {
 
 
     public class AccountRepository : IAccountRepository
     {
 
-        private EFContext ctx;
+        private readonly EFContext _ctx;
 
         public AccountRepository()
         {
-            ctx = new EFContext();
-            ctx.Database.CommandTimeout = 180;
+            _ctx = new EFContext();
+            _ctx.Database.CommandTimeout = 180;
         }
 
         public AccountRepository(UnitOfWork uow)
         {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
-            ctx.Database.CommandTimeout = 180;
+            _ctx = uow.Context;
+            _ctx.SetUoWBool(true);
+            _ctx.Database.CommandTimeout = 180;
         }
 
-        public void addUser(Account account)
+        public void AddUser(Account account)
         {
-            ctx.Accounts.Add(account);
-            ctx.SaveChanges();
+            _ctx.Accounts.Add(account);
+            _ctx.SaveChanges();
         }
 
-        public void addDeviceId(string userId,string device)
+        public void AddDeviceId(string userId,string device)
         {
-            Account acc = ctx.Accounts.Where(m => m.IdentityId == userId).FirstOrDefault();
-            acc.DeviceId = device;
-            ctx.SaveChanges();
+            Account acc = _ctx.Accounts.FirstOrDefault(m => m.IdentityId == userId);
+            if (acc != null) acc.DeviceId = device;
+            _ctx.SaveChanges();
         }
 
-        public Alert ReadAlert(int alertID)
+        public Alert ReadAlert(int alertId)
         {
-            Alert alert = ctx.Alerts.Where(x => x.AlertId == alertID)
+            Alert alert = _ctx.Alerts.Where(x => x.AlertId == alertId)
                 .Include(x => x.Entiteit)
                 .FirstOrDefault();
             
             return alert;
         }
-        public List<Alert> getAlleAlerts()
+        public List<Alert> GetAlleAlerts()
         {
-            return ctx.Alerts.Include(x => x.Account)
+            return _ctx.Alerts.Include(x => x.Account)
                                .Include(x => x.Entiteit)
                 
                 .ToList();
@@ -62,9 +61,9 @@ namespace DAL
 
         public void AddAlert(Alert alert)
         {
-            ctx.Alerts.Add(alert);
-            ctx.Entry(alert.Entiteit).State = EntityState.Unchanged;
-            ctx.SaveChanges();
+            _ctx.Alerts.Add(alert);
+            _ctx.Entry(alert.Entiteit).State = EntityState.Unchanged;
+            _ctx.SaveChanges();
         }
     
 
@@ -72,28 +71,28 @@ namespace DAL
         public void UpdateAlert(Alert alert)
         {
 
-            ctx.Entry(alert.Entiteit).State = System.Data.Entity.EntityState.Modified;
-            ctx.Entry(alert).State = System.Data.Entity.EntityState.Modified;
-            ctx.SaveChanges();
+            _ctx.Entry(alert.Entiteit).State = EntityState.Modified;
+            _ctx.Entry(alert).State = EntityState.Modified;
+            _ctx.SaveChanges();
             
         }
-        public void DeleteAlert(int alertID)
+        public void DeleteAlert(int alertId)
         {
-            Alert alert = ReadAlert(alertID);
+            Alert alert = ReadAlert(alertId);
          
    
-                    ctx.Alerts.Remove(alert);
+                    _ctx.Alerts.Remove(alert);
             
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
     
 
         }
 
-        public void updateUser(Account account)
+        public void UpdateUser(Account account)
         {
-            ctx.Entry(account).State = EntityState.Modified;
+            _ctx.Entry(account).State = EntityState.Modified;
             //Account updated = ctx.Accounts.Find(account.AccountId);
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
 
             /*
             updated.Dashboard = account.Dashboard;
@@ -111,10 +110,10 @@ namespace DAL
                 */
         }
 
-        public Account ReadAccount(string ID)
+        public Account ReadAccount(string id)
         {           
             //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
-            Account account = ctx.Accounts
+            Account account = _ctx.Accounts
                 .Include(x => x.Dashboard)
                 .Include(x => x.ReviewEntiteiten.Select(y => y.Posts))
                 .Include(x => x.ReviewEntiteiten.Select(y => y.Posts.Select(z => z.Urls)))
@@ -125,27 +124,27 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Single(a => a.IdentityId == ID);
+                .Single(a => a.IdentityId == id);
             return account;
         }
 
-        public Account ReadAccount(int ID)
+        public Account ReadAccount(int id)
         {
             //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
-            Account account = ctx.Accounts
+            Account account = _ctx.Accounts
                 .Include(x => x.Dashboard)
                 .Include(x => x.Dashboard.Configuratie)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Single(a => a.AccountId == ID);
+                .Single(a => a.AccountId == id);
             return account;
         }
 
-        public List<Account> readAccounts()
+        public List<Account> ReadAccounts()
         {
            
-            return ctx.Accounts
+            return _ctx.Accounts
                 .Include(x => x.Alerts)
                 .Include(x => x.Items)
                 .Include(x => x.ReviewEntiteiten)
@@ -161,118 +160,121 @@ namespace DAL
         public void DeleteUser(string accountId)
         {
             Account account = ReadAccount(accountId);
-            ctx.Dashboards.Remove(account.Dashboard);
+            _ctx.Dashboards.Remove(account.Dashboard);
  
             if (account.Alerts != null)
             {
                 foreach (Alert alert in account.Alerts.ToList())
                 {
-                    ctx.Alerts.Remove(alert);
+                    _ctx.Alerts.Remove(alert);
                 }
                 account.Alerts = null;
             }
-            ctx.SaveChanges();
-            ctx.Accounts.Remove(account);
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
+            _ctx.Accounts.Remove(account);
+            _ctx.SaveChanges();
 
         }
 
-        public void FollowEntiteit(string accountId, int entiteitID)
+        public void FollowEntiteit(string accountId, int entiteitId)
         {
             Account updated = ReadAccount(accountId);
-            Item item = new Item(entiteitID);
+            Item item = new Item(entiteitId);
             updated.Items.Add(item);
-            ctx.Items.Add(item);
-            ctx.SaveChanges();
+            _ctx.Items.Add(item);
+            _ctx.SaveChanges();
         }
 
-        public void UnFollowEntiteit(string accountId, int EntiteitID)
+        public void UnFollowEntiteit(string accountId, int entiteitId)
         {
-            int ItemId = 0;
+            int itemId = 0;
             Account updated = ReadAccount(accountId);
             List<Item> items = updated.Items;
             foreach(Item item in items)
             {
-               if(item.EntiteitId == EntiteitID)
+               if(item.EntiteitId == entiteitId)
                 {
-                    ItemId = item.ItemId;
+                    itemId = item.ItemId;
                 }
             }
-            Item ItemToUnfollow = ctx.Items.SingleOrDefault(p => p.ItemId == ItemId);          
-            updated.Items.Remove(ItemToUnfollow);
-            ctx.Items.Remove(ItemToUnfollow);
-            ctx.SaveChanges();
+            Item itemToUnfollow = _ctx.Items.SingleOrDefault(p => p.ItemId == itemId);          
+            updated.Items.Remove(itemToUnfollow);
+            _ctx.Items.Remove(itemToUnfollow ?? throw new InvalidOperationException());
+            _ctx.SaveChanges();
         }
 
-        public void DeleteGrafiekWaardes(int grafiekID)
+        public void DeleteGrafiekWaardes(int grafiekId)
         {
-            Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
+            Grafiek teverwijderenwaardes = _ctx.Grafieken.First(o => o.GrafiekId == grafiekId);
             teverwijderenwaardes.Waardes = null;
         }
 
         public void DeleteDashboardBlok(Account account, int id)
         {
-            var blok = ctx.DashboardBloks.Where(dashBlok => dashBlok.DashboardBlokId == id).Single();
+            var blok = _ctx.DashboardBloks.Single(dashBlok => dashBlok.DashboardBlokId == id);
 
             if (blok != null)
             {
-                ctx.DashboardBloks.Remove(blok);
+                _ctx.DashboardBloks.Remove(blok);
             }
 
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
         }
 
         public void UpdateLocatie(int blokId, int locatie)
         {
-            var dashBlok = ctx.DashboardBloks.Find(blokId);
+            var dashBlok = _ctx.DashboardBloks.Find(blokId);
             if(dashBlok != null) dashBlok.DashboardLocatie = locatie;
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
         }
 
         public void UpdateSize(int blokId, BlokGrootte blokGrootte)
         {
-            var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.BlokGrootte = blokGrootte;
-            ctx.SaveChanges();
+            var dashBlok = _ctx.DashboardBloks.Find(blokId);
+            if (dashBlok != null) dashBlok.BlokGrootte = blokGrootte;
+            _ctx.SaveChanges();
         }
 
         public void UpdateTitel(int blokId, String titel)
         {
-            var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.Titel = titel;
-            ctx.SaveChanges();
+            var dashBlok = _ctx.DashboardBloks.Find(blokId);
+            if (dashBlok != null) dashBlok.Titel = titel;
+            _ctx.SaveChanges();
         }
 
         public void UpdateSizeDimensions(int blokId, int x, int y)
         {
-            var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.sizeX = x;
-            dashBlok.sizeY = y;
-            ctx.SaveChanges();
+            var dashBlok = _ctx.DashboardBloks.Find(blokId);
+            if (dashBlok != null)
+            {
+                dashBlok.sizeX = x;
+                dashBlok.sizeY = y;
+            }
+
+            _ctx.SaveChanges();
         }
 
         public void UpdateConfiguratieTitle(int configuratieId, String title)
         {
-            var config = ctx.DashboardConfiguraties.Find(configuratieId);
-            config.ConfiguratieNaam = title;
-            ctx.SaveChanges();
+            var config = _ctx.DashboardConfiguraties.Find(configuratieId);
+            if (config != null) config.ConfiguratieNaam = title;
+            _ctx.SaveChanges();
         }
 
         public void SetPublic(int dashboardId, bool shared)
         {
-            var dashboard = ctx.Dashboards.Find(dashboardId);
+            var dashboard = _ctx.Dashboards.Find(dashboardId);
             if (dashboard != null) dashboard.IsPublic = shared;
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
         }
 
         public Dashboard GetPublicDashboard(int id)
         {
-            Dashboard dashboard = ctx.Dashboards
+            Dashboard dashboard = _ctx.Dashboards
                 .Include(x => x.Configuratie)
                 .Include(x => x.Configuratie.DashboardBlokken)
                 .Include(x => x.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
-                .Include(x => x.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(x => x.DashboardId == id).First();
+                .Include(x => x.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes)).First(x => x.DashboardId == id);
 
             if (dashboard.IsPublic)
             {

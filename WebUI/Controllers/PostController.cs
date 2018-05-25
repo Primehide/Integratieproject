@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
-using BL;
+using BL.Interfaces;
+using BL.Managers;
 
 namespace WebUI.Controllers
 {
@@ -36,7 +37,7 @@ namespace WebUI.Controllers
         public ActionResult BerekenVasteGrafieken()
         {
             IPostManager postManager = new PostManager();
-            postManager.maakVasteGrafieken();
+            postManager.MaakVasteGrafieken();
             return View();
         }
     }
