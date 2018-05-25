@@ -134,10 +134,23 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context);
+            var AllIdentity = new List<ApplicationUser>();
+            List<Domain.Account.Account> domainUsers = new List<Account>();
+
+            foreach (var item in userstore.GetAllUser())
+            {
+                if(item.TenantId == (int)System.Web.HttpContext.Current.Session["PlatformID"])
+                {
+                    domainUsers.Add(accountManager.getAccount(item.Id));
+                }
+            }
+
             AdminViewModel model =
                 new AdminViewModel()
                 {
-                    Users = accountManager.GetAccounts()
+                    Users = domainUsers
                 };
             return View(model);
         }
