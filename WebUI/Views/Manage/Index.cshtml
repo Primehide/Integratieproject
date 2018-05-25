@@ -241,6 +241,13 @@
                     }, false)
                 }
 
+                var editItems = document.getElementsByClassName('muuri-card-edit');
+                for (i = 0; i < resizeItems.length; i++) {
+                    editItems[i].addEventListener("click", function (e) {
+                        editItem(e);
+                    }, false)
+                }
+
                 var dashboardTitel = document.getElementById("dashboardTitel");
                 dashboardTitel.addEventListener('blur', function () {
                     renameTitle();
@@ -278,9 +285,10 @@
                         var isResizeDragAction = elementMatches(event.target, '.item');
                         var isRetitleAction = elementMatches(event.target, '.muuri-card-title');
                         var isRemoveAction = elementMatches(event.target, '.muuri-card-remove, .muuri-card-remove a');
+                        var isEditAction = elementMatches(event.target, '.muuri-card-edit, .muuri-card-edit a');
                         var isResizeAction = elementMatches(event.target, '.muuri-card-resize, .muuri-card-resize i');
                         var isBeingResized = elementMatches(event.target, '.muuri-dropdown, .muuri-dropdown .resize-items, .muuri-dropdown .resize-items li, .muuri-dropdown .resize-items li a');
-                        return !isResizeDragAction && !isRetitleAction && !isBeingResized && !isResizeAction && !isRemoveAction ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
+                        return !isResizeDragAction && !isEditAction && !isRetitleAction && !isBeingResized && !isResizeAction && !isRemoveAction ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
                     },
                     dragReleaseDuration: 400,
                     dragReleseEasing: 'ease'
@@ -311,6 +319,12 @@
                 removeBlok(id);
                 updateIndices();
 
+            }
+
+            function editItem(e) {
+                var elem = e.target;
+                var id = elem.parentNode.parentNode.getElementsByClassName("muuri-card-id")[2].innerHTML;
+                document.location.href = "/account/EditGrafiek/" + id;
             }
 
             function resizeItem(e, resizeItems) {
@@ -427,7 +441,9 @@
                                     "<div class=\"muuri-card\">" +
                                     "<div class=\"muuri-card-id\">" + id + "</div>" +
                                     "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id grafiek-id\">" + blok.Grafiek.GrafiekId + "</div>" +
                                     "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-edit\"><a class=\"material-icons\"> create</a></div >" +
                                     "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
                                     "<div class=\"muuri-dropdown\" > " +
                                     "<ul class=\"resize-items\" > " +
@@ -485,7 +501,9 @@
                                     "<div class=\"muuri-card\">" +
                                     "<div class=\"muuri-card-id\">" + id + "</div>" +
                                     "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id grafiek-id\">" + blok.Grafiek.GrafiekId + "</div>" +
                                     "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-edit\"><a class=\"material-icons\"> create</a></div >" +
                                     "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
                                     "<div class=\"muuri-dropdown\" > " +
                                     "<ul class=\"resize-items\" > " +
