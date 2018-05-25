@@ -1,5 +1,6 @@
 using BL;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace WebUI.Controllers
@@ -9,8 +10,9 @@ namespace WebUI.Controllers
     {
         public ActionResult Faq()
         {
-            var mgr = new AccountManager();
-            var faqs = mgr.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            IPlatformManager platoManager = new PlatformManager();
+            IEnumerable<Domain.Platform.Faq> faqs = platoManager.GetAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+
             return View(faqs);
         }
 
