@@ -45,13 +45,13 @@
                                 <center class="m-t-30">
 
                                     @if (Model.Image != null)
-            {
-                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
-}
-else
-{
-                        <img src="~/Content/Dashboard/assets/images/group.png" , width="150" , height="150" , class="img-circle" />
-}
+                                    {
+                                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" , width="150" , height="150" , class="img-circle" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/Dashboard/assets/images/group.png" , width="150" , height="150" , class="img-circle" />
+                                    }
 
                                     <h4> Organisatie: @Html.DisplayFor(m => m.Naam, new { @class = "control-label col-md-6" }) </h4>
 

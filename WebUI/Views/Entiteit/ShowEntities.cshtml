@@ -1,0 +1,94 @@
+﻿@model List<Domain.Entiteit.Entiteit>
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">Entiteit overzicht</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                            <li class="breadcrumb-item">Entiteiten</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Entiteiten</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Naam</th>
+                                                <th>Type</th>
+                                                <th>Actie</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var e in Model)
+                                            {
+                                                <tr>
+                                                    <td>@e.Naam</td>
+                                                    <td>@e.GetType().Name</td>
+                                                    @if (e.GetType() == typeof(Domain.Entiteit.Persoon))
+                                                    {
+                                                        <td><a href="/entiteit/DisplayPerson?EntityId=@e.EntiteitId" class="btn waves-effect waves-light btn-success">View</a></td>
+                                                    }
+                                                    else if (e.GetType() == typeof(Domain.Entiteit.Organisatie))
+                                                    {
+                                                        <td><a href="/entiteit/DisplayOrganisation?EntityId=@e.EntiteitId" class="btn waves-effect waves-light btn-success">View</a></td>
+                                                    }
+                                                    else if (e.GetType() == typeof(Domain.Entiteit.Thema))
+                                                    {
+                                                        <td><a href="/entiteit/DisplayTheme?EntityId=@e.EntiteitId" class="btn waves-effect waves-light btn-success">View</a></td>
+                                                    }
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+

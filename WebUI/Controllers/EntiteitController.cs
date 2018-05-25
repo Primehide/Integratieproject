@@ -33,9 +33,15 @@ namespace WebUI.Controllers
             };
             return View(overview);
         }
+
+        public ActionResult ShowEntities()
+        {
+            EntiteitManager entiteitManager = new EntiteitManager();
+            return View(entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]));
+        }
+
         // Index Page for all Entities.
         [Authorize(Roles = "SuperAdmin, Admin")]
-
         public virtual ActionResult Test()
         {
             //List<Entiteit> AllEntities = new List<Entiteit>();
@@ -430,14 +436,7 @@ namespace WebUI.Controllers
         {
 
             Organisatie ToDisplay = eM.GetOrganisatie(EntityId);
-            if ((int)System.Web.HttpContext.Current.Session["PlatformID"] == ToDisplay.EntiteitId)
-            {
-                return View(ToDisplay);
-            }
-            else
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
-            }
+            return View(ToDisplay);
         }
         #endregion
 
