@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using DAL;
+using DAL.Repositories;
 using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
@@ -117,13 +118,13 @@ namespace BL.Managers
         public List<Entiteit> GetAlleEntiteiten()
         {
             InitNonExistingRepo();
-            return _entiteitRepository.getAlleEntiteiten();
+            return _entiteitRepository.GetAlleEntiteiten();
         }
 
         public List<Entiteit> GetAlleEntiteiten(bool includePosts)
         {
             InitNonExistingRepo();
-            return _entiteitRepository.getAlleEntiteiten(includePosts);
+            return _entiteitRepository.GetAlleEntiteiten(includePosts);
         }
 
         public Entiteit GetEntiteit(int id)
@@ -135,7 +136,7 @@ namespace BL.Managers
         public void UpdateEntiteit(Entiteit entiteit)
         {
             InitNonExistingRepo();
-            _entiteitRepository.updateEntiteit(entiteit);
+            _entiteitRepository.UpdateEntiteit(entiteit);
         }
 
 
@@ -144,7 +145,7 @@ namespace BL.Managers
         public void ResetTrends()
         {
             InitNonExistingRepo();
-            List<Entiteit> alleEntiteiten = _entiteitRepository.getAlleEntiteiten();
+            List<Entiteit> alleEntiteiten = _entiteitRepository.GetAlleEntiteiten();
             foreach (var e in alleEntiteiten)
             {
                 e.Trends = null;
@@ -375,7 +376,7 @@ namespace BL.Managers
             switch (grafiekType)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    Entiteit e1 = _entiteitRepository.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    Entiteit e1 = _entiteitRepository.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
                     List<Post> postsEerste = e1.Posts;
                     foreach (var cijferOptie in cijferOpties)
                     {
@@ -629,7 +630,7 @@ namespace BL.Managers
         public Sleutelwoord GetSleutelwoord(int sleutelId)
         {
             InitNonExistingRepo();
-            return _entiteitRepository.readSleutelwoord(sleutelId);
+            return _entiteitRepository.ReadSleutelwoord(sleutelId);
         }
 
         public List<Entiteit> GetEntiteitenVanDeelplatform(int id)
@@ -655,7 +656,7 @@ namespace BL.Managers
         {
             InitNonExistingRepo();
             List<Entiteit> gevondeEntiteiten = new List<Entiteit>();
-            foreach (var e in _entiteitRepository.getAlleEntiteiten())
+            foreach (var e in _entiteitRepository.GetAlleEntiteiten())
             {
                 if (e.Naam.ToLower().Contains(zoek.ToLower()))
                 {
@@ -702,7 +703,7 @@ namespace BL.Managers
         public void BerekenVasteGrafiekenAlleEntiteiten()
         {
             InitNonExistingRepo();
-            List<Entiteit> alleEntiteiten = _entiteitRepository.getAlleEntiteiten();
+            List<Entiteit> alleEntiteiten = _entiteitRepository.GetAlleEntiteiten();
             DateTime vandaag = new DateTime(2018, 04, 01);
             foreach (var e in alleEntiteiten)
             {
@@ -722,7 +723,7 @@ namespace BL.Managers
                 }
                 e.Grafieken.Clear();
                 e.Grafieken.Add(postFrequentie);
-                _entiteitRepository.updateEntiteit(e);
+                _entiteitRepository.UpdateEntiteit(e);
             }
         }
      

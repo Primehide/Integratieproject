@@ -165,7 +165,7 @@ namespace DAL.Repositories
             ctx.SaveChanges();
         }
      
-        public List<Entiteit> getAlleEntiteiten()
+        public List<Entiteit> GetAlleEntiteiten()
         {
             return ctx.Entiteiten
                 .Include(x => x.Posts)
@@ -175,7 +175,7 @@ namespace DAL.Repositories
                 .ToList();
         }
 
-        public List<Entiteit> getAlleEntiteiten(bool includePosts)
+        public List<Entiteit> GetAlleEntiteiten(bool includePosts)
         {
             if (includePosts)
             {
@@ -195,7 +195,7 @@ namespace DAL.Repositories
             }
         }
 
-        public void updateEntiteit(Entiteit entiteit)
+        public void UpdateEntiteit(Entiteit entiteit)
         {
             ctx.Entry(entiteit).State = EntityState.Modified;
             ctx.SaveChanges();
@@ -239,7 +239,7 @@ namespace DAL.Repositories
             return thema;
         }
 
-        public Sleutelwoord readSleutelwoord(int sleutelId)
+        public Sleutelwoord ReadSleutelwoord(int sleutelId)
         {
             Sleutelwoord sleutelwoord = ctx.SleutelWoorden.SingleOrDefault(x => x.SleutelwoordId == sleutelId);
             return sleutelwoord;
@@ -252,7 +252,7 @@ namespace DAL.Repositories
 
         public void DeleteSleutelwoord(int sleutelId)
         {
-            Sleutelwoord sleutelwoord = readSleutelwoord(sleutelId);
+            Sleutelwoord sleutelwoord = ReadSleutelwoord(sleutelId);
             ctx.SleutelWoorden.Remove(sleutelwoord);
             ctx.SaveChanges();
         }
@@ -273,14 +273,6 @@ namespace DAL.Repositories
         {
             ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
         }
-
-        public void addEntiteit(Entiteit entiteit)
-        {
-            ctx.Entiteiten.Add(entiteit);
-            ctx.SaveChanges();
-        }
-
-
 
         List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
         {
