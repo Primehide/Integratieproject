@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>@ViewBag.dpnaam - Home</title>
+    <title>@ViewBag.dpNaam - Home</title>
 
     <meta name="keywords" content="HTML5 Template" />
     <meta name="description" content="Porto - Responsive HTML5 Template">
@@ -71,11 +71,11 @@
                                     <a href="index.html">
                                         @if (Model.Logo != null)
                                         {
-                                            <img alt=@ViewBag.dpnaam width="150" height="50" src="data:image;base64,@System.Convert.ToBase64String(Model.Logo)">
+                                            <img alt=@ViewBag.dpNaam width="150" height="50" src="data:image;base64,@Convert.ToBase64String(Model.Logo)">
                                         }
                                         else
                                         {
-                                            <img alt=@ViewBag.dpnaam width="150" height="50" src="~/Content/Homepagina/img/gallery/logo-black.png">
+                                            <img alt=@ViewBag.dpNaam width="150" height="50" src="">
                                         }
                                     </a>
                                 </div>
@@ -144,7 +144,7 @@
                                  data-y="center" data-voffset="-95"
                                  data-start="500"
                                  style="z-index: 5"
-                                 data-transform_in="y:[-300%];opacity:0;s:500;">@ViewBag.tagline</div>
+                                 data-transform_in="y:[-300%];opacity:0;s:500;">@ViewBag.tagLine</div>
 
                                 <div class="tp-caption"
                                      data-x="center" data-hoffset="220"
@@ -161,7 +161,7 @@
                                      data-transform_in="y:[100%];s:500;"
                                      data-transform_out="opacity:0;s:500;"
                                      style="z-index: 5"
-                                     data-mask_in="x:0px;y:0px;">@ViewBag.dpnaam</div>
+                                     data-mask_in="x:0px;y:0px;">@ViewBag.dpNaam</div>
 
                                     <div class="tp-caption bottom-label"
                                          data-x="center" data-hoffset="0"

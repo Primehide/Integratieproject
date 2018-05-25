@@ -71,7 +71,7 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        //
+        
         // GET: /Manage/Index
         public ActionResult Index()
         {
@@ -79,6 +79,7 @@ namespace WebUI.Controllers
 
             WebUI.Models.DashboardModel model = new DashboardModel()
             {
+                DashboardId = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.DashboardId,
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
                 GrafiekLabels = new Dictionary<string, string>(),
                 GrafiekDataSets = new Dictionary<string, string>(),
@@ -274,7 +275,7 @@ namespace WebUI.Controllers
                 return View();
             }
 
-            //return View();
+     
         }
 
         //
@@ -316,29 +317,9 @@ namespace WebUI.Controllers
             return View(model);
         }
 
-        [AllowAnonymous]
-        public ActionResult Sandbox()
-        {
-            IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Domain.Entiteit.Persoon> personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList();
-            WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
-            {
-                Personen = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]),
-                Themas = entiteitManager.GetThemas((int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList()
-            };
-            return View(model);
-        }
 
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            filterContext.ExceptionHandled = true;
 
-            filterContext.Result = new ViewResult
-            {
-                ViewName = "~/Views/Shared/Error.cshtml"
-            };
-        }
+  
 
         //
         // GET: /Manage/ChangePassword
@@ -460,35 +441,9 @@ namespace WebUI.Controllers
             base.Dispose(disposing);
         }
 
-        //GET: /Manage/ManageAccount
-        public virtual ActionResult ManageAccount()
-        {
-            Account acc = new Account();
-            AccountManager acm = new AccountManager();
-            acc = acm.getAccount(User.Identity.GetUserId());
-            ViewBag.Firstname = acc.Voornaam;
-            ViewBag.Lastname = acc.Achternaam;
-            ViewBag.Birthdate = acc.GeboorteDatum.ToString("yyyy-MM-dd"); ;
-            ViewBag.Email = acc.Email;
+        // Manage Profile
 
-            return View();
-        }
-        public ActionResult DeleteAlert(int id)
-        {
-            IAccountManager accountManager = new AccountManager();
-            accountManager.DeleteAlert(id);
-
-
-            List<Alert> alerts = accountManager.getAlleAlerts();
-            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
-           fillNamen();
-            return View("updatealerts", newalerts);
-        }
-    
-        
-     
-
-
+        // GET: Manage Profile
         public ActionResult UpdateProfile()
         {
             AccountManager acm = new AccountManager();
@@ -496,30 +451,39 @@ namespace WebUI.Controllers
             return View(model);
         }
 
+        // Manage Alerts
+
+        // GET
         public ActionResult UpdateAlerts()
         {
-
-          fillNamen();
+            IEntiteitManager entiteitManager = new EntiteitManager();
+           entiteitManager.FillEntiteiten();
             IAccountManager accountManager = new AccountManager();
-            List<Alert> alerts = accountManager.getAlleAlerts();
-
-            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
-
-
-            return View("UpdateAlerts", newalerts);
+            List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
+            return View("UpdateAlerts", newAlerts);
         }
-      
-       
+
+        //POST: Delete Alert
+        public ActionResult DeleteAlert(int id)
+        {
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.FillEntiteiten();
+            IAccountManager accountManager = new AccountManager();
+            accountManager.DeleteAlert(id);
+            List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
+
+            return View("updatealerts", newAlerts);
+        }
+        //GET: Edit Alert
         public ActionResult EditAlert(int id)
         {
-           
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            entiteitManager.FillEntiteiten();
+
             IAccountManager accountManager = new AccountManager();
             Alert alert = accountManager.GetAlert(id);
             AlertViewModel avm = new AlertViewModel();
             avm.alert = alert;
-            
-
-          fillNamen();
             return View(avm);
         }
 
@@ -532,18 +496,18 @@ namespace WebUI.Controllers
             if (ModelState.IsValid)
             {
                 //change
-               fillNamen();
-                Entiteit entiteit;
-                entiteit = NaamType.Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
-              modelalert.alert.Entiteit = entiteit;
-               modelalert. alert.AlertId = id;
+                IEntiteitManager entiteitManager = new EntiteitManager();
+             
+                Entiteit entiteit = new Entiteit();
+                entiteit = entiteitManager.FillEntiteiten().Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
+                modelalert.alert.Entiteit = entiteit;
+                modelalert. alert.AlertId = id;
                 accountManager.UpdateAlert(modelalert.alert);
 
-                List<Alert> alerts = accountManager.getAlleAlerts();
-                IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
+                List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
 
 
-                return RedirectToAction("UpdateAlerts", newalerts);
+                return RedirectToAction("UpdateAlerts", newAlerts);
             }
 
             return View();
@@ -552,22 +516,19 @@ namespace WebUI.Controllers
         [HttpPost]
         public ActionResult AddAlert(AlertViewModel model)
         {
-            fillNamen();
-            AccountManager acm = new AccountManager();
-            //ent   iteit ID ophalen
-            string test = model.type;
-            int entiteitId = NaamType.Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            AccountManager accountManager = new AccountManager();
+            //entiteit ID ophalen
+            int entiteitId = entiteitManager.FillEntiteiten().Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
   
 
             //Account 
-            model.alert.Account = acm.getAccount(User.Identity.GetUserId());
+            model.alert.Account = accountManager.getAccount(User.Identity.GetUserId());
            
-            acm.AddAlert(model.alert, entiteitId, model.web, model.android, model.mail);
-            List<Alert> alerts = acm.getAlleAlerts();
+            accountManager.AddAlert(model.alert, entiteitId, model.web, model.android, model.mail);
+            List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
 
-            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
-
-            return View("UpdateAlerts", newalerts);
+            return View("UpdateAlerts", newAlerts);
 
         }
 
@@ -597,7 +558,7 @@ namespace WebUI.Controllers
                 await UserManager.UpdateSecurityStampAsync(User.Identity.GetUserId());
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
-
+                //User updaten
                 UserManager.Update(user);
 
                 //send mail 
@@ -618,50 +579,8 @@ namespace WebUI.Controllers
 
         }
 
-        public void updateGrafieken()
-        {
-            PostManager postManager = new PostManager();
-            
-        }
 
-        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
-        private void fillNamen()
-        {
-
-            ArrayList namen = new ArrayList();
-
-            List<Entiteit> entiteits = new List<Entiteit>();
-
-            EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-            if (NaamType.Count == 0)
-            {
-                foreach (Entiteit entiteit in entiteits)
-                {
-                    if (entiteit is Persoon)
-                    {
-                        NaamType.Add(entiteit, "Persoon");
-                    }
-                    if (entiteit is Organisatie)
-                    {
-                        NaamType.Add(entiteit, "Organisatie");
-                    }
-                    if (entiteit is Thema)
-                    {
-                        NaamType.Add(entiteit, "Thema");
-                    }
-
-
-
-                }
-            }
-            NaamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
-            ViewBag.Namen = namen;
-        }
-
-
-
-        public ActionResult genereerReview()
+        public ActionResult GenereerReview()
         {
             IAccountManager accountManager = new AccountManager();
             List<Account> accounts = accountManager.GetAccounts();
@@ -720,6 +639,53 @@ namespace WebUI.Controllers
                 Themas = deelplatformThemas
             };
             return View(reviewModel);
+        }
+
+        //Error page
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
+        }
+
+        public Dictionary<Entiteit, string> FillEntiteiten()
+        {
+            Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+            ArrayList namen = new ArrayList();
+
+            List<Entiteit> entiteits = new List<Entiteit>();
+
+            EntiteitManager mgr = new EntiteitManager();
+            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            if (NaamType.Count == 0)
+            {
+                foreach (Entiteit entiteit in entiteits)
+                {
+                    if (entiteit is Persoon)
+                    {
+                        NaamType.Add(entiteit, "Persoon");
+                    }
+                    if (entiteit is Organisatie)
+                    {
+                        NaamType.Add(entiteit, "Organisatie");
+                    }
+                    if (entiteit is Thema)
+                    {
+                        NaamType.Add(entiteit, "Thema");
+                    }
+
+
+
+                }
+            }
+            NaamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
+            ViewBag.Namen = namen;
+
+            return NaamType;
         }
 
         #region Helpers

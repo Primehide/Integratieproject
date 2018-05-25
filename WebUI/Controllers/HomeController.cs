@@ -1,20 +1,18 @@
 using BL;
-using Domain.Platform;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace WebUI.Controllers
 {
     //[RequireHttps]
-    public partial class HomeController : Controller
+    public class HomeController : Controller
     {
         public ActionResult Faq()
         {
-            AccountManager mgr = new AccountManager();
-            IEnumerable<Domain.Account.Faq> faqs = mgr.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            IPlatformManager platoManager = new PlatformManager();
+            IEnumerable<Domain.Platform.Faq> faqs = platoManager.GetAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+
             return View(faqs);
         }
 
@@ -33,17 +31,19 @@ namespace WebUI.Controllers
             };
         }
 
-        public virtual ActionResult Index(string gekozenplatform,string tagline)
+        public virtual ActionResult Index(string gekozenPlatform,string tagLine)
 
         {
             try
             {
                 IPlatformManager platformManager = new PlatformManager();
-                ViewBag.platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
-                ViewBag.dpnaam = gekozenplatform;
-                ViewBag.tagline = tagline;
-                return View(platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]));
-            } catch ( NullReferenceException e )
+                var platId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                ViewBag.platId = platId;
+                ViewBag.dpNaam = gekozenPlatform;
+                ViewBag.tagLine = tagLine;
+
+                return View(platformManager.GetDeelplatform(platId));
+            } catch ( NullReferenceException )
             {
                 return RedirectToAction("Index", "Platform", null);
             }

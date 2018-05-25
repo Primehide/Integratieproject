@@ -21,12 +21,14 @@ namespace DAL
         public AccountRepository()
         {
             ctx = new EFContext();
+            ctx.Database.CommandTimeout = 180;
         }
 
         public AccountRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
             ctx.SetUoWBool(true);
+            ctx.Database.CommandTimeout = 180;
         }
 
         public void addUser(Account account)
@@ -87,53 +89,13 @@ namespace DAL
 
         }
 
-        // Frequently asked questions //
-        public void addFaq(Faq faq)
-        {
-
-            ctx.Faqs.Add(faq);
-            ctx.SaveChanges();
-        }
-        public void UpdateFaq(Faq faq)
-        {
-
-            ctx.Entry(faq).State = System.Data.Entity.EntityState.Modified;
-            ctx.SaveChanges();
-        }
-        public void DeleteFaq(int faqID)
-        {
-            Faq faq = ReadFaq(faqID);
-
-
-            ctx.Faqs.Remove(faq);
-
-            ctx.SaveChanges();
-
-
-        }
-        public Faq ReadFaq(int faqID)
-        {
-            Faq faq = ctx.Faqs.Find(faqID);
-            return faq;
-        }
-        public List<Faq> getAlleFaqs()
-        {
-            return ctx.Faqs
-
-                .ToList();
-        }
         public void updateUser(Account account)
         {
-            Account updated = ctx.Accounts.Find(account.AccountId);
-            updated.Voornaam = account.Voornaam;
-            updated.Achternaam = account.Achternaam;
-            updated.GeboorteDatum = account.GeboorteDatum;
-            updated.Email = account.Email;
-            updated.IsAdmin = account.IsAdmin;
-            updated.ReviewEntiteiten = account.ReviewEntiteiten;
-
+            ctx.Entry(account).State = EntityState.Modified;
+            //Account updated = ctx.Accounts.Find(account.AccountId);
             ctx.SaveChanges();
 
+            /*
             updated.Dashboard = account.Dashboard;
             foreach (DashboardBlok b in updated.Dashboard.Configuratie.DashboardBlokken)
             {
@@ -145,11 +107,8 @@ namespace DAL
                     }
                 }
             }
-            
                 ctx.SaveChanges();
-           
-            
-
+                */
         }
 
         public Account ReadAccount(string ID)
@@ -166,7 +125,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.IdentityId == ID).First();
+                .Single(a => a.IdentityId == ID);
             return account;
         }
 
@@ -179,7 +138,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.AccountId == ID).First();
+                .Single(a => a.AccountId == ID);
             return account;
         }
 
@@ -266,7 +225,7 @@ namespace DAL
         public void UpdateLocatie(int blokId, int locatie)
         {
             var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.DashboardLocatie = locatie;
+            if(dashBlok != null) dashBlok.DashboardLocatie = locatie;
             ctx.SaveChanges();
         }
 
@@ -302,7 +261,7 @@ namespace DAL
         public void SetPublic(int dashboardId, bool shared)
         {
             var dashboard = ctx.Dashboards.Find(dashboardId);
-            dashboard.IsPublic = shared;
+            if (dashboard != null) dashboard.IsPublic = shared;
             ctx.SaveChanges();
         }
 

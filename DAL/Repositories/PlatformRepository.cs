@@ -1,6 +1,7 @@
 ﻿using Domain.Account;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +59,29 @@ namespace DAL
             }
             ctx.SaveChanges();
             return toChange;
+        }
+
+        public void AddFaq(Faq faq)
+        {
+            ctx.Faqs.Add(faq);
+            ctx.SaveChanges();
+        }
+
+        public void UpdateFaq(Faq faq)
+        {
+            ctx.Entry(faq).State = EntityState.Modified;
+            ctx.SaveChanges();
+        }
+
+        public void DeleteFaq(int FaqId)
+        {
+            ctx.Faqs.Remove(ctx.Faqs.Find(FaqId));
+            ctx.SaveChanges();
+        }
+
+        public List<Faq> GetAlleFaqs(int PlatId)
+        {
+            return ctx.Faqs.Where(x => x.PlatformId == PlatId).ToList();
         }
     }
 }
