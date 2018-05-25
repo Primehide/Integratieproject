@@ -1,11 +1,8 @@
 ﻿@model WebUI.Models.DashboardModel
 
 @{
-
-
     Layout = null;
     var blokken = Model.Configuratie.DashboardBlokken;
-
     var naam = Model.Configuratie.ConfiguratieNaam;
     if (naam == null)
     {
@@ -22,6 +19,7 @@
     String itemTemplate = "";
     String itemTemplateList = "";
 }
+
 <link rel="stylesheet" type="text/css" href="~/Content/Muuri.css" />
 
 @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml");
@@ -62,7 +60,7 @@
                             <br />
 
                             <label id="visit-link">
-                                https://localhost:44365/manage/visit/@Model.DashboardId
+                                /manage/visit/@Model.DashboardId
                             </label>
 
                             <br />
@@ -118,10 +116,8 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-
             //
             // Initialize stuff
-            // 初始化物件，宣告一堆變數。
             //
             var grid = null;
             var docElem = document.documentElement;
@@ -129,14 +125,15 @@
             var gridElement = demo.querySelector('.grid');
             var dragOrder = [];
 
-            //
-            // Grid helper functions
-            //
-
             function initDemo() {
 
                 initGrid();
 
+                //
+                // Adding event listeners to grid elements
+                //
+
+                // Show | Hide dashboard options
                 var toggleDashboardOptions = document.getElementById("dashboardOptionsToggle");
                 var dashboardOptions = document.getElementsByClassName("dashboard-options")[0];
                 toggleDashboardOptions.addEventListener("click", function () {
@@ -148,6 +145,7 @@
                     }
                 })
 
+                // Show | Hide visit link
                 var link = document.getElementById("visit-link");
                  @if (Model.IsPublic) {
                      <text>
@@ -164,6 +162,7 @@
                     selectText(this)
                 })
 
+                // Public | Private dashboard
                 var toggleSwitch = document.getElementsByClassName("toggle-switch")[0];
                 toggleSwitch.addEventListener("click", function () {
                     if ($(link).css("height") == "1px") {
@@ -178,27 +177,30 @@
 
                 })
 
+                // Remove element
                 gridElement.addEventListener('click', function (e) {
                     if (elementMatches(e.target, '.muuri-card-remove, .muuri-card-remove a ')) {
                         var elem = elementClosest(e.target, '.item');
+                        console.log(elem)
                         removeItem(elem);
                     }
                 });
 
+                // Remove all elements
                 var deleteAllBtn = document.getElementById("delete-all-btn");
                 deleteAllBtn.addEventListener('click', function () {
                     if (confirm('Ben je zeker dat je alle grafieken wilt verwijderen?')) {
                         var items = document.getElementsByClassName("item");
-                        for (var i = 0; i < x.length; i++) {
+                        for (var i = 0; i < items.length; i++) {
+                            console.log(items[i])
                             removeItem(items[i])
                         }
                     }
                 });
 
-
+                // Resize element
                 var items = document.getElementsByClassName("muuri-item");
                 for (i = 0; i < items.length; i++) {
-
                     var element = items[i], bubbles = false;
                     var observer = new WebKitMutationObserver(function (mutations) {
                         mutations.forEach(attrModified);
@@ -211,9 +213,7 @@
                         var id = this.getElementsByClassName("muuri-card-id")[1].innerHTML;
                         var x = this.style.width.replace('px', '');
                         var y = this.style.height.replace('px', '');
-
                         updateSizeDimensions(id, x, y);
-
                         var resizeEvent = new Event('resize');
                         window.dispatchEvent(resizeEvent);
                     })
@@ -233,6 +233,7 @@
 
                 }
 
+                // Set size to x, y
                 var resizeItems = document.getElementsByClassName('muuri-card-resize');
                 for (i = 0; i < resizeItems.length; i++) {
 
@@ -241,11 +242,21 @@
                     }, false)
                 }
 
+                // Edit item
+                var editItems = document.getElementsByClassName('muuri-card-edit');
+                for (i = 0; i < resizeItems.length; i++) {
+                    editItems[i].addEventListener("click", function (e) {
+                        editItem(e);
+                    }, false)
+                }
+
+                // Change title of dashboard
                 var dashboardTitel = document.getElementById("dashboardTitel");
                 dashboardTitel.addEventListener('blur', function () {
                     renameTitle();
                 }, false)
 
+                // Change title of grafiek
                 var renameItems = document.getElementsByClassName('muuri-card-title');
                 for (i = 0; i < renameItems.length; i++) {
 
@@ -257,6 +268,7 @@
                         var key = e.which || e.keyCode;
                         //enter button
                         if (key === 13) {
+                            e.preventDefault();
                             renameItem(this)
                         }
                     },false)
@@ -278,9 +290,10 @@
                         var isResizeDragAction = elementMatches(event.target, '.item');
                         var isRetitleAction = elementMatches(event.target, '.muuri-card-title');
                         var isRemoveAction = elementMatches(event.target, '.muuri-card-remove, .muuri-card-remove a');
+                        var isEditAction = elementMatches(event.target, '.muuri-card-edit, .muuri-card-edit a');
                         var isResizeAction = elementMatches(event.target, '.muuri-card-resize, .muuri-card-resize i');
                         var isBeingResized = elementMatches(event.target, '.muuri-dropdown, .muuri-dropdown .resize-items, .muuri-dropdown .resize-items li, .muuri-dropdown .resize-items li a');
-                        return !isResizeDragAction && !isRetitleAction && !isBeingResized && !isResizeAction && !isRemoveAction ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
+                        return !isResizeDragAction && !isEditAction && !isRetitleAction && !isBeingResized && !isResizeAction && !isRemoveAction ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
                     },
                     dragReleaseDuration: 400,
                     dragReleseEasing: 'ease'
@@ -295,22 +308,28 @@
                         }
                     })
                     .on('move', updateIndices)
-                    .on('sort', updateIndices);
-
             }
 
+            //
+            // Grid helper functions
+            //
             function removeItem(elem) {
+                var id = elem.getElementsByClassName("muuri-card-id")[1].innerHTML;
                 grid.hide(elem, {
                     onFinish: function (items) {
                         var item = items[0];
                         grid.remove(item, { removeElements: true });
                     }
                 });
-                console.log(elem)
-                var id = elem.getElementsByClassName("muuri-card-id")[1].innerHTML;
+
                 removeBlok(id);
                 updateIndices();
+            }
 
+            function editItem(e) {
+                var elem = e.target;
+                var id = elem.parentNode.parentNode.getElementsByClassName("muuri-card-id")[2].innerHTML;
+                document.location.href = "/account/EditGrafiek/" + id;
             }
 
             function resizeItem(e, resizeItems) {
@@ -340,35 +359,30 @@
 
                 switch (size) {
                     case 'normaal':
-                        console.log(elem)
                         updateSize(id, 0);
-                        elem.style.width = '400px';
-                        elem.style.height = '400px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '375px';
+                        elem.style.height = '250px';
                         break;
                     case 'lang':
                         updateSize(id, 1);
-                        elem.style.width = '300px';
-                        elem.style.height = '450px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '400px';
+                        elem.style.height = '475px';
                         break;
                     case 'breed':
                         updateSize(id, 2);
-                        elem.style.width = '450px';
-                        elem.style.height = '300px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '600px';
+                        elem.style.height = '200px';
                         break;
 
                     case 'groot':
                         updateSize(id, 3);
-                        elem.style.width = '600px';
-                        elem.style.height = '600px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '700px';
+                        elem.style.height = '500px';
                         break;
                 }
 
+                grid.refreshItems().layout;
                 var resizeEvent = new Event('resize');
-
                 window.dispatchEvent(resizeEvent);
 
             }
@@ -399,10 +413,6 @@
 
             }
 
-            //
-            // Generic helper functions
-            //
-
             function fillGrid() {
                 var listItems = [];
                 var itemElem = document.createElement('div');
@@ -427,7 +437,9 @@
                                     "<div class=\"muuri-card\">" +
                                     "<div class=\"muuri-card-id\">" + id + "</div>" +
                                     "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id grafiek-id\">" + blok.Grafiek.GrafiekId + "</div>" +
                                     "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-edit\"><a class=\"material-icons\"> create</a></div >" +
                                     "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
                                     "<div class=\"muuri-dropdown\" > " +
                                     "<ul class=\"resize-items\" > " +
@@ -485,7 +497,9 @@
                                     "<div class=\"muuri-card\">" +
                                     "<div class=\"muuri-card-id\">" + id + "</div>" +
                                     "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id grafiek-id\">" + blok.Grafiek.GrafiekId + "</div>" +
                                     "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-edit\"><a class=\"material-icons\"> create</a></div >" +
                                     "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
                                     "<div class=\"muuri-dropdown\" > " +
                                     "<ul class=\"resize-items\" > " +
@@ -525,36 +539,9 @@
                 return listItems;
             }
 
-            function compareItemTitle(a, b) {
-
-                var aVal = a.getElement().getAttribute('data-title') || '';
-                var bVal = b.getElement().getAttribute('data-title') || '';
-                return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
-
-            }
-
-            function compareItemColor(a, b) {
-
-                var aVal = a.getElement().getAttribute('data-color') || '';
-                var bVal = b.getElement().getAttribute('data-color') || '';
-                return aVal < bVal ? -1 : aVal > bVal ? 1 : compareItemTitle(a, b);
-
-            }
-
-            function updateIndices() {
-
-                grid.getItems().forEach(function (item, i) {
-                    item.getElement().setAttribute('data-id', i + 1);
-                    item.getElement().querySelector('.muuri-card-id').innerHTML = i + 1;
-
-                    var blokId = item._element.getElementsByClassName("muuri-card-id")[1].innerHTML;
-                    var locatie = item.getElement().getAttribute('data-id');
-                    updateLocatie(blokId, locatie)
-                });
-
-
-            }
-
+            //
+            // Persistence functions
+            //
             function updateSize(blokId, grootte) {
                 var actionURL = '@Url.Action("UpdateSize", "Account", new { blokId = "blokId_placeholder", blokGrootte = "grootte_placeholder"})';
                 $.ajax({
@@ -649,6 +636,39 @@
                 });
             }
 
+
+            //
+            // Generic helper functions
+            //
+            function compareItemTitle(a, b) {
+
+                var aVal = a.getElement().getAttribute('data-title') || '';
+                var bVal = b.getElement().getAttribute('data-title') || '';
+                return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+
+            }
+
+            function compareItemColor(a, b) {
+
+                var aVal = a.getElement().getAttribute('data-color') || '';
+                var bVal = b.getElement().getAttribute('data-color') || '';
+                return aVal < bVal ? -1 : aVal > bVal ? 1 : compareItemTitle(a, b);
+
+            }
+
+            function updateIndices() {
+
+                grid.getItems().forEach(function (item, i) {
+                    item.getElement().setAttribute('data-id', i + 1);
+                    item.getElement().querySelector('.muuri-card-id').innerHTML = i + 1;
+
+                    var blokId = item._element.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                    var locatie = item.getElement().getAttribute('data-id');
+                    updateLocatie(blokId, locatie)
+                });
+
+            }
+
             function selectText(element) {
                 if (document.selection) { // IE
                     var range = document.body.createTextRange();
@@ -703,7 +723,7 @@
     </script>
 
 
-
+    <!-- Get grafieken -->
     @foreach (var blok in blokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
     {
         Model.DataSetTeller = 0;

@@ -7,7 +7,7 @@
 <body class="fix-header card-no-border fix-sidebar mini-sidebar">
     <div id="main-wrapper">
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_AdminCpLeftBar.cshtml")
         <div class="page-wrapper">
             <div class="container-fluid">
                 <!-- ============================================================== -->
@@ -20,9 +20,7 @@
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                            <li class="breadcrumb-item">pages</li>
-                            <li class="breadcrumb-item active">Home</li>
-
+                            <li class="breadcrumb-item">Edit organisatie</li>
                         </ol>
                     </div>
                     <div>
@@ -39,21 +37,21 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-body">
-                            <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
+                            <h3 class="box-title m-b-0"><span class="lstick"></span>Organisatie bewerken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
                                     @using (Html.BeginForm("EditOrganisation", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                                    {
-                                        <input type="hidden" value="@Model.EntiteitId" name="EntiteitId" />
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" placeholder="@Model.Naam" name="Naam" value="@Model.Naam">
-                                        </div>
-                                        <label>Afbeelding</label>
-                                        <div class="form-group">
-                                            <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
-                                        </div>
-                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
-                                    }
+                                {
+                                    <input type="hidden" value="@Model.EntiteitId" name="EntiteitId" />
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="@Model.Naam" name="Naam" value="@Model.Naam">
+                                    </div>
+                                    <label>Afbeelding</label>
+                                    <div class="form-group">
+                                        <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                    </div>
+                                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                            }
                                 </div>
                             </div>
                         </div>

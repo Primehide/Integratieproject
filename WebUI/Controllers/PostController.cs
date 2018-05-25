@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using BL;
-using Domain.Post;
 
 namespace WebUI.Controllers
 {
-    public partial class PostController : Controller
+    public class PostController : Controller
     {
         // GET: Post
         public virtual ActionResult Index()
         {
             return View();
         }
+
         [Authorize(Roles = "SuperAdmin, Admin")]
         public async System.Threading.Tasks.Task SyncDataAsync()
         {
@@ -37,9 +33,7 @@ namespace WebUI.Controllers
             };
         }
 
-        
-
-        public ActionResult berekenVasteGrafieken()
+        public ActionResult BerekenVasteGrafieken()
         {
             IPostManager postManager = new PostManager();
             postManager.maakVasteGrafieken();

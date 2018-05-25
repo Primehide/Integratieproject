@@ -45,18 +45,6 @@ namespace BL
             // uowManager.Save();
 
         }
-        public void UpdateUser(Account account)
-        {
-
-            initNonExistingRepo();
-            Account oldaccount = new Account();
-
-            oldaccount = accountRepository.ReadAccount(account.IdentityId);
-            account.AccountId = oldaccount.AccountId;
-
-
-            accountRepository.updateUser(account);
-        }
 
         public Account getAccount(string ID)
         {
@@ -442,7 +430,7 @@ namespace BL
             uowManager.Save();
         }
 
-        public void updateUser(Account account)
+        public void UpdateUser(Account account)
         {
             initNonExistingRepo();
             Account accountToUpdate = accountRepository.ReadAccount(account.IdentityId);

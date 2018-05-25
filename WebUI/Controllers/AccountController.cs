@@ -202,7 +202,7 @@ namespace WebUI.Controllers
             AccountManager accountManager = new AccountManager();
             Account a = accountManager.getAccount(accountId);
             a.IsAdmin = true;
-            accountManager.updateUser(a);
+            accountManager.UpdateUser(a);
             await um.AddToRoleAsync(accountId, "Admin");
             return View("EditUserAdmin", accountManager.getAccount(accountId));
         }
@@ -213,7 +213,7 @@ namespace WebUI.Controllers
             AccountManager am = new AccountManager();
             Account a = am.getAccount(accountId);
             a.IsAdmin = false;
-            am.updateUser(a);
+            am.UpdateUser(a);
             await um.RemoveFromRoleAsync(accountId, "Admin");
             return View("EditUserAdmin", am.getAccount(accountId));
         }
@@ -791,7 +791,7 @@ namespace WebUI.Controllers
         public ActionResult EditUserAdmin(Domain.Account.Account model)
         {
             AccountManager accountManager = new AccountManager();
-            accountManager.updateUser(model);
+            accountManager.UpdateUser(model);
             return RedirectToAction("AdminBeheerGebruikers");
         }
 

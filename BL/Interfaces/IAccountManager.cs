@@ -45,6 +45,5 @@ namespace BL
         List<CijferOpties> CreateCijferOpties(List<string> stringOpties);
         void CreateDomainUser(string identityId, string email, string voornaam, string achternaam,
             DateTime geboorteDatum);
-        void updateUser(Account account);
     }
 }
