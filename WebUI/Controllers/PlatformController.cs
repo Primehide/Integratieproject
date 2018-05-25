@@ -47,6 +47,16 @@ namespace WebUI.Controllers
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
+        [HttpPost]
+        public ActionResult DemoteAdmin(string IdentityId)
+        {
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var store = new UserStore<ApplicationUser>(context);
+            var manager = new ApplicationUserManager(store);
+            manager.RemoveFromRole(IdentityId, "Admin");
+            return RedirectToAction("SuperAdminCp", "Account");
+        }
+
         [HttpGet]
         [Authorize(Roles = "SuperAdmin")]
         public ActionResult EditPlatform(int id)
