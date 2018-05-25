@@ -302,7 +302,7 @@ namespace DAL
         public void SetPublic(int dashboardId, bool shared)
         {
             var dashboard = ctx.Dashboards.Find(dashboardId);
-            dashboard.IsPublic = shared;
+            if (dashboard != null) dashboard.IsPublic = shared;
             ctx.SaveChanges();
         }
 
