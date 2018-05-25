@@ -136,6 +136,11 @@ namespace WebUI
 
         public int TenantId { get; set; }
 
+        public IQueryable<TUser> GetAllUser()
+        {
+            return Users;
+        }
+
         public override Task CreateAsync(TUser user)
         {
             if (user == null)
