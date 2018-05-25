@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Domain.Account.Faq>
+﻿@model IEnumerable<Domain.Platform.Faq>
 
 @{
     Layout = null;
@@ -52,7 +52,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (Domain.Account.Faq faq in Model)
+                                            @foreach (Domain.Platform.Faq faq in Model)
     {
                                         <tr>
                                             <td>@faq.FaqId</td>

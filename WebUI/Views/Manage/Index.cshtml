@@ -60,7 +60,7 @@
                             <br />
 
                             <label id="visit-link">
-                                https://localhost:44365/manage/visit/@Model.DashboardId
+                                /manage/visit/@Model.DashboardId
                             </label>
 
                             <br />
@@ -181,6 +181,7 @@
                 gridElement.addEventListener('click', function (e) {
                     if (elementMatches(e.target, '.muuri-card-remove, .muuri-card-remove a ')) {
                         var elem = elementClosest(e.target, '.item');
+                        console.log(elem)
                         removeItem(elem);
                     }
                 });
@@ -190,7 +191,8 @@
                 deleteAllBtn.addEventListener('click', function () {
                     if (confirm('Ben je zeker dat je alle grafieken wilt verwijderen?')) {
                         var items = document.getElementsByClassName("item");
-                        for (var i = 0; i < x.length; i++) {
+                        for (var i = 0; i < items.length; i++) {
+                            console.log(items[i])
                             removeItem(items[i])
                         }
                     }
@@ -266,6 +268,7 @@
                         var key = e.which || e.keyCode;
                         //enter button
                         if (key === 13) {
+                            e.preventDefault();
                             renameItem(this)
                         }
                     },false)
@@ -305,25 +308,22 @@
                         }
                     })
                     .on('move', updateIndices)
-                    .on('sort', updateIndices);
-
             }
 
             //
             // Grid helper functions
             //
             function removeItem(elem) {
+                var id = elem.getElementsByClassName("muuri-card-id")[1].innerHTML;
                 grid.hide(elem, {
                     onFinish: function (items) {
                         var item = items[0];
                         grid.remove(item, { removeElements: true });
                     }
                 });
-                console.log(elem)
-                var id = elem.getElementsByClassName("muuri-card-id")[1].innerHTML;
+
                 removeBlok(id);
                 updateIndices();
-
             }
 
             function editItem(e) {
@@ -359,35 +359,30 @@
 
                 switch (size) {
                     case 'normaal':
-                        console.log(elem)
                         updateSize(id, 0);
-                        elem.style.width = '400px';
-                        elem.style.height = '400px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '375px';
+                        elem.style.height = '250px';
                         break;
                     case 'lang':
                         updateSize(id, 1);
-                        elem.style.width = '300px';
-                        elem.style.height = '450px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '400px';
+                        elem.style.height = '475px';
                         break;
                     case 'breed':
                         updateSize(id, 2);
-                        elem.style.width = '450px';
-                        elem.style.height = '300px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '600px';
+                        elem.style.height = '200px';
                         break;
 
                     case 'groot':
                         updateSize(id, 3);
-                        elem.style.width = '600px';
-                        elem.style.height = '600px';
-                        grid.refreshItems(elem).layout();
+                        elem.style.width = '700px';
+                        elem.style.height = '500px';
                         break;
                 }
 
+                grid.refreshItems().layout;
                 var resizeEvent = new Event('resize');
-
                 window.dispatchEvent(resizeEvent);
 
             }

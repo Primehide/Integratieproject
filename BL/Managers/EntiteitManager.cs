@@ -785,8 +785,7 @@ namespace BL
                 }
             }
             NaamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
-            ViewBag.Namen = namen;
-
+            //ViewBag.Namen = namen;
             return NaamType;
         }
 

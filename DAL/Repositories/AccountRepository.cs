@@ -21,12 +21,14 @@ namespace DAL
         public AccountRepository()
         {
             ctx = new EFContext();
+            ctx.Database.CommandTimeout = 180;
         }
 
         public AccountRepository(UnitOfWork uow)
         {
             ctx = uow.Context;
             ctx.SetUoWBool(true);
+            ctx.Database.CommandTimeout = 180;
         }
 
         public void addUser(Account account)
@@ -123,7 +125,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.IdentityId == ID).First();
+                .Single(a => a.IdentityId == ID);
             return account;
         }
 
@@ -136,7 +138,7 @@ namespace DAL
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
                 .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
-                .Where(a => a.AccountId == ID).First();
+                .Single(a => a.AccountId == ID);
             return account;
         }
 
