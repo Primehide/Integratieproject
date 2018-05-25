@@ -1,13 +1,9 @@
-
-using Domain.Platform;
-﻿using Domain.Account;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Domain.Account;
+using Domain.Platform;
 
-namespace BL
+namespace BL.Interfaces
 {
     public interface IPlatformManager
     {
@@ -19,8 +15,8 @@ namespace BL
         StringBuilder ConvertToCSV(List<Account> accounts);
 
         //refactor sander
-        void AddFaq(Domain.Platform.Faq faq, int platId);
+        void AddFaq(Faq faq, int platId);
         void DeleteFaq(int id);
-        List<Faq> GetAlleFaqs(int PlatId);
+        List<Faq> GetAlleFaqs(int platId);
     }
 }

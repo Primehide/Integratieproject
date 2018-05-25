@@ -181,7 +181,6 @@
                 gridElement.addEventListener('click', function (e) {
                     if (elementMatches(e.target, '.muuri-card-remove, .muuri-card-remove a ')) {
                         var elem = elementClosest(e.target, '.item');
-                        console.log(elem)
                         removeItem(elem);
                     }
                 });
@@ -192,7 +191,6 @@
                     if (confirm('Ben je zeker dat je alle grafieken wilt verwijderen?')) {
                         var items = document.getElementsByClassName("item");
                         for (var i = 0; i < items.length; i++) {
-                            console.log(items[i])
                             removeItem(items[i])
                         }
                     }
@@ -566,7 +564,6 @@
             function changeTitle(id, titel) {
                 var actionURL = '@Url.Action("UpdateTitel", "Account", new { blokId = "blokId_placeholder", titel = "titel_placeholder"})';
 
-                console.log(actionURL.allReplace({ "blokId_placeholder": id, "titel_placeholder": titel,"&amp;": '&' }));
                 $.ajax({
                     type: "POST",
                     url: actionURL.allReplace({ "blokId_placeholder": id, "titel_placeholder": titel, "&amp;": '&' }),
@@ -578,7 +575,6 @@
             function togglePublic(shared) {
                 var actionURL = '@Url.Action("SetPublic", "Account", new { dashboardId = Model.DashboardId, shared = "shared_placeholder" })';
 
-                console.log(actionURL.allReplace({ "shared_placeholder": shared, "&amp;": "&" }))
                 $.ajax({
                     type: "POST",
                     url: actionURL.allReplace({ "shared_placeholder": shared, "&amp;": "&" }),
@@ -606,7 +602,6 @@
             function updateSizeDimensions(id, x, y) {
                 var actionURL = '@Url.Action("UpdateSizeDimensions", "Account", new { blokId =  "blokId_placeholder", sizeX = "x_placeholder", sizeY = "y_placeholder"})';
 
-                console.log(actionURL.allReplace({ "blokId_placeholder": id, "x_placeholder": x, "y_placeholder": y, "&amp;": '&' }));
                 $.ajax({
                     type: "POST",
                     url: actionURL.allReplace({ "blokId_placeholder": id, "x_placeholder": x, "y_placeholder": y, "&amp;": '&' }),

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using DAL;
+using BL.Interfaces;
+using DAL.Interfaces;
 using DAL.Repositories;
 using Domain.Entiteit;
 using Domain.Enum;
@@ -208,14 +209,14 @@ namespace BL.Managers
 
                     foreach (var post in postsGisteren)
                     {
-                        sentimentGisteren += (post.Sentiment.polariteit * post.Sentiment.subjectiviteit) / aantalGisteren;
+                        sentimentGisteren += (post.Sentiment.Polariteit * post.Sentiment.Subjectiviteit) / aantalGisteren;
                     }
 
                     foreach (var post in postsVandaag)
                     {
-                        sentimentVandaag += (post.Sentiment.polariteit * post.Sentiment.subjectiviteit) / aantalVandaag;
+                        sentimentVandaag += (post.Sentiment.Polariteit * post.Sentiment.Subjectiviteit) / aantalVandaag;
                     }
-                    double sentimentVerschil = 0;
+                    double sentimentVerschil;
 
                     if (type == TrendType.STIJGEND)
                     {
@@ -331,7 +332,7 @@ namespace BL.Managers
 
         public void UpdateThema(Thema thema, HttpPostedFileBase imageFile)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             Thema toUpdate = GetThema(thema.EntiteitId);
             if (imageFile != null)
             {
@@ -387,7 +388,7 @@ namespace BL.Managers
                         }
                         if(cijferOptie.ToLower() == "aantalretweets")
                         {
-                            int retweets = postsEerste.Where(x => x.retweet == true).Count();
+                            int retweets = postsEerste.Count(x => x.Retweet == true);
                             grafiekMap.Add("Aantal retweets", retweets);
                         }
                         if(cijferOptie.ToLower() == "aanwezigetrends")
@@ -487,13 +488,13 @@ namespace BL.Managers
 
         public Persoon GetPerson(int id)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             return _entiteitRepository.ReadPerson(id);
         }
 
         public void RemovePerson(int id)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             _entiteitRepository.DeletePerson(id);
         }
         #endregion
@@ -501,7 +502,7 @@ namespace BL.Managers
         
         public void AddOrganisatie(Organisatie o, HttpPostedFileBase imageFile)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             if (imageFile != null)
             { 
             
@@ -514,7 +515,7 @@ namespace BL.Managers
 
         public Organisatie ChangeOrganisatie(Organisatie changedOrganisatie, HttpPostedFileBase imageFile)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
       
             Organisatie toUpdate = GetOrganisatie(changedOrganisatie.EntiteitId);
             if (imageFile != null)
@@ -533,25 +534,25 @@ namespace BL.Managers
 
         public List<Organisatie> GetAllOrganisaties(int platId)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             return _entiteitRepository.ReadAllOrganisaties().Where(x => x.PlatformId == platId).ToList();
         }
 
         public Organisatie GetOrganisatie(int id)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             return _entiteitRepository.ReadOrganisatie(id);
         }
 
         public void RemoveOrganisatie(int id)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             _entiteitRepository.DeleteOrganisatie(id);
         }
 
         public Organisatie ChangeOrganisatie(Organisatie changedOrganisatie, IEnumerable<string> selectedPeople, HttpPostedFileBase imageFile)
         {
-            InitNonExistingRepo(false);
+            InitNonExistingRepo();
             Organisatie toUpdate = GetOrganisatie(changedOrganisatie.EntiteitId);
 
 
@@ -694,7 +695,7 @@ namespace BL.Managers
                         jsonE.Organisations.Add(o);
                     }
                 }
-                jsonE.Naam = jsonE.Full_name;
+                jsonE.Naam = jsonE.FullName;
                 AddPerson(jsonE, null);
             }
         }
@@ -717,7 +718,7 @@ namespace BL.Managers
                 {
                     GrafiekWaarde waarde = new GrafiekWaarde();
                     waarde.Naam = vandaag.ToShortDateString();
-                    waarde.Waarde = e.Posts.Where(x => x.Date.Date == vandaag.Date).Count();
+                    waarde.Waarde = e.Posts.Count(x => x.Date.Date == vandaag.Date);
                     vandaag = vandaag.AddDays(1);
                     postFrequentie.Waardes.Add(waarde);
                 }
@@ -752,9 +753,6 @@ namespace BL.Managers
                     {
                         naamType.Add(entiteit, "Thema");
                     }
-
-
-
                 }
             }
             naamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
@@ -782,7 +780,7 @@ namespace BL.Managers
             List<Sleutelwoord> sleutelWoorden = new List<Sleutelwoord>();
             foreach (var woord in split)
             {
-                Sleutelwoord sleutelwoord = new Sleutelwoord {woord = woord};
+                Sleutelwoord sleutelwoord = new Sleutelwoord {Woord = woord};
                 sleutelWoorden.Add(sleutelwoord);
             }
 
@@ -795,9 +793,9 @@ namespace BL.Managers
             List<Double> polariteitPositief = new List<double>();
             foreach (Post post in posts)
             {
-                if (post.Sentiment.polariteit >= 0)
+                if (post.Sentiment.Polariteit >= 0)
                 {
-                    double waarde = post.Sentiment.polariteit;
+                    double waarde = post.Sentiment.Polariteit;
                     polariteitPositief.Add(waarde);
                 }
 
@@ -816,7 +814,7 @@ namespace BL.Managers
 
         public List<Sleutelwoord> AddSleutelWoordenToLijst(List<Sleutelwoord> sleutelWoorden)
         {
-            string woorden = sleutelWoorden[0].woord;
+            string woorden = sleutelWoorden[0].Woord;
             string[] split = woorden.Split(',');
             List<Sleutelwoord> mijnList = new List<Sleutelwoord>();
             foreach (string woord in split)
@@ -830,7 +828,7 @@ namespace BL.Managers
 
         public Thema AddSleutelWoordenToThema(Thema thema, List<Sleutelwoord> sleutelwoorden)
         {
-            string woorden = sleutelwoorden[0].woord;
+            string woorden = sleutelwoorden[0].Woord;
             if (woorden != null)
             {
                 string[] split = woorden.Split(',');

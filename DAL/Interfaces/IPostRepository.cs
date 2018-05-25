@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Domain.Entiteit;
 using Domain.Post;
 
-namespace DAL
+namespace DAL.Interfaces
 {
     public interface IPostRepository
     {
         void AddPosts(List<Post> posts);
         void AddPost(Post post);
-        List<Post> getAllPosts();
+        List<Post> GetAllPosts();
 
         IEnumerable<Grafiek> GetAllGrafieken();
 
@@ -22,6 +18,6 @@ namespace DAL
         List<Grafiek> AlleGrafieken();
         Grafiek ReadGrafiek(int id);
         void UpdateGrafiek(Grafiek grafiekToUpdate);
-        List<Entiteit> getAlleEntiteiten();
+        List<Entiteit> GetAlleEntiteiten();
     }
 }

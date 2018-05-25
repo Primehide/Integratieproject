@@ -2,12 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using System.Web.Script.Serialization;
 using WebUI.Hubs;
 
 namespace WebUI.Models
@@ -16,8 +12,8 @@ namespace WebUI.Models
     {
         static readonly string connString = @"Server=localhost\SQLEXPRESS;Database=Integratieproject;Trusted_Connection=True;";
 
-        internal static SqlCommand command = null;
-        internal static SqlDependency dependency = null;
+        internal static SqlCommand Command = null;
+        internal static SqlDependency Dependency = null;
 
 
         /// <summary>
@@ -36,20 +32,20 @@ namespace WebUI.Models
 
                     connection.Open();
                     //// Sanjay : Alwasys use "dbo" prefix of database to trigger change event
-                    using (command = new SqlCommand(@"SELECT [AlertId], [Alertnaam], [Triggered] FROM [Integratieproject].[dbo].[Alerts]", connection))
+                    using (Command = new SqlCommand(@"SELECT [AlertId], [Alertnaam], [Triggered] FROM [Integratieproject].[dbo].[Alerts]", connection))
                     {
-                        command.Notification = null;
+                        Command.Notification = null;
 
-                        if (dependency == null)
+                        if (Dependency == null)
                         {
-                            dependency = new SqlDependency(command);
-                            dependency.OnChange += new OnChangeEventHandler(dependency_OnChange);
+                            Dependency = new SqlDependency(Command);
+                            Dependency.OnChange += new OnChangeEventHandler(dependency_OnChange);
                         }
 
                         if (connection.State == ConnectionState.Closed)
                             connection.Open();
 
-                        var reader = command.ExecuteReader();
+                        var reader = Command.ExecuteReader();
 
                         while (reader.Read())
                         {
@@ -85,10 +81,10 @@ namespace WebUI.Models
 
         private static void dependency_OnChange(object sender, SqlNotificationEventArgs e)
         {
-            if (dependency != null)
+            if (Dependency != null)
             {
-                dependency.OnChange -= dependency_OnChange;
-                dependency = null;
+                Dependency.OnChange -= dependency_OnChange;
+                Dependency = null;
             }
             if (e.Type == SqlNotificationType.Change)
             {

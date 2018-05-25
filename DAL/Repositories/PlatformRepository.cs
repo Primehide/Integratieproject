@@ -1,48 +1,46 @@
-﻿using Domain.Account;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL.Interfaces;
 using Domain.Platform;
 
-namespace DAL
+namespace DAL.Repositories
 {
     public class PlatformRepository : IPlatformRepository
     {
-        private EFContext ctx;
+        private readonly EFContext _ctx;
 
         public PlatformRepository()
         {
-            ctx = new EFContext();
+            _ctx = new EFContext();
         }
 
         public PlatformRepository(UnitOfWork uow)
         {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
+            _ctx = uow.Context;
+            _ctx.SetUoWBool(true);
         }
 
         public void CreateDeelplatform(Deelplatform d)
         {
-            ctx.DeelPlatformen.Add(d);
-            ctx.SaveChanges();
+            _ctx.DeelPlatformen.Add(d);
+            _ctx.SaveChanges();
         }
 
         public void DeleteDeelplatform(int id)
         {
-            ctx.DeelPlatformen.Remove(ReadDeelplatform(id));
+            _ctx.DeelPlatformen.Remove(ReadDeelplatform(id));
         }
 
         public Deelplatform ReadDeelplatform(int id)
         {
-            return ctx.DeelPlatformen.Include("Entiteiten").Where(x => x.DeelplatformId == id).FirstOrDefault();
+            return _ctx.DeelPlatformen.Include("Entiteiten").FirstOrDefault(x => x.DeelplatformId == id);
         }
 
         public IEnumerable<Deelplatform> ReadAllDeelplatformen()
         {
-            return ctx.DeelPlatformen.Include("Entiteiten").ToList();
+            return _ctx.DeelPlatformen.Include("Entiteiten").ToList();
 
         }
 
@@ -55,33 +53,33 @@ namespace DAL
                 toChange.Naam = uDeelplatform.Naam;
                 toChange.Tagline = uDeelplatform.Tagline;
                 toChange.Entiteiten = uDeelplatform.Entiteiten;
-                ctx.Entry(toChange).State = System.Data.Entity.EntityState.Modified;
+                _ctx.Entry(toChange).State = EntityState.Modified;
             }
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
             return toChange;
         }
 
         public void AddFaq(Faq faq)
         {
-            ctx.Faqs.Add(faq);
-            ctx.SaveChanges();
+            _ctx.Faqs.Add(faq);
+            _ctx.SaveChanges();
         }
 
         public void UpdateFaq(Faq faq)
         {
-            ctx.Entry(faq).State = EntityState.Modified;
-            ctx.SaveChanges();
+            _ctx.Entry(faq).State = EntityState.Modified;
+            _ctx.SaveChanges();
         }
 
-        public void DeleteFaq(int FaqId)
+        public void DeleteFaq(int faqId)
         {
-            ctx.Faqs.Remove(ctx.Faqs.Find(FaqId));
-            ctx.SaveChanges();
+            _ctx.Faqs.Remove(_ctx.Faqs.Find(faqId) ?? throw new InvalidOperationException());
+            _ctx.SaveChanges();
         }
 
-        public List<Faq> GetAlleFaqs(int PlatId)
+        public List<Faq> GetAlleFaqs(int platId)
         {
-            return ctx.Faqs.Where(x => x.PlatformId == PlatId).ToList();
+            return _ctx.Faqs.Where(x => x.PlatformId == platId).ToList();
         }
     }
 }

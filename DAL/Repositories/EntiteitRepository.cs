@@ -4,30 +4,30 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
+using DAL.Interfaces;
 using Domain.Entiteit;
 
 namespace DAL.Repositories
 {
     public class EntiteitRepository : IEntiteitRepository
     {
-        private EFContext ctx;
+        private readonly EFContext _ctx;
 
         public EntiteitRepository()
         {
-            ctx = new EFContext();
+            _ctx = new EFContext();
         }
 
         public EntiteitRepository(UnitOfWork uow)
         {
-            ctx = uow.Context;
-            ctx.SetUoWBool(true);
+            _ctx = uow.Context;
+            _ctx.SetUoWBool(true);
         }
 
         public byte[] ConvertToBytes(HttpPostedFileBase image)
         {
-            byte[] imageBytes = null;
             BinaryReader reader = new BinaryReader(image.InputStream);
-            imageBytes = reader.ReadBytes((int)image.ContentLength);
+            var imageBytes = reader.ReadBytes(image.ContentLength);
             return imageBytes;
 
         }
@@ -36,28 +36,28 @@ namespace DAL.Repositories
 
         public void CreatePersonWithoutPhoto(Persoon p)
         {
-            ctx.Personen.Add(p);
-            ctx.SaveChanges();
+            _ctx.Personen.Add(p);
+            _ctx.SaveChanges();
 
         }
 
         public void CreatePersonWithPhoto(Persoon p, HttpPostedFileBase imageFile)
         {
             p.Image = ConvertToBytes(imageFile);
-            ctx.Personen.Add(p);
-            ctx.SaveChanges();
+            _ctx.Personen.Add(p);
+            _ctx.SaveChanges();
 
         }
 
         public void DeletePerson(int id)
         {
-            ctx.Personen.Remove(ReadPerson(id));
-            ctx.SaveChanges();
+            _ctx.Personen.Remove(ReadPerson(id));
+            _ctx.SaveChanges();
         }
 
         public IEnumerable<Persoon> ReadAllPeople()
         {
-            return ctx.Personen
+            return _ctx.Personen
                 .Include(p => p.Organisations)
                 .Include(p => p.Posts)
                 .Include(p => p.Posts.Select(x => x.Mentions))
@@ -71,19 +71,19 @@ namespace DAL.Repositories
 
         public Persoon ReadPerson(int id)
         {
-            return ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
+            return _ctx.Personen.Where(obj => obj.EntiteitId == id).Include(p => p.Organisations).Include(j => j.Posts.Select(s => s.Sentiment)).First();
         }
 
         public Persoon UpdatePerson(Persoon updatedPerson )
         {
-            ctx.Entry(updatedPerson).State = EntityState.Modified;
-            ctx.SaveChanges();
+            _ctx.Entry(updatedPerson).State = EntityState.Modified;
+            _ctx.SaveChanges();
             return updatedPerson;
         }
 
-        public byte[] GetPersonImageFromDataBase(int Id)
+        public byte[] GetPersonImageFromDataBase(int id)
         {
-            var q = from temp in ctx.Personen where temp.EntiteitId == Id select temp.Image;
+            var q = from temp in _ctx.Personen where temp.EntiteitId == id select temp.Image;
             byte[] cover = q.First();
             return cover;
 
@@ -96,52 +96,52 @@ namespace DAL.Repositories
         {
             foreach (Persoon p in o.Leden ?? new List<Persoon>())
             {
-                ctx.Entry(p).State = EntityState.Modified;
+                _ctx.Entry(p).State = EntityState.Modified;
             }
-            ctx.Organisaties.Add(o);
-            ctx.SaveChanges();
+            _ctx.Organisaties.Add(o);
+            _ctx.SaveChanges();
         }
 
         public void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase imageFile)
         {
             foreach (Persoon p in o.Leden ?? new List<Persoon>())
             {
-                ctx.Entry(p).State = EntityState.Modified;
+                _ctx.Entry(p).State = EntityState.Modified;
             }
             o.Image = ConvertToBytes(imageFile);
-            ctx.Organisaties.Add(o);
-            ctx.SaveChanges();
+            _ctx.Organisaties.Add(o);
+            _ctx.SaveChanges();
         }
 
 
         public Organisatie UpdateOrganisatie(Organisatie updatedOrganisatie)
         {
 
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
             return updatedOrganisatie;
         }
 
 
         public Organisatie ReadOrganisatie(int id)
         {
-            return ctx.Organisaties.Where(obj => obj.EntiteitId == id).Include(o => o.Leden).First();
+            return _ctx.Organisaties.Where(obj => obj.EntiteitId == id).Include(o => o.Leden).First();
         }
 
 
         public IEnumerable<Organisatie> ReadAllOrganisaties()
         {
-            return ctx.Organisaties.Include(o => o.Leden).ToList();
+            return _ctx.Organisaties.Include(o => o.Leden).ToList();
         }
 
         public void DeleteOrganisatie(int id)
         {
-            ctx.Organisaties.Remove(ReadOrganisatie(id));
-            ctx.SaveChanges();
+            _ctx.Organisaties.Remove(ReadOrganisatie(id));
+            _ctx.SaveChanges();
         }
 
-        public byte[] GetOrganisationImageFromDataBase(int Id)
+        public byte[] GetOrganisationImageFromDataBase(int id)
         {
-            var q = from temp in ctx.Organisaties where temp.EntiteitId == Id select temp.Image;
+            var q = from temp in _ctx.Organisaties where temp.EntiteitId == id select temp.Image;
 
             byte[] cover = q.First();
 
@@ -161,13 +161,13 @@ namespace DAL.Repositories
         #endregion
         public void AddEntiteit(Entiteit entiteit)
         {
-            ctx.Entiteiten.Add(entiteit);
-            ctx.SaveChanges();
+            _ctx.Entiteiten.Add(entiteit);
+            _ctx.SaveChanges();
         }
      
         public List<Entiteit> GetAlleEntiteiten()
         {
-            return ctx.Entiteiten
+            return _ctx.Entiteiten
                 .Include(x => x.Posts)
                 .Include(x => x.Trends)
                 .Include(x => x.Grafieken)
@@ -179,7 +179,7 @@ namespace DAL.Repositories
         {
             if (includePosts)
             {
-                return ctx.Entiteiten
+                return _ctx.Entiteiten
                 .Include(x => x.Posts)
                 .Include(x => x.Trends)
                 .Include(x => x.Grafieken)
@@ -187,7 +187,7 @@ namespace DAL.Repositories
                 .ToList();
             } else
             {
-                return ctx.Entiteiten
+                return _ctx.Entiteiten
                 .Include(x => x.Trends)
                 .Include(x => x.Grafieken)
                 .Include(x => x.Grafieken.Select(y => y.Waardes))
@@ -197,8 +197,8 @@ namespace DAL.Repositories
 
         public void UpdateEntiteit(Entiteit entiteit)
         {
-            ctx.Entry(entiteit).State = EntityState.Modified;
-            ctx.SaveChanges();
+            _ctx.Entry(entiteit).State = EntityState.Modified;
+            _ctx.SaveChanges();
         }
 
         public void CreateThema(Thema thema, HttpPostedFileBase imageFile)
@@ -208,15 +208,15 @@ namespace DAL.Repositories
                 thema.Image = ConvertToBytes(imageFile);
             }
       
-            ctx.Themas.Add(thema);
-            ctx.SaveChanges();
+            _ctx.Themas.Add(thema);
+            _ctx.SaveChanges();
         }
 
 
         public Thema UpdateThema(Thema updatedThema)
         {
-          ctx.Entry(updatedThema).State = EntityState.Modified;
-            ctx.SaveChanges();
+          _ctx.Entry(updatedThema).State = EntityState.Modified;
+            _ctx.SaveChanges();
             return updatedThema;
         }
 
@@ -225,64 +225,64 @@ namespace DAL.Repositories
             Thema thema = ReadThema(entiteitsId);
             foreach(Sleutelwoord sw in thema.SleutenWoorden.ToList())
             {
-                ctx.SleutelWoorden.Remove(sw);
+                _ctx.SleutelWoorden.Remove(sw);
             }
             thema.SleutenWoorden = null;
-            ctx.SaveChanges();
-            ctx.Themas.Remove(thema);
-            ctx.SaveChanges();
+            _ctx.SaveChanges();
+            _ctx.Themas.Remove(thema);
+            _ctx.SaveChanges();
         }
 
         public Thema ReadThema(int entiteitsId)
         {
-            Thema thema = ctx.Themas.Include(x => x.SleutenWoorden).SingleOrDefault(x => x.EntiteitId == entiteitsId);
+            Thema thema = _ctx.Themas.Include(x => x.SleutenWoorden).SingleOrDefault(x => x.EntiteitId == entiteitsId);
             return thema;
         }
 
         public Sleutelwoord ReadSleutelwoord(int sleutelId)
         {
-            Sleutelwoord sleutelwoord = ctx.SleutelWoorden.SingleOrDefault(x => x.SleutelwoordId == sleutelId);
+            Sleutelwoord sleutelwoord = _ctx.SleutelWoorden.SingleOrDefault(x => x.SleutelwoordId == sleutelId);
             return sleutelwoord;
         }
 
         public IEnumerable<Thema> ReadThemas()
         {
-            return ctx.Themas.Include(x => x.SleutenWoorden).ToList();
+            return _ctx.Themas.Include(x => x.SleutenWoorden).ToList();
         }
 
         public void DeleteSleutelwoord(int sleutelId)
         {
             Sleutelwoord sleutelwoord = ReadSleutelwoord(sleutelId);
-            ctx.SleutelWoorden.Remove(sleutelwoord);
-            ctx.SaveChanges();
+            _ctx.SleutelWoorden.Remove(sleutelwoord);
+            _ctx.SaveChanges();
         }
 
 
         public Entiteit ReadEntiteit(int id)
         {
-            return ctx.Entiteiten.Include(e => e.Posts.Select(y => y.Urls)).Include(e => e.Trends).SingleOrDefault(e => e.EntiteitId == id);
+            return _ctx.Entiteiten.Include(e => e.Posts.Select(y => y.Urls)).Include(e => e.Trends).SingleOrDefault(e => e.EntiteitId == id);
         }
 
 
        public IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id)
         {
-            return ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();
+            return _ctx.Entiteiten.Where(x => x.PlatformId == id).ToList();
         }
 
         public void DeleteEntiteitenVanDeelplatform(int id)
         {
-            ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
+            _ctx.Entiteiten.RemoveRange(ReadEntiteitenVanDeelplatform(id));
         }
 
         List<Entiteit> IEntiteitRepository.ReadEntiteiten(string naam)
         {
-            List<Entiteit> entiteiten = ctx.Entiteiten.Where(x => x.Naam.ToUpper().Contains(naam.ToUpper())).ToList();
-            List<Thema> themas = ctx.Themas.Include(p => p.SleutenWoorden).ToList();
+            List<Entiteit> entiteiten = _ctx.Entiteiten.Where(x => x.Naam.ToUpper().Contains(naam.ToUpper())).ToList();
+            List<Thema> themas = _ctx.Themas.Include(p => p.SleutenWoorden).ToList();
             foreach(Thema thema in themas)
             {
                 foreach(Sleutelwoord sl in thema.SleutenWoorden)
                 {
-                    if (sl.woord.ToUpper().Contains(naam.ToUpper())) {
+                    if (sl.Woord.ToUpper().Contains(naam.ToUpper())) {
                         entiteiten.Add(ReadEntiteit(thema.EntiteitId));
                     }
                 }

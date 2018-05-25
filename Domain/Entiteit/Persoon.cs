@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Domain.Entiteit
 {
@@ -20,9 +15,9 @@ namespace Domain.Entiteit
         public string Site { get; set; }
         public string DateOfBirth { get; set; }
         public string Facebook { get; set; }
-        public string Postal_Code { get; set; }
-        public string Full_name { get; set; }
-        public string position { get; set; }
+        public string PostalCode { get; set; }
+        public string FullName { get; set; }
+        public string Position { get; set; }
         public string Organisation { get; set; }
         public string Town { get; set; }
     }

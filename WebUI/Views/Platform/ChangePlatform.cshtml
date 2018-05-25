@@ -14,21 +14,21 @@
     <h4>Deelplatform</h4>
     <hr />
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    @Html.HiddenFor(model => model.requestedDeelplatform.DeelplatformId)
+    @Html.HiddenFor(model => model.RequestedDeelplatform.DeelplatformId)
 
     <div class="form-group">
-        @Html.LabelFor(model => model.requestedDeelplatform.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.RequestedDeelplatform.Naam, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.requestedDeelplatform.Naam, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.requestedDeelplatform.Naam, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.RequestedDeelplatform.Naam, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.RequestedDeelplatform.Naam, "", new { @class = "text-danger" })
         </div>
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(model => model.requestedDeelplatform.Tagline, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.RequestedDeelplatform.Tagline, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
-            @Html.EditorFor(model => model.requestedDeelplatform.Tagline, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.requestedDeelplatform.Tagline, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.RequestedDeelplatform.Tagline, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.RequestedDeelplatform.Tagline, "", new { @class = "text-danger" })
         </div>
     </div>
     <div class="form-group">
@@ -53,7 +53,7 @@
             </th>
             <th></th>
         </tr>
-        @foreach (var item in Model.personen)
+        @foreach (var item in Model.Personen)
         {
             <tr>
                 <td>
@@ -88,7 +88,7 @@
             </th>
             <th></th>
         </tr>
-        @foreach (var item in Model.organisaties)
+        @foreach (var item in Model.Organisaties)
         {
 
             <tr>
@@ -120,7 +120,7 @@
             </th>
             <th></th>
         </tr>
-        @foreach (var item in Model.themas)
+        @foreach (var item in Model.Themas)
         {
 
             <tr>
@@ -142,9 +142,9 @@
 </div>
 
 
-@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit", new { platformId = Model.requestedDeelplatform.DeelplatformId }, null)
-@Html.ActionLink("Maak nieuw Organisatie", "AddOrganisation", "Entiteit", new { platformId = Model.requestedDeelplatform.DeelplatformId }, null)
-@Html.ActionLink("Maak nieuw Thema", "CreateThema", "Entiteit", new { platid = Model.requestedDeelplatform.DeelplatformId }, null)
+@Html.ActionLink("Maak nieuw Persoon", "AddPerson", "Entiteit", new { platformId = Model.RequestedDeelplatform.DeelplatformId }, null)
+@Html.ActionLink("Maak nieuw Organisatie", "AddOrganisation", "Entiteit", new { platformId = Model.RequestedDeelplatform.DeelplatformId }, null)
+@Html.ActionLink("Maak nieuw Thema", "CreateThema", "Entiteit", new { platid = Model.RequestedDeelplatform.DeelplatformId }, null)
 
 <div>
     @Html.ActionLink("Back to List", "Index")

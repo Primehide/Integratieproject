@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Domain.Post
 {
@@ -14,7 +10,7 @@ namespace Domain.Post
         public List<GrafiekWaarde> Waardes { get; set; }
         public string Naam { get; set; }
         public Domain.Enum.GrafiekSoort GrafiekSoort { get; set; }
-        public Domain.Enum.SoortGegevens soortGegevens { get; set; }
+        public Domain.Enum.SoortGegevens SoortGegevens { get; set; }
         public List<CijferOpties> CijferOpties { get; set; }
     }
 }

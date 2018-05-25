@@ -6,14 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+<<<<<<< HEAD
+using BL.Interfaces;
+=======
 using BL;
+>>>>>>> master
 using BL.Managers;
 using Domain.Account;
 using Domain.Entiteit;
-using Domain.Enum;
-using Domain.Post;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUI.Models;
@@ -66,7 +67,7 @@ namespace WebUI.Controllers
             IEntiteitManager entiteitManager = new EntiteitManager();
             Models.DashboardModel model = new DashboardModel()
             {
-                GevolgdeItems = accountManager.getAccount(User.Identity.GetUserId()).Items.ToList(),
+                GevolgdeItems = accountManager.GetAccount(User.Identity.GetUserId()).Items.ToList(),
                 AlleEntiteiten = entiteitManager.GetAlleEntiteiten()
             };
             return View(model);
@@ -80,8 +81,8 @@ namespace WebUI.Controllers
 
             WebUI.Models.DashboardModel model = new DashboardModel()
             {
-                DashboardId = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.DashboardId,
-                Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
+                DashboardId = accountManager.GetAccount(User.Identity.GetUserId()).Dashboard.DashboardId,
+                Configuratie = accountManager.GetAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
                 GrafiekLabels = new Dictionary<string, string>(),
                 GrafiekDataSets = new Dictionary<string, string>(),
                 ColorCodes = new List<string>(),
@@ -125,7 +126,7 @@ namespace WebUI.Controllers
                 //dataset teller resetten
                 dataSetTeller = 0;
                 //kijkt na of het soort gegeven een postfrequentie is. Als dat zo is zijn de labels anders.
-                if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                if (blok.Grafiek.SoortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
                 {
                     DateTime vandaag = DateTime.Today;
                     //Labels aanmaken van laatste 10 dagen
@@ -152,7 +153,7 @@ namespace WebUI.Controllers
                     }
 
                 }
-                else if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                else if (blok.Grafiek.SoortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
                 {
                     StringBuilder labelBuilder = new StringBuilder();
                     StringBuilder dataBuilder = new StringBuilder();
@@ -175,7 +176,7 @@ namespace WebUI.Controllers
         public ActionResult Visit(int id)
         {
             IAccountManager accountManager = new AccountManager();
-            Account account = accountManager.getAccount(id);
+            Account account = accountManager.GetAccount(id);
             WebUI.Models.DashboardModel model = new DashboardModel()
             {
                 IsPublic = account.Dashboard.IsPublic,
@@ -224,7 +225,7 @@ namespace WebUI.Controllers
                 //dataset teller resetten
                 dataSetTeller = 0;
                 //kijkt na of het soort gegeven een postfrequentie is. Als dat zo is zijn de labels anders.
-                if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                if (blok.Grafiek.SoortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
                 {
                     DateTime vandaag = DateTime.Today;
                     //Labels aanmaken van laatste 10 dagen
@@ -251,7 +252,7 @@ namespace WebUI.Controllers
                     }
 
                 }
-                else if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                else if (blok.Grafiek.SoortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
                 {
                     StringBuilder labelBuilder = new StringBuilder();
                     StringBuilder dataBuilder = new StringBuilder();
@@ -306,14 +307,18 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
+<<<<<<< HEAD
+            List<Entiteit> alleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
+=======
             List<Entiteit> AlleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
+>>>>>>> master
             IPlatformManager platformManager = new PlatformManager();
             var dp = platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
-                Personen = AlleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
-                Organisaties = AlleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
-                Themas = AlleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Personen = alleEntiteiten.OfType<Persoon>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Organisaties = alleEntiteiten.OfType<Organisatie>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
+                Themas = alleEntiteiten.OfType<Thema>().Where(x => x.PlatformId == (int)System.Web.HttpContext.Current.Session["PlatformID"]).ToList(),
             };
             return View(model);
         }
@@ -448,7 +453,7 @@ namespace WebUI.Controllers
         public ActionResult UpdateProfile()
         {
             AccountManager acm = new AccountManager();
-            Domain.Account.Account model = acm.getAccount(User.Identity.GetUserId());
+            Account model = acm.GetAccount(User.Identity.GetUserId());
             return View(model);
         }
 
@@ -483,8 +488,7 @@ namespace WebUI.Controllers
 
             IAccountManager accountManager = new AccountManager();
             Alert alert = accountManager.GetAlert(id);
-            AlertViewModel avm = new AlertViewModel();
-            avm.alert = alert;
+            AlertViewModel avm = new AlertViewModel {Alert = alert};
             return View(avm);
         }
 
@@ -497,16 +501,12 @@ namespace WebUI.Controllers
             if (ModelState.IsValid)
             {
                 //change
-
-             
-                Entiteit entiteit = new Entiteit();
-                entiteit = FillEntiteiten().Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
-                modelalert.alert.Entiteit = entiteit;
-                modelalert. alert.AlertId = id;
-                accountManager.UpdateAlert(modelalert.alert);
+                var entiteit = FillEntiteiten().Keys.FirstOrDefault(x => x.Naam == modelalert.Type);
+                modelalert.Alert.Entiteit = entiteit;
+                modelalert. Alert.AlertId = id;
+                accountManager.UpdateAlert(modelalert.Alert);
 
                 List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
-
 
                 return RedirectToAction("UpdateAlerts", newAlerts);
             }
@@ -519,13 +519,13 @@ namespace WebUI.Controllers
         {
             AccountManager accountManager = new AccountManager();
             //entiteit ID ophalen
-            int entiteitId = FillEntiteiten().Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
+            int entiteitId = FillEntiteiten().Keys.Where(x => x.Naam == model.Type).FirstOrDefault().EntiteitId;
   
 
             //Account 
-            model.alert.Account = accountManager.getAccount(User.Identity.GetUserId());
+            model.Alert.Account = accountManager.GetAccount(User.Identity.GetUserId());
            
-            accountManager.AddAlert(model.alert, entiteitId, model.web, model.android, model.mail);
+            accountManager.AddAlert(model.Alert, entiteitId, model.Web, model.Android, model.Mail);
             List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
 
             return View("UpdateAlerts", newAlerts);
@@ -540,7 +540,7 @@ namespace WebUI.Controllers
         {
             AccountManager acm = new AccountManager();
             var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-            Domain.Account.Account accountToUpdate = acm.getAccount(user.Id);
+            Domain.Account.Account accountToUpdate = acm.GetAccount(user.Id);
 
             accountToUpdate.Voornaam = model.Voornaam;
             accountToUpdate.Achternaam = model.Achternaam;
@@ -562,14 +562,17 @@ namespace WebUI.Controllers
                 UserManager.Update(user);
 
                 //send mail 
-                var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                   new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                await UserManager.SendEmailAsync(user.Id, "confirmation",
-                   "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                if (Request.Url != null)
+                {
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                        new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "confirmation",
+                        "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                }
 
                 //sign out
-                var AuthenticationManager = HttpContext.GetOwinContext().Authentication;
-                AuthenticationManager.SignOut();
+                var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                authenticationManager.SignOut();
 
             }
 
@@ -608,7 +611,7 @@ namespace WebUI.Controllers
         {
             string id = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
-            Account account = accountManager.getAccount(id);
+            Account account = accountManager.GetAccount(id);
             List<Entiteit> entiteiten = account.ReviewEntiteiten;
             List<Persoon> deelplatformPersonen = new List<Persoon>();
             List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
@@ -616,19 +619,19 @@ namespace WebUI.Controllers
 
             foreach (Entiteit e in entiteiten)
             {
-                if (e is Persoon)
+                if (e is Persoon persoon)
                 {
-                    deelplatformPersonen.Add((Persoon)e);
+                    deelplatformPersonen.Add(persoon);
                 }
                 else
-                if (e is Organisatie)
+                if (e is Organisatie organisatie)
                 {
-                    deelplatformOrganisaties.Add((Organisatie)e);
+                    deelplatformOrganisaties.Add(organisatie);
                 }
                 else
-                if (e is Thema)
+                if (e is Thema thema)
                 {
-                    deelplatformThemas.Add((Thema)e);
+                    deelplatformThemas.Add(thema);
                 }
             }
 
@@ -657,10 +660,8 @@ namespace WebUI.Controllers
             Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
             ArrayList namen = new ArrayList();
 
-            List<Entiteit> entiteits = new List<Entiteit>();
-
             EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            var entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             if (NaamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)

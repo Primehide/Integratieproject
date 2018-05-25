@@ -23,7 +23,7 @@
             <div class="input-group">
                 <div class="input-group-addon"><i class="ti-text"></i></div>
 
-                @Html.TextBoxFor(m => m.alert.AlertNaam, new { @class = "form-control", placeholder = "Alertnaam" })
+                @Html.TextBoxFor(m => m.Alert.AlertNaam, new { @class = "form-control", placeholder = "Alertnaam" })
 
             </div>
         </div>
@@ -35,7 +35,7 @@
             <div class="input-group">
                 <div class="input-group-addon"><i class="ti-stats-up"></i></div>
 
-                @Html.EnumDropDownListFor(m => m.alert.TrendType, new { @id = "trendtype", @class = "form-control", placeholder = "trendtype" })
+                @Html.EnumDropDownListFor(m => m.Alert.TrendType, new { @id = "trendtype", @class = "form-control", placeholder = "trendtype" })
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
             <div class="input-group">
                 <div class="input-group-addon"><i class="ti-search"></i></div>
 
-                @Html.EnumDropDownListFor(m => m.alert.Voorwaarde, new { @id = "voorwaarde", @class = "form-control" })
+                @Html.EnumDropDownListFor(m => m.Alert.Voorwaarde, new { @id = "voorwaarde", @class = "form-control" })
             </div>
         </div>
     </div>
@@ -54,7 +54,7 @@
             <div class="input-group">
                 <div class="input-group-addon"><i class="ti-infinite"></i></div>
 
-                @Html.TextBoxFor(m => m.alert.MinWaarde, new { @class = "form-control", placeholder="Minimumwaarde" })
+                @Html.TextBoxFor(m => m.Alert.MinWaarde, new { @class = "form-control", placeholder="Minimumwaarde" })
 
             </div>
         </div>

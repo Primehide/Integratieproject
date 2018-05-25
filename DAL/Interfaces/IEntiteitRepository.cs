@@ -1,9 +1,8 @@
-﻿using Domain.Entiteit;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web;
+using Domain.Entiteit;
 
-
-namespace DAL
+namespace DAL.Interfaces
 {
     public interface IEntiteitRepository
     {
@@ -14,7 +13,7 @@ namespace DAL
         void UpdatePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations );
         void DeletePerson(int id);
         IEnumerable<Persoon> ReadAllPeople();
-        byte[] GetPersonImageFromDataBase(int Id);
+        byte[] GetPersonImageFromDataBase(int id);
 
         void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase imageFile);
         void CreateOrganisatieWithoutPhoto(Organisatie o);
@@ -23,7 +22,7 @@ namespace DAL
         Organisatie ReadOrganisatie(int id);
         void DeleteOrganisatie(int id);
         Organisatie UpdateOrganisatie(Organisatie changedOrganisatie, IEnumerable<string> selectedPeople );
-        byte[] GetOrganisationImageFromDataBase(int Id);
+        byte[] GetOrganisationImageFromDataBase(int id);
 
         void AddEntiteit(Entiteit entiteit);
         List<Entiteit> GetAlleEntiteiten();

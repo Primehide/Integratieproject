@@ -1,36 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DAL;
 using Domain.Account;
-using Domain.Entiteit;
 using Domain.Enum;
 using Domain.Post;
 
-namespace BL
+namespace BL.Interfaces
 {
     public interface IAccountManager
     {
-        void addUser(Account account);
-        void genereerAlerts();
-        List<Alert> getAlleAlerts();
-        List<Alert> GetUserAlerts(string accountID);
+        void AddUser(Account account);
+        void GenereerAlerts();
+        List<Alert> GetAlleAlerts();
+        List<Alert> GetUserAlerts(string accountId);
         Alert GetAlert(int alertid);
         void UpdateAlert(Alert alert);
         void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail);
-        void DeleteAlert(int alertID);
-        Account getAccount(string ID);
-        Account getAccount(int ID);
-        void DeleteGrafiekWaardes(int grafiekID);
-        void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
+        void DeleteAlert(int alertId);
+        Account GetAccount(string id);
+        Account GetAccount(int id);
+        void DeleteGrafiekWaardes(int grafiekId);
+        void GrafiekAanGebruikerToevoegen(string identityId, GrafiekType typeGrafiek, List<int> entiteitInts, List<string> cijferOpties, string vergelijkOptie, GrafiekSoort grafiekSoort);
         List<Account> GetAccounts();
         void UpdateUser(Account account);
         void DeleteUser(string accountId);
-        void FollowEntity(string identityID, int entiteitID);
-        void UnfollowEntity(string identityID, int entiteitID);
-        void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, Domain.Enum.GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort);
+        void FollowEntity(string identityId, int entiteitId);
+        void UnfollowEntity(string identityId, int entiteitId);
+        void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, GrafiekType grafiekType, int platId, string identityId, string naam, GrafiekSoort grafiekSoort);
         void UpdateGrafiek(int grafiekId);
         void DeleteDashboardBlok(Account account, int positie);
         void UpdateLocatie(int blokId, int locatie);

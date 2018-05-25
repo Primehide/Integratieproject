@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using BL;
 using Domain.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -12,6 +11,10 @@ using Microsoft.Owin.Security;
 using WebUI.Models;
 using Domain.Entiteit;
 using System.Collections;
+<<<<<<< HEAD
+using BL.Interfaces;
+=======
+>>>>>>> master
 using BL.Managers;
 using Domain.Post;
 using Domain.Enum;
@@ -127,7 +130,7 @@ namespace WebUI.Controllers
             {
                 if (item.TenantId == (int)System.Web.HttpContext.Current.Session["PlatformID"])
                 {
-                    domainUsers.Add(accountManager.getAccount(item.Id));
+                    domainUsers.Add(accountManager.GetAccount(item.Id));
                 }
             }
 
@@ -201,22 +204,22 @@ namespace WebUI.Controllers
         {
             var um = MakeUserManager();
             AccountManager accountManager = new AccountManager();
-            Account a = accountManager.getAccount(accountId);
+            Account a = accountManager.GetAccount(accountId);
             a.IsAdmin = true;
             accountManager.UpdateUser(a);
             await um.AddToRoleAsync(accountId, "Admin");
-            return View("EditUserAdmin", accountManager.getAccount(accountId));
+            return View("EditUserAdmin", accountManager.GetAccount(accountId));
         }
 
         public async Task<ViewResult> UnsetAdmin(string accountId)
         {
             var um = MakeUserManager();
             AccountManager am = new AccountManager();
-            Account a = am.getAccount(accountId);
+            Account a = am.GetAccount(accountId);
             a.IsAdmin = false;
             am.UpdateUser(a);
             await um.RemoveFromRoleAsync(accountId, "Admin");
-            return View("EditUserAdmin", am.getAccount(accountId));
+            return View("EditUserAdmin", am.GetAccount(accountId));
         }
 
         //
@@ -659,8 +662,8 @@ namespace WebUI.Controllers
 
         public virtual ActionResult GenereerAlerts()
         {
-            BL.AccountManager accountManager = new BL.AccountManager();
-            accountManager.genereerAlerts();
+            AccountManager accountManager = new AccountManager();
+            accountManager.GenereerAlerts();
             return new HttpStatusCodeResult(200);
         }
 
@@ -738,7 +741,7 @@ namespace WebUI.Controllers
         public ActionResult EditUserAdmin(string id)
         {
             AccountManager accountManager = new AccountManager();
-            Account model = accountManager.getAccount(id);
+            Account model = accountManager.GetAccount(id);
             return View(model);
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -835,32 +838,33 @@ namespace WebUI.Controllers
             return RedirectToAction("VolgItems", "Manage");
         }
 
-        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
+        
         private void FillOrganisaties()
         {
             ArrayList organisaties = new ArrayList();
             List<Entiteit> entiteits = new List<Entiteit>();
             EntiteitManager mgr = new EntiteitManager();
+            Dictionary<Entiteit, string> naamType = new Dictionary<Entiteit, string>();
             entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-            if (NaamType.Count == 0)
+            if (naamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)
                 {
 
                     if (entiteit is Organisatie)
                     {
-                        NaamType.Add(entiteit, "Organisatie");
+                        naamType.Add(entiteit, "Organisatie");
                     }
                 }
             }
-            NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
+            naamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
             ViewBag.Organisaties = organisaties;
         }
 
         public ActionResult DeleteDashboardBlok(int id)
         {
             IAccountManager accountManager = new AccountManager();
-            var account = accountManager.getAccount(User.Identity.GetUserId());
+            var account = accountManager.GetAccount(User.Identity.GetUserId());
             accountManager.DeleteDashboardBlok(account, id);
             return new EmptyResult();
         }

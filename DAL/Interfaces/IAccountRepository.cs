@@ -1,31 +1,27 @@
-﻿using Domain.Account;
-using Domain.Entiteit;
-using Domain.Enum;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Account;
+using Domain.Enum;
 
-namespace DAL
+namespace DAL.Interfaces
 {
     public interface IAccountRepository
     {
-        void addUser(Domain.Account.Account account);
-        List<Alert> getAlleAlerts();
-        Alert ReadAlert(int alertID);
+        void AddUser(Account account);
+        List<Alert> GetAlleAlerts();
+        Alert ReadAlert(int alertId);
         void UpdateAlert(Alert alert);
         void AddAlert(Alert alert);
-        void DeleteAlert(int alertID);
-        void updateUser(Domain.Account.Account account);
-        void DeleteGrafiekWaardes(int grafiekID);
-        Account ReadAccount(string ID);
-        Account ReadAccount(int ID);
-        List<Account> readAccounts();
-        void addDeviceId(string userId, string device);
+        void DeleteAlert(int alertId);
+        void UpdateUser(Account account);
+        void DeleteGrafiekWaardes(int grafiekId);
+        Account ReadAccount(string id);
+        Account ReadAccount(int id);
+        List<Account> ReadAccounts();
+        void AddDeviceId(string userId, string device);
         void DeleteUser(string accountId);
-        void FollowEntiteit(string accountId, int entiteitID);
-        void UnFollowEntiteit(string accountId, int EntiteitID);
+        void FollowEntiteit(string accountId, int entiteitId);
+        void UnFollowEntiteit(string accountId, int entiteitId);
         void DeleteDashboardBlok(Account account, int id);
         void UpdateLocatie(int blokId, int locatie);
         void UpdateSize(int blokId, BlokGrootte blokGrootte);

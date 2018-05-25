@@ -1,8 +1,9 @@
-﻿using BL;
-using Domain.Enum;
+﻿using Domain.Enum;
 using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Web.Mvc;
+using BL.Interfaces;
+using BL.Managers;
 
 namespace WebUI.Controllers
 {
@@ -25,7 +26,7 @@ namespace WebUI.Controllers
         {
             IAccountManager accountManager = new AccountManager();
             var webAlerts = accountManager
-                .getAlleAlerts()
+                .GetAlleAlerts()
                 .Where(x => x.Triggered && x.Account.IdentityId == User.Identity.GetUserId() && x.PlatformType == PlatformType.WEB)
                 .ToList();
 
