@@ -21,6 +21,7 @@ namespace BL
         void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail);
         void DeleteAlert(int alertID);
         Account getAccount(string ID);
+        Account getAccount(int ID);
         void updateUser(Account account);
         void DeleteGrafiekWaardes(int grafiekID);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
@@ -34,5 +35,13 @@ namespace BL
         void UpdateAlert(int id);
         void AddUserGrafiek(List<CijferOpties> opties, List<int> entiteitIds, Domain.Enum.GrafiekType grafiekType, int platId, string IdentityId, string naam, GrafiekSoort grafiekSoort);
         void UpdateGrafiek(int grafiekId);
+        void DeleteDashboardBlok(Account account, int positie);
+        void UpdateLocatie(int blokId, int locatie);
+        void UpdateSize(int blokId, BlokGrootte blokGrootte);
+        void UpdateTitel(int blokId, String titel);
+        void UpdateSizeDimensions(int blokId, int x, int y);
+        Dashboard GetPublicDashboard(int id);
+        void UpdateConfiguratieTitle(int configuratieId, String titel);
+        void SetPublic(int dashboardId, bool shared);
     }
 }

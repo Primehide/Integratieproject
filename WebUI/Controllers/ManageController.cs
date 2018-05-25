@@ -95,6 +95,25 @@ namespace WebUI.Controllers
             model.ColorCodes.Add("#DA81F5");
             model.ColorCodes.Add("#FA5882");
             model.ColorCodes.Add("#0B6121");
+            model.ColorCodes.Add("#4286f4");
+
+            model.ColorCodes.Add("#7bce81");
+            model.ColorCodes.Add("#2d9183");
+            model.ColorCodes.Add("#99445c");
+            model.ColorCodes.Add("#2c5b48");
+            model.ColorCodes.Add("#b74909");
+            model.ColorCodes.Add("#e2b663");
+            model.ColorCodes.Add("#7c5f26");
+            model.ColorCodes.Add("#e8a31e");
+            model.ColorCodes.Add("#e2e08c");
+            model.ColorCodes.Add("#7f7d2f");
+            model.ColorCodes.Add("#d3ce10");
+
+            model.ColorCodes.Add("#cbf2d2");
+            model.ColorCodes.Add("#21dd43");
+            model.ColorCodes.Add("#d6aeef");
+            model.ColorCodes.Add("#8b0fd8");
+            model.ColorCodes.Add("#dd0f95");
 
             int grafiekTeller = 0;
             int dataSetTeller = 0;
@@ -148,6 +167,113 @@ namespace WebUI.Controllers
             }
 
             return View(model);
+            //return View();
+        }
+
+        public ActionResult Visit(int id)
+        {
+            IAccountManager accountManager = new AccountManager();
+            Account account = accountManager.getAccount(id);
+            WebUI.Models.DashboardModel model = new DashboardModel()
+            {
+                IsPublic = account.Dashboard.IsPublic,
+                Configuratie = account.Dashboard.Configuratie,
+                GrafiekLabels = new Dictionary<string, string>(),
+                GrafiekDataSets = new Dictionary<string, string>(),
+                ColorCodes = new List<string>()
+            };
+
+            model.ColorCodes.Add("#2E2EFE");
+            model.ColorCodes.Add("#74DF00");
+            model.ColorCodes.Add("#BF00FF");
+            model.ColorCodes.Add("#6E6E6E");
+            model.ColorCodes.Add("#0489B1");
+            model.ColorCodes.Add("#FE2E2E");
+            model.ColorCodes.Add("#FF8000");
+            model.ColorCodes.Add("#DA81F5");
+            model.ColorCodes.Add("#FA5882");
+            model.ColorCodes.Add("#0B6121");
+            model.ColorCodes.Add("#4286f4");
+
+            model.ColorCodes.Add("#7bce81");
+            model.ColorCodes.Add("#2d9183");
+            model.ColorCodes.Add("#99445c");
+            model.ColorCodes.Add("#2c5b48");
+            model.ColorCodes.Add("#b74909");
+            model.ColorCodes.Add("#e2b663");
+            model.ColorCodes.Add("#7c5f26");
+            model.ColorCodes.Add("#e8a31e");
+            model.ColorCodes.Add("#e2e08c");
+            model.ColorCodes.Add("#7f7d2f");
+            model.ColorCodes.Add("#d3ce10");
+
+            model.ColorCodes.Add("#cbf2d2");
+            model.ColorCodes.Add("#21dd43");
+            model.ColorCodes.Add("#d6aeef");
+            model.ColorCodes.Add("#8b0fd8");
+            model.ColorCodes.Add("#dd0f95");
+
+
+            int grafiekTeller = 0;
+            int dataSetTeller = 0;
+            //overlopen van elke blok
+            foreach (var blok in model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+            {
+                //dataset teller resetten
+                dataSetTeller = 0;
+                //kijkt na of het soort gegeven een postfrequentie is. Als dat zo is zijn de labels anders.
+                if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POSTFREQUENTIE)
+                {
+                    DateTime vandaag = DateTime.Today;
+                    //Labels aanmaken van laatste 10 dagen
+                    //post frequentie toont het aantal posts van vandaag tot 10 dagen terug
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    //Labels aanmaken van laatste 10 dagen
+                    for (int i = 10; i > 0; i--)
+                    {
+                        labelBuilder.Append("'").Append(vandaag.AddDays(-i).Date.ToShortDateString()).Append("'").Append(",");
+                    }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    //Elke waarde van de grafiek overlopen en toevoegen aan de dictonary
+                    for (int i = 0; i < blok.Grafiek.Waardes.Count; i++)
+                    {
+                        if (blok.Grafiek.Waardes.ElementAt(i).Naam.ToLower().Contains("endpostfrequentie"))
+                        {
+                            model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                            dataSetTeller++;
+                            dataBuilder.Clear();
+                            continue;
+                        }
+                        dataBuilder.Append(blok.Grafiek.Waardes.ElementAt(i).Waarde).Append(",");
+                    }
+
+                }
+                else if (blok.Grafiek.soortGegevens == Domain.Enum.SoortGegevens.POPULARITEIT)
+                {
+                    StringBuilder labelBuilder = new StringBuilder();
+                    StringBuilder dataBuilder = new StringBuilder();
+                    foreach (var waarde in blok.Grafiek.Waardes)
+                    {
+                        labelBuilder.Append("'").Append(waarde.Naam).Append("'").Append(",");
+                        dataBuilder.Append(waarde.Waarde).Append(",");
+                    }
+                    model.GrafiekLabels.Add("LabelsGrafiek " + grafiekTeller, labelBuilder.ToString());
+                    model.GrafiekDataSets.Add("DataSetsGrafiek " + grafiekTeller + "DataSet " + dataSetTeller, dataBuilder.ToString());
+                }
+                //grafiek is gemaakt, teller met 1 verhogen
+                grafiekTeller++;
+            }
+
+            if (model.IsPublic)
+            {
+                return View(model);
+            }
+            else
+            {
+                return View();
+            }
+
             //return View();
         }
 

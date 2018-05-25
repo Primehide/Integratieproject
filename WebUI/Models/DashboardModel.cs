@@ -7,9 +7,11 @@ namespace WebUI.Models
 {
     public class DashboardModel
     {
+        public int DashboardId { get; set; }
         public Domain.Account.DashboardConfiguratie Configuratie { get; set; }
         public int CanvasCounter { get; set; }
         public int ScriptCounter { get; set; }
+        public Boolean IsPublic { get; set; }
 
         public Dictionary<string,string> GrafiekLabels { get; set; }
         public Dictionary<string, string> GrafiekDataSets { get; set; }
