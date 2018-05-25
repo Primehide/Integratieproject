@@ -127,6 +127,7 @@
     <Compile Include="Entiteit\Thema.cs" />
     <Compile Include="Entiteit\Trend.cs" />
     <Compile Include="Account\Dashboard.cs" />
+    <Compile Include="Enum\BlokGrootte.cs" />
     <Compile Include="Enum\GrafiekSoort.cs" />
     <Compile Include="Enum\GrafiekType.cs" />
     <Compile Include="Enum\PlatformType.cs" />

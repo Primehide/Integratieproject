@@ -1,34 +1,87 @@
 ﻿@model WebUI.Models.DashboardModel
-@using System.Linq
 
 @{
-    Layout = null;
-}
 
-@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+    Layout = null;
+    var blokken = Model.Configuratie.DashboardBlokken;
+
+    var naam = Model.Configuratie.ConfiguratieNaam;
+    if (naam == null)
+    {
+        naam = "Jouw dashboard";
+
+    }
+
+    String check = "";
+    if (Model.IsPublic)
+    {
+        check = "checked";
+    }
+
+    String itemTemplate = "";
+    String itemTemplateList = "";
+}
+<link rel="stylesheet" type="text/css" href="~/Content/Muuri.css" />
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml");
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml");
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml");
+
 
 <body class="fix-header card-no-border fix-sidebar mini-sidebar">
     <div id="main-wrapper">
-
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardLeftBar.cshtml")
         <div class="page-wrapper">
             <div class="container-fluid">
+
                 <!-- ============================================================== -->
                 <!-- Bread crumb and right sidebar toggle -->
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Jou Grafieken</h3>
+                        <h3 id="dashboardTitel" class="text-themecolor edit-indicator in-line-left" contenteditable="true">
+                            @naam
+                        </h3>
+                        <i id="dashboardOptionsToggle" class="material-icons title-icon in-line-left">build</i>
                     </div>
+
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
                         </ol>
                     </div>
+
+                    <div class="col-md-9">
+                        <p class="dashboard-options">
+                            Dashboard is publiek:
+                            <label class="toggle-switch">
+                                <input id="sharedSlider" type="checkbox" @check>
+                                <span class="toggle-slider rounded-slider"></span>
+                            </label>
+
+                            <br />
+
+                            <label id="visit-link">
+                                https://localhost:44365/manage/visit/@Model.DashboardId
+                            </label>
+
+                            <br />
+
+                            <button id="delete-all-btn" type="button" class="btn waves-effect waves-light btn-danger">Dashboard leegmaken</button>
+                        </p>
+                    </div>
+
                     <div>
                         <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
                     </div>
+
+                    <section class="grid-demo no-padding">
+
+                        <div class="grid"></div>
+
+                    </section>
+
+
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Bread crumb and right sidebar toggle -->
@@ -37,7 +90,7 @@
                 <!-- Start Page Content -->
                 <!-- Dit gedeelte eronder moogde aanpassen -->
                 <!-- ============================================================== -->
-                @if(Model.Configuratie.DashboardBlokken.Count == 0)
+                @if (Model.Configuratie.DashboardBlokken.Count == 0)
                 {
                     <div class="row">
                         <div class="col-md-12 text-center">
@@ -50,168 +103,705 @@
                             </div>
                         </div>
                     </div>
+
                 }
-                <div class="row">
-                    @foreach (var blok in Model.Configuratie.DashboardBlokken)
-                    {
-                        if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
-                        {
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                                        <div class="table-responsive">
-                                            <table class="table table-bordered table-striped ">
-                                                <thead>
-                                                    <tr>
-                                                        <th></th>
-                                                        <th class="text-center">
-                                                            Waarde
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var waarde in blok.Grafiek.Waardes)
-                                                    {
-                                                        <tr>
-                                                            <th class="text-nowrap" scope="row">@waarde.Naam</th>
-                                                            @if (waarde.Naam.ToLower().Contains("trend"))
-                                                            {
-                                                                <td>Aanwezig</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>@waarde.Waarde</td>
-                                                            }
-                                                        </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
-                        {
-                            <div class="col-md-4" style="overflow:hidden;">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="card-title">@blok.Grafiek.Naam</h4>
-                                        <div>
-                                            <canvas id="chart @Model.CanvasCounter"></canvas>
-                                        </div>
-                                        <a href="/Account/EditGrafiek?id=@blok.Grafiek.GrafiekId" class="btn waves-effect waves-light btn-success">Edit</a>
-                                    </div>
-                                </div>
-                            </div>
-                            Model.CanvasCounter++;
-                        }
-                    }
-                </div>
                 <!-- ============================================================== -->
                 <!-- End Page Content -->
                 <!-- ============================================================== -->
+
+                @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+                @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
             </div>
-            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
         </div>
-        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
-        @foreach (var blok in Model.Configuratie.DashboardBlokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            //
+            // Initialize stuff
+            // 初始化物件，宣告一堆變數。
+            //
+            var grid = null;
+            var docElem = document.documentElement;
+            var demo = document.querySelector('.grid-demo');
+            var gridElement = demo.querySelector('.grid');
+            var dragOrder = [];
+
+            //
+            // Grid helper functions
+            //
+
+            function initDemo() {
+
+                initGrid();
+
+                var toggleDashboardOptions = document.getElementById("dashboardOptionsToggle");
+                var dashboardOptions = document.getElementsByClassName("dashboard-options")[0];
+                toggleDashboardOptions.addEventListener("click", function () {
+                    if ($(dashboardOptions).css("height") == '1px') {
+                        $(dashboardOptions).css({ 'height': '100px' });
+                    }
+                    else {
+                        $(dashboardOptions).css({ 'height': '1px' });
+                    }
+                })
+
+                var link = document.getElementById("visit-link");
+                 @if (Model.IsPublic) {
+                     <text>
+                         $(link).css({ 'height': '20px' });
+                     </text>
+                 }
+                 else {
+                     <text>
+                         $(link).css({ 'height': '1px' });
+                     </text>
+                 }
+
+                link.addEventListener("click", function () {
+                    selectText(this)
+                })
+
+                var toggleSwitch = document.getElementsByClassName("toggle-switch")[0];
+                toggleSwitch.addEventListener("click", function () {
+                    if ($(link).css("height") == "1px") {
+                        $(link).css({ 'height': '20px' });
+                        togglePublic("True");
+                    }
+                    else {
+                        $(link).css({ 'height': '1px' });
+                        togglePublic("False");
+                    }
+
+
+                })
+
+                gridElement.addEventListener('click', function (e) {
+                    if (elementMatches(e.target, '.muuri-card-remove, .muuri-card-remove a ')) {
+                        var elem = elementClosest(e.target, '.item');
+                        removeItem(elem);
+                    }
+                });
+
+                var deleteAllBtn = document.getElementById("delete-all-btn");
+                deleteAllBtn.addEventListener('click', function () {
+                    if (confirm('Ben je zeker dat je alle grafieken wilt verwijderen?')) {
+                        var items = document.getElementsByClassName("item");
+                        for (var i = 0; i < x.length; i++) {
+                            removeItem(items[i])
+                        }
+                    }
+                });
+
+
+                var items = document.getElementsByClassName("muuri-item");
+                for (i = 0; i < items.length; i++) {
+
+                    var element = items[i], bubbles = false;
+                    var observer = new WebKitMutationObserver(function (mutations) {
+                        mutations.forEach(attrModified);
+                    });
+
+                    observer.observe(element, { attributes: true, subtree: bubbles });
+
+                    items[i].addEventListener("mouseup", function () {
+
+                        var id = this.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                        var x = this.style.width.replace('px', '');
+                        var y = this.style.height.replace('px', '');
+
+                        updateSizeDimensions(id, x, y);
+
+                        var resizeEvent = new Event('resize');
+                        window.dispatchEvent(resizeEvent);
+                    })
+                }
+
+                function attrModified(mutation) {
+
+                    var element = mutation.target;
+                    var mutationStyle = mutation.target.getAttribute("style")
+
+                    if (mutationStyle != null) {
+                        element.style.width = mutationStyle.width;
+                        element.style.height = mutationStyle.height;
+                    }
+
+                    grid.refreshItems(element).layout();
+
+                }
+
+                var resizeItems = document.getElementsByClassName('muuri-card-resize');
+                for (i = 0; i < resizeItems.length; i++) {
+
+                    resizeItems[i].addEventListener("click", function (e) {
+                        resizeItem(e, resizeItems[i])
+                    }, false)
+                }
+
+                var dashboardTitel = document.getElementById("dashboardTitel");
+                dashboardTitel.addEventListener('blur', function () {
+                    renameTitle();
+                }, false)
+
+                var renameItems = document.getElementsByClassName('muuri-card-title');
+                for (i = 0; i < renameItems.length; i++) {
+
+                    renameItems[i].addEventListener('blur', function () {
+                        renameItem(this);
+                    }, false)
+
+                    renameItems[i].addEventListener('keypress', function (e) {
+                        var key = e.which || e.keyCode;
+                        //enter button
+                        if (key === 13) {
+                            renameItem(this)
+                        }
+                    },false)
+                }
+            }
+
+            function initGrid() {
+
+                var dragCounter = 0;
+
+                grid = new Muuri(gridElement, {
+                    items: fillGrid(),
+                    layoutDuration: 400,
+                    layoutEasing: 'ease',
+                    dragEnabled: true,
+                    dragSortInterval: 50,
+                    dragContainer: document.body,
+                    dragStartPredicate: function (item, event) {
+                        var isResizeDragAction = elementMatches(event.target, '.item');
+                        var isRetitleAction = elementMatches(event.target, '.muuri-card-title');
+                        var isRemoveAction = elementMatches(event.target, '.muuri-card-remove, .muuri-card-remove a');
+                        var isResizeAction = elementMatches(event.target, '.muuri-card-resize, .muuri-card-resize i');
+                        var isBeingResized = elementMatches(event.target, '.muuri-dropdown, .muuri-dropdown .resize-items, .muuri-dropdown .resize-items li, .muuri-dropdown .resize-items li a');
+                        return !isResizeDragAction && !isRetitleAction && !isBeingResized && !isResizeAction && !isRemoveAction ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
+                    },
+                    dragReleaseDuration: 400,
+                    dragReleseEasing: 'ease'
+                })
+                    .on('dragStart', function () {
+                        ++dragCounter;
+                        docElem.classList.add('dragging');
+                    })
+                    .on('dragEnd', function () {
+                        if (--dragCounter < 1) {
+                            docElem.classList.remove('dragging');
+                        }
+                    })
+                    .on('move', updateIndices)
+                    .on('sort', updateIndices);
+
+            }
+
+            function removeItem(elem) {
+                grid.hide(elem, {
+                    onFinish: function (items) {
+                        var item = items[0];
+                        grid.remove(item, { removeElements: true });
+                    }
+                });
+                console.log(elem)
+                var id = elem.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                removeBlok(id);
+                updateIndices();
+
+            }
+
+            function resizeItem(e, resizeItems) {
+                var elem = elementClosest(e.target, '.item');
+
+                var dropdown = elementClosest(e.target, '.muuri-card-resize')
+                var dropdownContent = dropdown.children[1]
+
+                if ($(dropdownContent).css("display") == 'none') {
+                    $(dropdownContent).css({ 'display': 'block' });
+                } else {
+                    $(dropdownContent).css({ 'display': 'none' });
+                }
+
+                var listItems = dropdownContent.children[0].children;
+                for (i = 0; i < listItems.length; i++)
+                    listItems[i].addEventListener("click", function (e) {
+                        transformItem(elem, $(this)[0].children[0].classList)
+                    }, false)
+            }
+
+            function transformItem(elem, i) {
+                var id = elem.parentNode.parentNode.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                var item = elem.parentNode.parentNode.getElementsByClassName("muuri-card-id")[0].innerHTML;
+
+                var size = i[1];
+
+                switch (size) {
+                    case 'normaal':
+                        console.log(elem)
+                        updateSize(id, 0);
+                        elem.style.width = '400px';
+                        elem.style.height = '400px';
+                        grid.refreshItems(elem).layout();
+                        break;
+                    case 'lang':
+                        updateSize(id, 1);
+                        elem.style.width = '300px';
+                        elem.style.height = '450px';
+                        grid.refreshItems(elem).layout();
+                        break;
+                    case 'breed':
+                        updateSize(id, 2);
+                        elem.style.width = '450px';
+                        elem.style.height = '300px';
+                        grid.refreshItems(elem).layout();
+                        break;
+
+                    case 'groot':
+                        updateSize(id, 3);
+                        elem.style.width = '600px';
+                        elem.style.height = '600px';
+                        grid.refreshItems(elem).layout();
+                        break;
+                }
+
+                var resizeEvent = new Event('resize');
+
+                window.dispatchEvent(resizeEvent);
+
+            }
+
+            function renameItem(elem) {
+                var id = elem.parentNode.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                var newTitle = elem.innerHTML;
+
+                changeTitle(id, newTitle);
+            }
+
+            function renameTitle() {
+                var titel = document.getElementById("dashboardTitel").innerHTML;
+
+                changeDashboardTitle(titel);
+            }
+
+            function changeLayout() {
+
+                layoutFieldValue = layoutField.value;
+                grid._settings.layout = {
+                    horizontal: false,
+                    alignRight: layoutFieldValue.indexOf('right') > -1,
+                    alignBottom: layoutFieldValue.indexOf('bottom') > -1,
+                    fillGaps: layoutFieldValue.indexOf('fillgaps') > -1
+                };
+                grid.layout();
+
+            }
+
+            //
+            // Generic helper functions
+            //
+
+            function fillGrid() {
+                var listItems = [];
+                var itemElem = document.createElement('div');
+
+                    @{
+                        int id = 0;
+
+                        foreach (var blok in blokken.OrderBy(blok => blok.DashboardLocatie))
+                        {
+                            id++;
+
+                            if(blok.Titel == null)
+                            {
+                                blok.Titel = blok.Grafiek.Naam;
+                            }
+
+                            if (blok.Grafiek.Type == Domain.Enum.GrafiekType.CIJFERS)
+                            {
+                                itemTemplate = "split"+
+                                    "<div class=\"item blue " + blok.BlokGrootte.ToString() +"\" style=\"width:"+ blok.sizeX + "; height: "+ blok.sizeY + " \">" +
+                                    "<div class=\"item-content\">" +
+                                    "<div class=\"muuri-card\">" +
+                                    "<div class=\"muuri-card-id\">" + id + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
+                                    "<div class=\"muuri-dropdown\" > " +
+                                    "<ul class=\"resize-items\" > " +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item normaal\" > Normaal</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item lang\" > Lang</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item breed\" > Breed</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item groot\" > Groot</a></li>" +
+                                    "</ul>" +
+                                    "</div>" +
+                                    "</div>" +
+                                            "<h4 class=\"muuri-card-title edit-indicator\" contenteditable=\"true\" id=\"titel" + id+"\" >" + blok.Titel + "</h4>" +
+                                            "<div class=\"table-responsive\" > " +
+                                                "<table class=\"table table-bordered table-striped\" > " +
+                                                    "<thead>" +
+                                                        "<tr>" +
+                                                            "<th></th>" +
+                                                            "<th class=\"text-center\" > " +
+                                                                "Waarde" +
+                                                            "</th>" +
+                                                        "</tr>" +
+                                                    "</thead>" +
+                                                     "<tbody>";
+                                foreach (var waarde in blok.Grafiek.Waardes)
+                                {
+
+                                    itemTemplate += "<tr>" +
+                                    "<th class=\"text-nowrap\" scope=\"row\">" + waarde.Naam + "</th>";
+
+                                    if (waarde.Naam.ToLower().Contains("trend"))
+                                    {
+                                        itemTemplate += "<td>Aanwezig</td>";
+                                    }
+                                    else
+                                    {
+                                        itemTemplate += "<td>" + waarde.Waarde + "</td>";
+
+
+                                    }
+                                }
+
+                                itemTemplate += "</tr>" +
+                                        "</tbody>" +
+                                        "</table>" +
+                                        "</div>" +
+                                        "</div>" +
+                                        "</div>" +
+                                        "</div>";
+                            }
+
+                            else if (blok.Grafiek.Type == Domain.Enum.GrafiekType.VERGELIJKING)
+                            {
+                                itemTemplate = "split" +
+                                    "<div class=\"item blue " + blok.BlokGrootte.ToString() + "\" style=\"width:" + blok.sizeX + "; height: " + blok.sizeY + " \">" +
+                                    "<div class=\"item-content\">" +
+                                    "<div class=\"muuri-card\">" +
+                                    "<div class=\"muuri-card-id\">" + id + "</div>" +
+                                    "<div class=\"muuri-card-id blok-id\">" + blok.DashboardBlokId + "</div>" +
+                                    "<div class=\"muuri-card-remove\"><a class=\"material-icons\" >&#xE5CD;</a></div >" +
+                                    "<div class=\"muuri-card-resize\" ><i class=\"material-icons\" > &#xE85B;</i>" +
+                                    "<div class=\"muuri-dropdown\" > " +
+                                    "<ul class=\"resize-items\" > " +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item normaal\" > Normaal</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item lang\" > Lang</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item breed\" > Breed</a></li>" +
+                                        "<li><a href=\"#\" class=\"muuri-dropdown-item groot\" > Groot</a></li>" +
+                                    "</ul>" +
+                                    "</div>" +
+                                    "</div>" +
+                                    "<h4 class=\"muuri-card-title edit-indicator\" id=\"titel" + id + "\" edit contenteditable=\"true\">" + blok.Titel +"</h4>" +
+                                    "<div style=\"height:fit-content\">" +
+                                    "<canvas id = \"chart " + Model.CanvasCounter + "\" ></ canvas >" +
+                                    "</ div >" +
+                                    "</ div >";
+                                Model.CanvasCounter++;
+                            }
+
+                            itemTemplateList += itemTemplate;
+                        }
+
+                        String[] templates = itemTemplateList.Split(new[] { "split" }, StringSplitOptions.None);
+
+
+                        foreach(var template in templates)
+                        {
+                            if(template != "")
+                            {
+                                <text >
+                                itemElem.innerHTML = '@Html.Raw(template)';
+                                listItems.push(itemElem.firstChild);
+                                </text>
+                            }
+
+                        }
+                }
+                return listItems;
+            }
+
+            function compareItemTitle(a, b) {
+
+                var aVal = a.getElement().getAttribute('data-title') || '';
+                var bVal = b.getElement().getAttribute('data-title') || '';
+                return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+
+            }
+
+            function compareItemColor(a, b) {
+
+                var aVal = a.getElement().getAttribute('data-color') || '';
+                var bVal = b.getElement().getAttribute('data-color') || '';
+                return aVal < bVal ? -1 : aVal > bVal ? 1 : compareItemTitle(a, b);
+
+            }
+
+            function updateIndices() {
+
+                grid.getItems().forEach(function (item, i) {
+                    item.getElement().setAttribute('data-id', i + 1);
+                    item.getElement().querySelector('.muuri-card-id').innerHTML = i + 1;
+
+                    var blokId = item._element.getElementsByClassName("muuri-card-id")[1].innerHTML;
+                    var locatie = item.getElement().getAttribute('data-id');
+                    updateLocatie(blokId, locatie)
+                });
+
+
+            }
+
+            function updateSize(blokId, grootte) {
+                var actionURL = '@Url.Action("UpdateSize", "Account", new { blokId = "blokId_placeholder", blokGrootte = "grootte_placeholder"})';
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "blokId_placeholder": blokId, "grootte_placeholder": grootte, "&amp;": '&' }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                });
+            }
+
+            function updateLocatie(blokId, locatie) {
+                var actionURL = '@Url.Action("UpdateLocatie", "Account", new { blokId = "blokId_placeholder", locatie = "locatie_placeholder"})';
+
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "blokId_placeholder": blokId, "locatie_placeholder": locatie, "&amp;": '&' }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                });
+            }
+
+            function changeTitle(id, titel) {
+                var actionURL = '@Url.Action("UpdateTitel", "Account", new { blokId = "blokId_placeholder", titel = "titel_placeholder"})';
+
+                console.log(actionURL.allReplace({ "blokId_placeholder": id, "titel_placeholder": titel,"&amp;": '&' }));
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "blokId_placeholder": id, "titel_placeholder": titel, "&amp;": '&' }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                });
+            }
+
+            function togglePublic(shared) {
+                var actionURL = '@Url.Action("SetPublic", "Account", new { dashboardId = Model.DashboardId, shared = "shared_placeholder" })';
+
+                console.log(actionURL.allReplace({ "shared_placeholder": shared, "&amp;": "&" }))
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "shared_placeholder": shared, "&amp;": "&" }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                });
+            }
+
+            function removeBlok(id) {
+                var actionURL = '@Url.Action("DeleteDashboardBlok", "Account", new { id =  "placeholder"})';
+
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.replace("placeholder", id),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                    error: function (req, status, error) {
+                        alert("Req: " + req);
+                        alert("Status: " + status);
+                        alert("Error: " + error);
+                    }
+                });
+            }
+
+            function updateSizeDimensions(id, x, y) {
+                var actionURL = '@Url.Action("UpdateSizeDimensions", "Account", new { blokId =  "blokId_placeholder", sizeX = "x_placeholder", sizeY = "y_placeholder"})';
+
+                console.log(actionURL.allReplace({ "blokId_placeholder": id, "x_placeholder": x, "y_placeholder": y, "&amp;": '&' }));
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "blokId_placeholder": id, "x_placeholder": x, "y_placeholder": y, "&amp;": '&' }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                    error: function (req, status, error) {
+                        alert("Req: " + req);
+                        alert("Status: " + status);
+                        alert("Error: " + error);
+                    }
+                });
+            }
+
+            function changeDashboardTitle(title) {
+                var actionURL = '@Url.Action("UpdateConfiguratieTitle", "Account", new { configuratieId = Model.Configuratie.DashboardConfiguratieId, title =  "placeholder"})';
+
+                $.ajax({
+                    type: "POST",
+                    url: actionURL.allReplace({ "placeholder": title, "&amp;": '&' }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "html",
+                    error: function (req, status, error) {
+                        alert("Req: " + req);
+                        alert("Status: " + status);
+                        alert("Error: " + error);
+                    }
+                });
+            }
+
+            function selectText(element) {
+                if (document.selection) { // IE
+                    var range = document.body.createTextRange();
+                    range.moveToElementText(element);
+                    range.select();
+                } else if (window.getSelection) {
+                    var range = document.createRange();
+                    range.selectNode(element);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
+                }
+            }
+
+            String.prototype.allReplace = function (obj) {
+                var retStr = this;
+                for (var x in obj) {
+                    retStr = retStr.replace(new RegExp(x, 'g'), obj[x]);
+                }
+                return retStr;
+            };
+
+            function elementMatches(element, selector) {
+
+                var p = Element.prototype;
+                return (p.matches || p.matchesSelector || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || p.oMatchesSelector).call(element, selector);
+
+            }
+
+            function elementClosest(element, selector) {
+
+                if (window.Element && !Element.prototype.closest) {
+                    var isMatch = elementMatches(element, selector);
+                    while (!isMatch && element && element !== document) {
+                        element = element.parentNode;
+                        isMatch = element && element !== document && elementMatches(element, selector);
+                    }
+                    return element && element !== document ? element : null;
+                }
+                else {
+                    return element.closest(selector);
+                }
+
+            }
+
+            //
+            // Fire it up!
+            //
+
+            initDemo();
+        })
+
+    </script>
+
+
+
+    @foreach (var blok in blokken.Where(x => x.Grafiek.Type != Domain.Enum.GrafiekType.CIJFERS))
+    {
+        Model.DataSetTeller = 0;
+        if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
         {
-            Model.DataSetTeller = 0;
-            if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.LIJNGRAFIEK)
-            {
-                <script>
+            <script>
+                $(document).ready(function () {
                     var ctx1 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data1 = {
-                        labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
-                        position: 'top',
-                        datasets: [
-                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
-                            {
-                                <text>
-                                    {
-                                        label: "",
-                                        fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
-                                        strokeColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
-                                        pointColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
-                                        pointStrokeColor: "#fff",
-                                        pointHighlightFill: "#fff",
-                                        pointHighlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
-                                        data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
-                                    },
-                                </text>
-                                Model.DataSetTeller++;
-                            }
-
-                        ],
-
-                    };
-                    Chart.types.Line.extend({
-                        name: "LineAlt",
-                        initialize: function () {
-                            Chart.types.Line.prototype.initialize.apply(this, arguments);
-
-                            var ctx = this.chart.ctx;
-                            var originalStroke = ctx.stroke;
-                            ctx1.stroke = function () {
-                                ctx1.save();
-                                ctx1.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                                ctx1.shadowBlur = 10;
-                                ctx1.shadowOffsetX = 8;
-                                ctx1.shadowOffsetY = 8;
-                                originalStroke.apply(this, arguments)
-                                ctx1.restore();
-
-                            }
+                    labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
+                    position: 'top',
+                    datasets: [
+                        @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                        {
+                            <text>
+                                {
+                                    label: "",
+                                    fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                    strokeColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                    pointColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                    pointStrokeColor: "#fff",
+                                    pointHighlightFill: "#fff",
+                                    pointHighlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                    data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
+                                },
+                            </text>
+                            Model.DataSetTeller++;
                         }
-                    });
-                    var chart1 = new Chart(ctx1).LineAlt(data1, {
-                        scaleShowGridLines: true,
-                        scaleGridLineColor: "rgba(0,0,0,.005)",
-                        scaleGridLineWidth: 0,
-                        scaleShowHorizontalLines: true,
-                        scaleShowVerticalLines: true,
-                        bezierCurve: true,
-                        bezierCurveTension: 0.4,
-                        pointDot: true,
-                        pointDotRadius: 4,
-                        pointDotStrokeWidth: 2,
-                        pointHitDetectionRadius: 2,
-                        datasetStroke: true,
-                        tooltipCornerRadius: 2,
-                        datasetStrokeWidth: 0,
-                        datasetFill: false,
-                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-                        responsive: true
-                    });
-                </script>
-            }
-            else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
-            {
-                <script>
+
+                    ],
+
+                };
+                Chart.types.Line.extend({
+                    name: "LineAlt",
+                    initialize: function () {
+                        Chart.types.Line.prototype.initialize.apply(this, arguments);
+
+                        var ctx = this.chart.ctx;
+                        var originalStroke = ctx.stroke;
+                        ctx1.stroke = function () {
+                            ctx1.save();
+                            ctx1.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                            ctx1.shadowBlur = 10;
+                            ctx1.shadowOffsetX = 8;
+                            ctx1.shadowOffsetY = 8;
+                            originalStroke.apply(this, arguments)
+                            ctx1.restore();
+
+                        }
+                    }
+                });
+                var chart1 = new Chart(ctx1).LineAlt(data1, {
+                    scaleShowGridLines: true,
+                    scaleGridLineColor: "rgba(0,0,0,.005)",
+                    scaleGridLineWidth: 0,
+                    scaleShowHorizontalLines: true,
+                    scaleShowVerticalLines: true,
+                    bezierCurve: true,
+                    bezierCurveTension: 0.4,
+                    pointDot: true,
+                    pointDotRadius: 4,
+                    pointDotStrokeWidth: 2,
+                    pointHitDetectionRadius: 2,
+                    datasetStroke: true,
+                    tooltipCornerRadius: 2,
+                    datasetStrokeWidth: 0,
+                    datasetFill: false,
+                    legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+                    responsive: true
+                });
+                });
+
+            </script>
+        }
+        else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.STAFGRAFIEK)
+        {
+            <script>
+                $(document).ready(function () {
                     var ctx2 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data2 = {
                         labels: [@Html.Raw(Model.GrafiekLabels.Single(x => x.Key == "LabelsGrafiek " + Model.ScriptCounter).Value)],
                         datasets: [
-                            @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                        @foreach (var dataset in Model.GrafiekDataSets.Where(x => x.Key.Contains("DataSetsGrafiek " + Model.ScriptCounter)))
+                        {
+                            <text>
                             {
-                                <text>
-                                {
                                 label: "",
                                 fillColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
-                                strokeColor:"@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
+                                strokeColor: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
                                 highlightFill: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
                                 highlightStroke: "@Model.ColorCodes.ElementAt(Model.DataSetTeller)",
                                 data: [@Html.Raw(Model.GrafiekDataSets.Single(x => x.Key == "DataSetsGrafiek " + Model.ScriptCounter + "DataSet " + Model.DataSetTeller).Value)]
-                                },
-                                </text>
-                                Model.DataSetTeller++;
-                            }
-                        ]
+                            },
+                            </text>
+                            Model.DataSetTeller++;
+                        }]
                     };
-
-                    var chart2 = new Chart(ctx2).Bar(data2, {
+                    var chart = new Chart(ctx2).Bar(data2, {
                         scaleBeginAtZero: true,
                         scaleShowGridLines: true,
                         scaleGridLineColor: "rgba(0,0,0,.005)",
@@ -222,31 +812,33 @@
                         barStrokeWidth: 0,
                         tooltipCornerRadius: 2,
                         barDatasetSpacing: 3,
-                        legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+                        legendTemplate: "test label",
                         responsive: true
                     });
-                </script>
-            }
-            else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
-            {
-                <script>
+                })
+            </script>
+        }
+        else if (blok.Grafiek.GrafiekSoort == Domain.Enum.GrafiekSoort.TAARTGRAFIEK)
+        {
+            <script>
+                    $(document).ready(function () {
                     var ctx3 = document.getElementById("chart @Model.ScriptCounter").getContext("2d");
                     var data3 = [
-                        @{
-                            int teller = 0;
-                        }
+                    @{
+                        int teller = 0;
+                    }
                         @foreach (var dataset in blok.Grafiek.Waardes)
+                    {
+                        <text>
                         {
-                            <text>
-                                {
-                                    value: @dataset.Waarde,
-                                    color: "@Model.ColorCodes.ElementAt(teller)",
-                                    highlight: "@Model.ColorCodes.ElementAt(teller)",
-                                    label: "@dataset.Naam"
-                                },
-                            </text>
-                            teller++;
-                        }
+                            value: @dataset.Waarde,
+                            color: "@Model.ColorCodes.ElementAt(teller)",
+                            highlight: "@Model.ColorCodes.ElementAt(teller)",
+                            label: "@dataset.Naam"
+                        },
+                        </text>
+                        teller++;
+                    }
                     ];
 
                     var myPieChart = new Chart(ctx3).Pie(data3, {
@@ -261,13 +853,12 @@
                         legendTemplate: "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<segments.length; i++){%><li><span style=\"background-color:<%=segments[i].fillColor%>\"></span><%if(segments[i].label){%><%=segments[i].label%><%}%></li><%}%></ul>",
                         responsive: true
                     });
-                </script>
-            }
-            Model.ScriptCounter++;
+                })
+            </script>
         }
-    </div>
+        Model.ScriptCounter++;
+    }
 </body>
-
 
 
 

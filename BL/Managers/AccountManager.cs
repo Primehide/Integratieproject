@@ -63,6 +63,12 @@ namespace BL
             return repo.ReadAccount(ID);
         }
 
+        public Account getAccount(int ID)
+        {
+            initNonExistingRepo();
+            return repo.ReadAccount(ID);
+        }
+
         public List<Account> GetAccounts()
         {
             initNonExistingRepo();
@@ -542,6 +548,54 @@ namespace BL
             grafiekToUpdate.Waardes = postManager.BerekenGrafiekWaardes(grafiekToUpdate.CijferOpties, grafiekToUpdate.Entiteiten);
             //postManager.UpdateGrafiek(grafiekToUpdate);
             uowManager.Save();
+        }
+
+        public void DeleteDashboardBlok(Account account, int positie)
+        {
+            initNonExistingRepo(false);
+            repo.DeleteDashboardBlok(account, positie);
+        }
+
+        public void UpdateLocatie(int blokId, int locatie)
+        {
+            initNonExistingRepo(false);
+            repo.UpdateLocatie(blokId, locatie);
+        }
+
+        public void UpdateSize(int blokId, BlokGrootte blokGrootte)
+        {
+            initNonExistingRepo(false);
+            repo.UpdateSize(blokId, blokGrootte);
+        }
+
+        public void UpdateTitel(int blokId, String titel)
+        {
+            initNonExistingRepo(false);
+            repo.UpdateTitel(blokId, titel);
+        }
+
+        public void UpdateSizeDimensions(int blokId, int x, int y)
+        {
+            initNonExistingRepo(false);
+            repo.UpdateSizeDimensions(blokId, x, y);
+        }
+
+        public Dashboard GetPublicDashboard(int id)
+        {
+            initNonExistingRepo(false);
+            return repo.GetPublicDashboard(id);
+        }
+
+        public void SetPublic(int dashboardId, bool shared)
+        {
+            initNonExistingRepo(false);
+            repo.SetPublic(dashboardId, shared);
+        }
+
+        public void UpdateConfiguratieTitle(int configuratieId, String title)
+        {
+            initNonExistingRepo(false);
+            repo.UpdateConfiguratieTitle(configuratieId, title);
         }
     }
 }
