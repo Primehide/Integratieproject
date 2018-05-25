@@ -24,7 +24,7 @@ namespace BL
         void updateUser(Account account);
         void DeleteGrafiekWaardes(int grafiekID);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
-        List<Account> GetAccounts();
+        List<Account> GetAccounts(int platId);
         void UpdateUser(Account account);
         void DeleteUser(string accountId);
         void FollowEntity(string identityID, int entiteitID);

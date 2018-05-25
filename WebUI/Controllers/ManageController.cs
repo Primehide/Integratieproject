@@ -538,7 +538,7 @@ namespace WebUI.Controllers
         public ActionResult genereerReview()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
+            List<Account> accounts = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             
             IEntiteitManager entiteitManager = new EntiteitManager();
             foreach (Account acc in accounts)

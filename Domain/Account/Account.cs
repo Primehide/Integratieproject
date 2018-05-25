@@ -21,5 +21,6 @@ namespace Domain.Account
         public List<Entiteit.Item> Items { get; set; }
         public List<Entiteit.Entiteit> ReviewEntiteiten { get; set; }
         public bool IsAdmin { get; set; } = false;
+        public int PlatId { get; set; }
     }
 }

@@ -133,10 +133,11 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
+            
             AdminViewModel model =
                 new AdminViewModel()
                 {
-                    Users = accountManager.GetAccounts()
+                    Users = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"])
                 };
             return View(model);
         }
@@ -402,7 +403,7 @@ namespace WebUI.Controllers
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
-            return View();
+            return View();  
         }
 
         //
@@ -415,7 +416,7 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -684,7 +685,7 @@ namespace WebUI.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
 
                 var result = await UserManager.CreateAsync(user);
-                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
+                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -815,7 +816,7 @@ namespace WebUI.Controllers
         }
 
         //gaat identity user linken aan een account uit ons domein.
-        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
+        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum,int platformId)
         {
             BL.AccountManager accountManager = new BL.AccountManager();
             Domain.Account.Account domainAccount = new Domain.Account.Account()
@@ -825,6 +826,7 @@ namespace WebUI.Controllers
                 Voornaam = voornaam,
                 Achternaam = achternaam,
                 GeboorteDatum = geboorteDatum,
+                PlatId = platformId,
                 Dashboard = new Dashboard()
             };
             domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
@@ -835,7 +837,7 @@ namespace WebUI.Controllers
         public ActionResult IndexUsers()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
+            List<Account> accounts = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(accounts);
         }
 
@@ -966,7 +968,7 @@ namespace WebUI.Controllers
         {
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
             await UserManager.CreateAsync(user, model.Password);
-            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return RedirectToAction("IndexUsers");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]

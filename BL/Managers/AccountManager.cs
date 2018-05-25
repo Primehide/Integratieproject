@@ -64,10 +64,10 @@ namespace BL
             return repo.ReadAccount(ID);
         }
 
-        public List<Account> GetAccounts()
+        public List<Account> GetAccounts(int platId)
         {
             initNonExistingRepo();
-            return accountRepository.readAccounts(); ;
+            return accountRepository.readAccounts().FindAll(x => x.PlatId == platId); ;
         }
    
         public void genereerAlerts()

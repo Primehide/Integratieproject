@@ -209,7 +209,7 @@ namespace WebUI.Controllers
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();         
+            List<Account> accounts = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);         
             return View(accounts);
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -217,7 +217,7 @@ namespace WebUI.Controllers
         {
             IPlatformManager platformManager = new PlatformManager();
             IAccountManager accountManager = new AccountManager();
-            List<Account> list = accountManager.GetAccounts();
+            List<Account> list = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             StringBuilder sb = platformManager.ConvertToCSV(list);
             return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "export.csv");
         }
