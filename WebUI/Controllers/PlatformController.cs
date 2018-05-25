@@ -11,6 +11,7 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using BL.Managers;
 using WebUI.Models;
 
 namespace WebUI.Controllers

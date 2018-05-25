@@ -12,6 +12,7 @@ using Microsoft.Owin.Security;
 using WebUI.Models;
 using Domain.Entiteit;
 using System.Collections;
+using BL.Managers;
 using Domain.Post;
 using Domain.Enum;
 using Domain.Platform;
@@ -376,7 +377,7 @@ namespace WebUI.Controllers
         {
             PostManager postManager = new PostManager();
             EntiteitManager entiteitManager = new EntiteitManager();
-            List<Entiteit> alleEntiteiten = entiteitManager.getAlleEntiteiten(false);
+            List<Entiteit> alleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()
             {
                 Grafiek = postManager.GetGrafiek(id),

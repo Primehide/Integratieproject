@@ -15,6 +15,7 @@ using Domain.Post;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using System.Web.Script.Serialization;
+using BL.Managers;
 
 
 namespace BL
@@ -77,7 +78,7 @@ namespace BL
             foreach (var alert in Alerts)
             {
                 e = alert.Entiteit;
-                if (entiteitMgr.berekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
+                if (entiteitMgr.BerekenTrends(alert.MinWaarde, e, alert.TrendType, alert.Voorwaarde))
                 {
                     alert.Triggered = true;
                     UpdateAlert(alert);
@@ -221,7 +222,7 @@ namespace BL
             initNonExistingRepo(true);
         EntiteitManager emg = new EntiteitManager(uowManager);
 
-             alert.Entiteit = emg.getEntiteit(entiteitId);
+             alert.Entiteit = emg.GetEntiteit(entiteitId);
          
             // var entiteit = emg.getEntiteit(1);
              //entiteit.Alerts.Add(alert);
@@ -342,7 +343,7 @@ namespace BL
 
             foreach (var i in entiteitInts)
             {
-                var e = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == i);
+                var e = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == i);
                 entiteiten.Add(e);
                 grafiek.Entiteiten.Add(e);
             }
@@ -469,7 +470,7 @@ namespace BL
             //geselecteerde entiteiten opzoeken
             foreach (var i in entiteitIds)
             {
-                entiteiten.Add(entiteitManager.getEntiteit(i));
+                entiteiten.Add(entiteitManager.GetEntiteit(i));
             }
 
             //nieuwe grafiek aanmaken

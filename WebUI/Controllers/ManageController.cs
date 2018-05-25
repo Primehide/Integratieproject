@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BL;
+using BL.Managers;
 using Domain.Account;
 using Domain.Entiteit;
 using Domain.Enum;
@@ -66,7 +67,7 @@ namespace WebUI.Controllers
             Models.DashboardModel model = new DashboardModel()
             {
                 GevolgdeItems = accountManager.getAccount(User.Identity.GetUserId()).Items.ToList(),
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+                AlleEntiteiten = entiteitManager.GetAlleEntiteiten()
             };
             return View(model);
         }
@@ -305,7 +306,7 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-            List<Entiteit> AlleEntiteiten = entiteitManager.getAlleEntiteiten(false);
+            List<Entiteit> AlleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
             IPlatformManager platformManager = new PlatformManager();
             var dp = platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()

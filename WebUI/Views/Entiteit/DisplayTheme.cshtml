@@ -105,39 +105,6 @@
         @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-        <script>
-            new Chart(document.getElementById("chart1"),
-                {
-                    "type": "line",
-                    "data": {
-                        "labels": ["@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Naam",
-                    "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Naam",
-                "@Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Naam"],
-                        "datasets": [{
-                            "label": "@Model.Grafieken.ElementAt(0).Naam",
-                            "data": [@Model.Grafieken.ElementAt(0).Waardes.ElementAt(20).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(21).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(22).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(23).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(24).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(25).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(26).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(27).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(28).Waarde,
-                        @Model.Grafieken.ElementAt(0).Waardes.ElementAt(29).Waarde],
-                            "fill": false, "borderColor": "rgb(75, 192, 192)",
-                            "lineTension": 0.1
-                        }]
-                    }, "options": {}
-                });
-        </script>
     </div>
 </body>
 

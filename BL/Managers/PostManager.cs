@@ -12,6 +12,8 @@ using Domain.Post;
 using Domain.Entiteit;
 using System.Globalization;
 using System.IO;
+using BL.Managers;
+using DAL.Repositories;
 
 namespace BL
 {
@@ -213,7 +215,7 @@ namespace BL
         {
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            Entiteit entiteit = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
+            Entiteit entiteit = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
             List<Post> PostsToAdd = new List<Post>();
             foreach (var post in response)
             {
@@ -299,7 +301,7 @@ namespace BL
 
             //linkt de juist entiteit en voegt nieuwe posts toe.
             //postRepository.AddPosts(PostsToAdd);
-            entiteitManager.updateEntiteit(entiteit);
+            entiteitManager.UpdateEntiteit(entiteit);
             uowManager.Save();
         }
 
@@ -312,7 +314,7 @@ namespace BL
             switch (grafiekType)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    Entiteit e1 = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    Entiteit e1 = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
                     List<Post> postsEerste = e1.Posts;
                     int aantalPosts = postsEerste.Count;
                     int retweets = postsEerste.Where(x => x.retweet == true).Count();
@@ -387,12 +389,12 @@ namespace BL
             {
                 GrafiekWaarde waarde = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
                     Waarde = orderedSentiment.ElementAt(i).Value
                 };
                 GrafiekWaarde waardePop = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
                     Waarde = orderedPopulariteit.ElementAt(i).Value
                 };
 

@@ -1,10 +1,5 @@
 ﻿using Domain.Entiteit;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using System.Web;
 
 
@@ -12,18 +7,18 @@ namespace DAL
 {
     public interface IEntiteitRepository
     {
-        void CreatePersonWithPhoto(Persoon p, HttpPostedFileBase ImageFile);
+        void CreatePersonWithPhoto(Persoon p, HttpPostedFileBase imageFile);
         void CreatePersonWithoutPhoto(Persoon p);
         Persoon ReadPerson(int id);
-        Persoon UpdatePerson(Persoon UpdatedPerson);
+        Persoon UpdatePerson(Persoon updatedPerson);
         void UpdatePerson(Persoon changedPerson, IEnumerable<string> selectedOrganisations );
         void DeletePerson(int id);
         IEnumerable<Persoon> ReadAllPeople();
         byte[] GetPersonImageFromDataBase(int Id);
 
-        void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase ImageFile);
+        void CreateOrganisatieWithPhoto(Organisatie o, HttpPostedFileBase imageFile);
         void CreateOrganisatieWithoutPhoto(Organisatie o);
-        Organisatie UpdateOrganisatie(Organisatie UpdatedOrganisatie );
+        Organisatie UpdateOrganisatie(Organisatie updatedOrganisatie );
         IEnumerable<Organisatie> ReadAllOrganisaties();
         Organisatie ReadOrganisatie(int id);
         void DeleteOrganisatie(int id);
@@ -31,22 +26,20 @@ namespace DAL
         byte[] GetOrganisationImageFromDataBase(int Id);
 
         void AddEntiteit(Entiteit entiteit);
-        List<Entiteit> getAlleEntiteiten();
-        void updateEntiteit(Entiteit entiteit);
+        List<Entiteit> GetAlleEntiteiten();
+        void UpdateEntiteit(Entiteit entiteit);
         Entiteit ReadEntiteit(int id);
         List<Entiteit> ReadEntiteiten(string naam);
 
-        void CreateThema(Thema thema, HttpPostedFileBase ImageFile);
+        void CreateThema(Thema thema, HttpPostedFileBase imageFile);
         Thema UpdateThema(Thema thema);
         void DeleteThema(int entiteitsId);
         void DeleteSleutelwoord(int sleutelId);
         Thema ReadThema(int entiteitsId);
-        Sleutelwoord readSleutelwoord(int sleutelId);
+        Sleutelwoord ReadSleutelwoord(int sleutelId);
         IEnumerable<Thema> ReadThemas();
         IEnumerable<Entiteit> ReadEntiteitenVanDeelplatform(int id);
         void DeleteEntiteitenVanDeelplatform(int id);
-
-        void addEntiteit(Entiteit entiteit);
-        List<Entiteit> getAlleEntiteiten(bool IncludePosts);
+        List<Entiteit> GetAlleEntiteiten(bool includePosts);
     }
 }
