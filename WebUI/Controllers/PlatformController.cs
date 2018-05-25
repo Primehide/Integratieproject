@@ -64,10 +64,20 @@ namespace WebUI.Controllers
             IPlatformManager platformManager = new PlatformManager();
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var userstore = new ApplicationUserStore<ApplicationUser>(context);
+            var AllIdentity = new List<ApplicationUser>();
+
+            foreach (var item in userstore.GetAllUser())
+            {
+                if(item.TenantId == id)
+                {
+                    AllIdentity.Add(item);
+                }
+            }
+
             PlatformAdminModel model = new PlatformAdminModel()
             {
                 Deelplatform = platformManager.GetDeelplatform(id),
-                //Users = userstore.
+                Users = AllIdentity
             };
             return View(model);
         }
