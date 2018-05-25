@@ -31,9 +31,12 @@
     </IISExpressUseClassicPipelineMode>
     <Use64BitIISExpress>false</Use64BitIISExpress>
     <IISExpressSSLPort>44365</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -324,6 +327,7 @@
     <Compile Include="Models\PersonViewModel.cs" />
     <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\NotificationViewModel.cs" />
+    <Compile Include="Models\PlatformAdminModel.cs" />
     <Compile Include="Models\PlatformViewModels.cs" />
     <Compile Include="Models\ReviewModel.cs" />
     <Compile Include="Models\ZoekModel.cs" />
@@ -5951,6 +5955,7 @@
     <Content Include="Views\Account\EditGrafiek.cshtml" />
     <Content Include="Views\Account\SuperAdminCp.cshtml" />
     <Content Include="Views\Shared\Dashboard\_SuperAdminCpLeftBar.cshtml" />
+    <Content Include="Views\Platform\EditPlatform.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
