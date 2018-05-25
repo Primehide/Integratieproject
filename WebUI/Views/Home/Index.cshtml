@@ -1,4 +1,5 @@
 ﻿@model Domain.Platform.Deelplatform
+@using Microsoft.AspNet.Identity
 @{
     Layout = "";
 }
@@ -92,9 +93,18 @@
                                                     </a>
                                                 </li>
                                                 <li class="">
-                                                    <a class="nav-link" href="/Account/Login">
-                                                        Login
-                                                    </a>
+                                                    @if (Request.IsAuthenticated)
+                                                    {
+                                                        <a class="nav-link" href="/Manage/Index">
+                                                            Dashboard
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="nav-link" href="/Manage/Index">
+                                                            Login
+                                                        </a>
+                                                    }
                                                 </li>
                                             </ul>
                                         </nav>

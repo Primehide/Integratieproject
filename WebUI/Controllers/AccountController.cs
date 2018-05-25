@@ -82,7 +82,7 @@ namespace WebUI.Controllers
             var userstore = new ApplicationUserStore<ApplicationUser>(context);
             try
             {
-              userstore.TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                userstore.TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             }
             catch (NullReferenceException)
             {
@@ -134,10 +134,23 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
+            var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
+            var userstore = new ApplicationUserStore<ApplicationUser>(context);
+            var AllIdentity = new List<ApplicationUser>();
+            List<Domain.Account.Account> domainUsers = new List<Account>();
+
+            foreach (var item in userstore.GetAllUser())
+            {
+                if(item.TenantId == (int)System.Web.HttpContext.Current.Session["PlatformID"])
+                {
+                    domainUsers.Add(accountManager.getAccount(item.Id));
+                }
+            }
+
             AdminViewModel model =
                 new AdminViewModel()
                 {
-                    Users = accountManager.GetAccounts()
+                    Users = domainUsers
                 };
             return View(model);
         }
@@ -157,7 +170,7 @@ namespace WebUI.Controllers
                 {
                     Text = p.Naam,
                     Value = p.EntiteitId.ToString(),
-                    
+
                 };
                 listBoxItems.Add(Person);
             }
@@ -177,7 +190,7 @@ namespace WebUI.Controllers
         public ActionResult AddFaq(Faq f)
         {
             AccountManager acm = new AccountManager();
-            f.PlatformId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
+            f.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             acm.addFaq(f);
             return RedirectToAction("AdminBeheerFaq", "Account");
         }
@@ -293,24 +306,24 @@ namespace WebUI.Controllers
             {
                 var user = await UserManager.FindByEmailAsync(model.Email);
 
-            if (user != null)
-            {
-                if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                if (user != null)
                 {
-                    string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                    return View("Error");
+                    if (!await UserManager.IsEmailConfirmedAsync(user.Id))
+                    {
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
+                        ViewBag.errorMessage = "You must have a confirmed email to log on.";
+                        return View("Error");
+                    }
                 }
-            }
 
-            // In case of Admin trying to login
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            //if (superadmin != null)
-            //{
-            //    HttpContext.Session["PlatformID"] = superadmin.TenantId;
-            //}
-            
+                // In case of Admin trying to login
+                // This doesn't count login failures towards account lockout
+                // To enable password failures to trigger account lockout, change to shouldLockout: true
+                //if (superadmin != null)
+                //{
+                //    HttpContext.Session["PlatformID"] = superadmin.TenantId;
+                //}
+
                 result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             }
 
@@ -416,13 +429,13 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
+                    CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
                     //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -864,80 +877,30 @@ namespace WebUI.Controllers
                     eM.DeleteThema(id);
                     break;
             }
-            
+
             return Redirect("~/Account/AdminBeheerEntiteiten");
         }
-     
+
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminEditEntiteiten(int id)
         {
-            EntiteitManager eM = new EntiteitManager();
-          Entiteit entiteit =   eM.GetEntiteit(id);
-                             List<SelectListItem> ListBoxItems = new List<SelectListItem>();
-            switch (entiteit.GetType().Name)
+            EntiteitManager entiteitManager = new EntiteitManager();
+            Entiteit entiteit = entiteitManager.GetEntiteit(id);
+            if (entiteit.GetType() == typeof(Domain.Entiteit.Persoon))
             {
-                case "Organisatie":
-   
-
-                    List<Persoon> AllPeople = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-                    foreach (Persoon p in AllPeople)
-                    {
-                        SelectListItem Person = new SelectListItem()
-                        {
-                            Text = p.FirstName + " " + p.LastName,
-                            Value = p.EntiteitId.ToString(),
-
-                        };
-                        ListBoxItems.Add(Person);
-                    }
-
-                    UpdateOrganisatieVM UOVM = new UpdateOrganisatieVM
-                    {
-                        RequestedOrganisatie = eM.GetOrganisatie(id),
-                        PeopleChecks = new SelectedPeopleVM
-                        {
-                            People = ListBoxItems
-                        }
-                    };
-
-                  
-                    return View("~/Views/Entiteit/UpdateOrganisation.cshtml", UOVM);
-   
-                case "Persoon":
-                   
-
-                    List<Organisatie> AllOrganisations = eM.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-                    foreach (Organisatie o in AllOrganisations)
-                    {
-                        SelectListItem Organisation = new SelectListItem()
-                        {
-                            Text = o.Naam,
-                            Value = o.EntiteitId.ToString(),
-
-                        };
-                        ListBoxItems.Add(Organisation);
-                    }
-
-                    UpdatePersonVM UPVM = new UpdatePersonVM
-                    {
-                        RequestedPerson = eM.GetPerson(id),
-                        OrganisationChecks = new SelectedOrganisationVM
-                        {
-                            Organisations = ListBoxItems
-                        }
-                    };
-
-
-                    return View("~/Views/Entiteit/UpdatePerson.cshtml", UPVM);
-             
-                case "Thema":
-                 
-                    Thema thema = eM.GetThema(id);
-                    TempData["ThemaID"] = thema.EntiteitId;
-                    return View("~/Views/Entiteit/EditThema.cshtml" , thema);
-                 
+                Persoon persoon = entiteitManager.GetPerson(id);
+                WebUI.Models.EditPersonViewModel model = new EditPersonViewModel()
+                {
+                    Persoon = persoon,
+                    Organisaties = entiteitManager.GetAllOrganisaties((int)System.Web.HttpContext.Current.Session["PlatformID"])
+                };
+                return View("~/Views/Entiteit/EditPerson.cshtml", model);
             }
-         
+            else if(entiteit.GetType() == typeof(Domain.Entiteit.Organisatie))
+            {
+                Organisatie organisatie = entiteitManager.GetOrganisatie(id);
+                return View("~/Views/Entiteit/UpdateOrganisation.cshtml", organisatie);
+            }
             return View(entiteit);
         }
         [HttpPost]

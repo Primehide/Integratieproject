@@ -41,24 +41,25 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    @using (Html.BeginForm("AddPersoon", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" })) { 
+                                    @using (Html.BeginForm("AddPersoon", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
                                         <div class="form-group">
-                                        
-                                        <input type="text" class="form-control" placeholder="FirstName" name="Naam">
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.DropDownList("organisatie", new SelectList(ViewBag.Organisaties), new { @name = "organisationId" , @class = "select2 form-control custom-select" })
-                                      
 
-                                    </div>
-                                    <label>Afbeelding</label>
-                                    <div class="form-group">
+                                            <input type="text" class="form-control" placeholder="FirstName" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.DropDownList("organisatie", new SelectList(ViewBag.Organisaties), new { @name = "organisationId", @class = "select2 form-control custom-select" })
 
-                                        <input type="file" name="uploadFile" ,  class="btn waves-effect waves-light btn-secondary"/>
-                                 
-                                    </div>
-                                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
-                               }
+
+                                        </div>
+                                        <label>Afbeelding</label>
+                                        <div class="form-group">
+
+                                            <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -70,31 +71,19 @@
                                 <div class="col-sm-12 col-xs-12">
                                     @using (Html.BeginForm("AddOrganisatie", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
-
-                                        foreach (var item in Model.PeopleChecks.People)
-                                         {
-                                             <div>
-                                                 <label>
-                                                     <input id="@item.Value" name="SelectedPeople" value="@item.Value" type="checkbox">
-                                                     <label for="@item.Value"> @item.Text </label>
-                                                 </label>
-                                             </div>
-                                         }
-                                <div class="form-group">
-                                    <label>Naam</label>
-                                    <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                </div>
-                                <div class="form-group">
-                                    <label>Gemeente</label>
-                                    <input type="text" class="form-control" placeholder="Naam" name="Gemeente">
-                                </div> 
-                                <label>Afbeelding</label>
-                                <div class="form-group">
-
-                                    <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
-
-                                </div>
-                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                        <div class="form-group">
+                                            <label>Naam</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Gemeente</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Gemeente">
+                                        </div>
+                                        <label>Afbeelding</label>
+                                        <div class="form-group">
+                                            <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
                                     }
                                 </div>
                             </div>
@@ -108,20 +97,20 @@
                                     @using (Html.BeginForm("AddThema", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
 
-                                <div class="form-group">
-                                    <label>Naam</label>
-                                    <input type="text" class="form-control" placeholder="Naam" name="Naam">
-                                </div>
-                                <div class="form-group">
-                                    <label>Woorden (splitst op komma)</label>
-                                    <input type="text" class="form-control" placeholder="Naam" name="woorden">
-                                </div>
-                                <div class="form-group">
+                                        <div class="form-group">
+                                            <label>Naam</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="Naam">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Woorden (splitst op komma)</label>
+                                            <input type="text" class="form-control" placeholder="Naam" name="woorden">
+                                        </div>
+                                        <div class="form-group">
 
-                                    <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                            <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
 
-                                </div>
-                                <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
+                                        </div>
+                                        <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
                                     }
                                 </div>
                             </div>
@@ -162,28 +151,28 @@
                                         <tbody>
                                             @foreach (var e in Model.AlleEntiteiten)
                                             {
-                                            <tr>
-                                                <td>
+                                                <tr>
+                                                    <td>
 
-                                                  @e.Naam
-                                                </td>
+                                                        @e.Naam
+                                                    </td>
 
-                                                <td>
-                                                    @e.GetType().Name
-                                                </td>
-                                                <td>
-                                                    @if (e.Image != null)
-        {
-                                            <img src="data:image;base64,@System.Convert.ToBase64String(e.Image)" width="25" height="25"/>
-}
-                                                </td>
-                                                <td>
-                                                    @Html.ActionLink("Edit", "AdminEditEntiteiten", new { id = e.EntiteitId }) |
-                                                    @Html.ActionLink("Delete", "AdminDeleteEntiteit", new { id = e.EntiteitId }, new { onclick = "return confirm('Weet je zeker dat je deze entiteit wil verwijderen?');" })
-                                                
+                                                    <td>
+                                                        @e.GetType().Name
+                                                    </td>
+                                                    <td>
+                                                        @if (e.Image != null)
+                                                        {
+                                                            <img src="data:image;base64,@System.Convert.ToBase64String(e.Image)" width="25" height="25" />
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @Html.ActionLink("Edit", "AdminEditEntiteiten", new { id = e.EntiteitId }) |
+                                                        @Html.ActionLink("Delete", "AdminDeleteEntiteit", new { id = e.EntiteitId }, new { onclick = "return confirm('Weet je zeker dat je deze entiteit wil verwijderen?');" })
 
-                                                </td>
-                                            </tr>
+
+                                                    </td>
+                                                </tr>
                                             }
                                         </tbody>
                                     </table>

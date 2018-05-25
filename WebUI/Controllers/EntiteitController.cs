@@ -304,6 +304,19 @@ namespace WebUI.Controllers
             return View(UPVM);
         }
 
+        public ActionResult EditPerson(Domain.Entiteit.Persoon persoon)
+        {
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            Persoon persoonToUpdate = entiteitManager.GetPerson(persoon.EntiteitId);
+            Organisatie organisatie = entiteitManager.GetOrganisatie(Int32.Parse(persoon.Organisation));
+            persoonToUpdate.Naam = persoon.Naam;
+            persoonToUpdate.Organisations.Clear();
+            persoonToUpdate.Organisations.Add(organisatie);
+            persoonToUpdate.Organisation = organisatie.Naam;
+            entiteitManager.updateEntiteit(persoonToUpdate);
+            return RedirectToAction("AdminCp", "Account");
+        }
+
         [HttpPost]
         [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult UpdatePerson(UpdatePersonVM editedPerson, IEnumerable<string> selectedOrganisations, HttpPostedFileBase uploadFile)
@@ -431,6 +444,15 @@ namespace WebUI.Controllers
         #endregion
 
         // move content
+        public ActionResult EditOrganisation(Domain.Entiteit.Organisatie organisatie)
+        {
+            IEntiteitManager entiteitManager = new EntiteitManager();
+            Organisatie organisatieToUpdate = entiteitManager.GetOrganisatie(organisatie.EntiteitId);
+            organisatieToUpdate.Naam = organisatie.Naam;
+            entiteitManager.updateEntiteit(organisatieToUpdate);
+            return RedirectToAction("AdminCp", "Account");
+        }
+
         // This region will handle the updating of a certain Organisation. After the update you will be redirected to the Display page of the updated organisation;
         #region
         [Authorize(Roles = "SuperAdmin, Admin")]

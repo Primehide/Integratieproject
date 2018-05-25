@@ -317,6 +317,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AdminViewModel.cs" />
     <Compile Include="Models\DashboardModel.cs" />
+    <Compile Include="Models\EditPersonViewModel.cs" />
     <Compile Include="Models\EntiteitViewModels.cs" />
     <Compile Include="Models\GrafiekModel.cs" />
     <Compile Include="Models\GrafiekViewModel.cs" />
@@ -5955,6 +5956,7 @@
     <Content Include="Views\Shared\Dashboard\_SuperAdminCpLeftBar.cshtml" />
     <Content Include="Views\Platform\EditPlatform.cshtml" />
     <Content Include="Views\Entiteit\ShowEntities.cshtml" />
+    <Content Include="Views\Entiteit\EditPerson.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
