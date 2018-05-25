@@ -23,9 +23,7 @@ namespace WebUI.Controllers
         // Index Page for all Entities.
         public virtual ActionResult Index()
         {
-            //List<Entiteit> AllEntities = new List<Entiteit>();
-            //AllEntities.AddRange(eM.GetAllPeople());
-            //AllEntities.AddRange(eM.GetAllOrganisaties());
+
             OverviewVM overview = new OverviewVM
             {
                 People = eM.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]),
@@ -40,22 +38,8 @@ namespace WebUI.Controllers
             return View(entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]));
         }
 
-        // Index Page for all Entities.
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public virtual ActionResult Test()
-        {
-            //List<Entiteit> AllEntities = new List<Entiteit>();
-            //AllEntities.AddRange(eM.GetAllPeople());
-            //AllEntities.AddRange(eM.GetAllOrganisaties());
-
-            return View();
-        }
-
-        public void BerekenVasteGrafiekenAlleEntiteiten()
-        {
-            EntiteitManager entiteitManager = new EntiteitManager();
-            entiteitManager.BerekenVasteGrafiekenAlleEntiteiten();
-        }
+     
+    
 
         public ActionResult AddEntiteit(Entiteit entiteit)
         {
@@ -72,20 +56,20 @@ namespace WebUI.Controllers
            
             EntiteitManager entiteitManager = new EntiteitManager();
             p.Organisations = new List<Organisatie>();
-            int organisationId = NaamType.Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
+            int organisationId = fillOrganisaties().Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
             p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
             p.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             entiteitManager.AddPerson(p,uploadFile);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile, IEnumerable<string> SelectedPeople)
+        public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile, IEnumerable<string> selectedPeople)
         {
             EntiteitManager entiteitManager = new EntiteitManager();
-            if (SelectedPeople != null)
+            if (selectedPeople != null)
             {
                 o.Leden = new List<Persoon>();
-                foreach (string pId in SelectedPeople)
+                foreach (string pId in selectedPeople)
                 {
                     o.Leden.Add(eM.GetPerson(Int32.Parse(pId)));
                 }
@@ -187,50 +171,7 @@ namespace WebUI.Controllers
             return View(StartCreation);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public virtual ActionResult AddPerson(PersoonVM pvm, IEnumerable<string> SelectedOrganisations)
-        {
-
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-
-
-
-            Persoon AddedPerson = new Persoon
-            {
-                LastName = pvm.Ln,
-                Organisations = new List<Organisatie>(),
-                FirstName = pvm.Fn,
-                PlatformId = pvm.platId,
-                Naam = pvm.Fn + " " + pvm.Ln
-            };
-
-            if (SelectedOrganisations != null)
-            {
-                foreach (string oId in SelectedOrganisations)
-                {
-                    //Organisatie WorkingOrganisation = eM.GetOrganisatie(Int32.Parse(oId));
-                    //WorkingOrganisation.Leden.Add(AddedPerson);
-                    //WorkingOrganisation.AantalLeden = WorkingOrganisation.Leden.Count();
-                    AddedPerson.Organisations.Add(eM.GetOrganisatie(Int32.Parse(oId)));
-                }
-            }
-
-            HttpPostedFileBase file = null;
-
-            foreach (HttpPostedFileBase hpfb in Request.Files)
-            {
-                file = hpfb;
-            }
-
-            eM.AddPerson(AddedPerson, file);
-
-            return RedirectToAction("AdminBeheerEntiteiten", "Account");
-
-        }
+      
         #endregion
   
 
@@ -347,42 +288,8 @@ namespace WebUI.Controllers
         }
         #endregion
 
-        // This region will handle the deletion of a certain person
-        #region
-        public virtual ActionResult DeletePerson(int EntityId)
-        {
-            eM.RemovePerson(EntityId);
-            return RedirectToAction("Index");
-        }
-        #endregion
 
-        public virtual ActionResult RetrieveImage(int id)
-        {
-            byte[] cover = null;
-            Entiteit e = eM.GetPerson(id);
-            if (e == null)
-            {
-                e = eM.GetOrganisatie(id);
-            }
-
-            if (e.GetType() == typeof(Persoon))
-            {
-                cover = eM.GetPersonImageFromDataBase(id);
-            }
-            else if (e.GetType() == typeof(Organisatie))
-            {
-                cover = eM.GetOrganisationImageFromDataBase(id);
-            }
-
-            if (cover != null)
-            {
-                return File(cover, "image/jpg");
-            }
-            else
-            {
-                return null;
-            }
-        }
+        
 
         // This region will add a newly created Organisatie object to the database and persist
         #region
@@ -596,21 +503,6 @@ namespace WebUI.Controllers
             return Redirect("~/Account/AdminBeheerEntiteiten");
         }
 
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public virtual ActionResult DeleteThema(int id)
-        {
-            
-            TempData["themaID"] = eM.GetThema(id);
-            return View(eM.GetThema(id));
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public virtual ActionResult DeleteThema(int id,  FormCollection collection)
-        {
-            eM.DeleteThema(id);
-            return RedirectToAction("IndexThema");                                        
-        }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
         public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID)
@@ -620,14 +512,7 @@ namespace WebUI.Controllers
             Thema thema = eM.GetThema(themaID);
             return View("~/Views/Entiteit/EditThema.cshtml", thema);
         }
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public virtual ActionResult DeleteThemaSleutelwoord(int id, int themaID, FormCollection collection)
-        {
-
-            return RedirectToAction("IndexThema");
-            // return View();
-        }
+ 
 
         public ActionResult ZoekEntiteit(string naam)
         {
@@ -672,10 +557,10 @@ namespace WebUI.Controllers
             return View(zoekModel);
         }
 
-        Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
-        private void fillOrganisaties()
+        
+        private Dictionary<Entiteit,string>  fillOrganisaties()
         {
-
+            Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
             ArrayList organisaties = new ArrayList();
 
             List<Entiteit> entiteits = new List<Entiteit>();
@@ -698,6 +583,7 @@ namespace WebUI.Controllers
             }
             NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
             ViewBag.Organisaties = organisaties;
+            return NaamType;
         }
    
     }

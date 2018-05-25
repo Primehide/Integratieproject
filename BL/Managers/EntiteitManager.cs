@@ -754,41 +754,6 @@ namespace BL
         }
      
 
-        public Dictionary<Entiteit, string> FillEntiteiten()
-        {
-            Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
-            ArrayList namen = new ArrayList();
-
-            List<Entiteit> entiteits = new List<Entiteit>();
-
-            EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
-            if (NaamType.Count == 0)
-            {
-                foreach (Entiteit entiteit in entiteits)
-                {
-                    if (entiteit is Persoon)
-                    {
-                        NaamType.Add(entiteit, "Persoon");
-                    }
-                    if (entiteit is Organisatie)
-                    {
-                        NaamType.Add(entiteit, "Organisatie");
-                    }
-                    if (entiteit is Thema)
-                    {
-                        NaamType.Add(entiteit, "Thema");
-                    }
-
-
-
-                }
-            }
-            NaamType.ToList().ForEach(x => namen.Add(x.Key.Naam));
-            ViewBag.Namen = namen;
-
-            return NaamType;
-        }
 
     }
 }
