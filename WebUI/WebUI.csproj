@@ -5136,7 +5136,6 @@
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.eot" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.ttf" />
     <Content Include="Content\Homepagina\vendor\rs-plugin\fonts\revicons\revicons.woff" />
-    <Content Include="Controllers\DataTextGain4.json" />
     <Content Include="Content\Homepagina\vendor\simple-line-icons\bower.json" />
     <Content Include="Content\Homepagina\vendor\simple-line-icons\CODE_OF_CONDUCT.md" />
     <Content Include="Content\Homepagina\vendor\simple-line-icons\CONTRIBUTING.md" />
