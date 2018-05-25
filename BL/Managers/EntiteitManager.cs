@@ -752,6 +752,11 @@ namespace BL
                 entiteitRepository.updateEntiteit(e);
             }
         }
+        public int getAantalMentions(Persoon persoon)
+        {
+
+            return 0;
+        }
       
     }
 }

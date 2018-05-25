@@ -216,20 +216,13 @@ namespace WebUI.Controllers
 
         }
         #endregion
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            filterContext.ExceptionHandled = true;
-
-            filterContext.Result = new ViewResult
-            {
-                ViewName = "~/Views/Shared/Error.cshtml"
-            };
-        }
+  
 
         // This region is for displaying a certain person, given that a certain entityId is given.
         #region
         public virtual ActionResult DisplayPerson(int EntityId)
         {
+            PostManager mgr = new PostManager();
             Persoon ToDisplay = eM.GetPerson(EntityId);
             List<Post> posts = ToDisplay.Posts;
             List<Double> polariteitPositief = new List<double>();
@@ -243,6 +236,8 @@ namespace WebUI.Controllers
                 } 
 
             }
+          
+            
             int polariteitNegatiefCount = posts.Count() - polariteitPositief.Count();
             int totaal = posts.Count();
             int polariteitPositiefCount = polariteitPositief.Count();
@@ -251,8 +246,17 @@ namespace WebUI.Controllers
                 Persoon = ToDisplay,
                 AantalPosts = totaal,
                 AantalPositieve = polariteitPositiefCount,
-                AantalNegatieve = polariteitNegatiefCount
+                AantalNegatieve = polariteitNegatiefCount,
+                AantalMentions = mgr.getAantalMentions(ToDisplay),
+                TopWords = mgr.getTopPersonWords(ToDisplay)
+               
+
             };
+
+
+
+
+
             return View(personViewModel);
         }
         #endregion
@@ -595,7 +599,7 @@ namespace WebUI.Controllers
         public ActionResult ZoekEntiteit(string naam)
         {
             List<Entiteit> entiteiten = eM.GetEntiteiten(naam);
-      
+            TempData["MyList"] = entiteiten.ToList();
             return RedirectToAction("ShowEntiteiten");
         }
 

@@ -13,5 +13,6 @@ namespace WebUI.Models
         public int AantalPositieve { get; set; }
         public int AantalNegatieve { get; set; }
         public int AantalMentions { get; set; }
+        public List<String> TopWords { get; set; }
     }
 }

@@ -70,6 +70,10 @@ namespace DAL
         {
             return ctx.Words.ToList();
         }
+        public List<Word> GetAllWordsFromPost(Post post)
+        {
+            return ctx.Words.Where(x => x.PostId == post.PostId).ToList();
+        }
 
         public List<Grafiek> AlleGrafieken()
         {

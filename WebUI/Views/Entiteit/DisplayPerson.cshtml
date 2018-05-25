@@ -42,17 +42,19 @@
 
                             <div class="card-body">
                                 <center class="m-t-30">
+
                                     @if (Model.Persoon.Image != null)
-                                    {
-                                        <img src="data:image;base64,@System.Convert.ToBase64String(Model.Persoon.Image)" , width="150" , height="150" , class="img-circle" />
-                                    }
-                                    else
-                                    {
-                                        < img src = "~/Content/Dashboard/assets/images/avatar.png" , width = "150" , height = "150" , class="img-circle" />
-                                    }
+    {
+                                <img src="data:image;base64,@System.Convert.ToBase64String(Model.Persoon.Image)" , width="150" , height="150" , class="img-circle" />
+}
+else
+{
+                                <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
+}
+
                                     <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>
-                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.Persoon.Organisations[0].Naam, "Organisation")</h6>
-                                    <h6 class="card-subtitle">@Html.DisplayFor(m => m.AantalMentions, new { @class = "control-label col-md-6" })</h6>
+
+                                
                                 </center>
                             </div>
                             <a href="/Account/FollowEntiteit?id=@Model.Persoon.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>
@@ -60,11 +62,11 @@
                                 <hr>
                             </div>
                             <div class="card-body">
+
                                 <br />
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>
                                 <button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>
                             </div>
-
                         </div>
                     </div>
                     <!-- Column -->
@@ -100,57 +102,33 @@
                                                     <canvas id="myChart3" width="150" height="150"></canvas>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <canvas id="c" width="700" height="300"></canvas>
 
 
-                                                <!-- A link to the NodeBox JavaScript API  -->
-                                                <script src="https://nodebox.live/api/v1/ndbx.js"></script>
-
-                                                <!--Your custom initialization code -->
-                                                <script>
-                                                            // Again, replace these with your own userId / projectId / functionId / canvasId
-                                                            var options = {
-                                                                userId: 'Zeger',
-                                                                projectId: 'tutorial',
-                                                                functionId: 'count_tweets',
-                                                                canvasId: 'c',
-                                                                autoplay: true
-                                                            };
-
-                // Initialize the NodeBox player object
-                ndbx.embed(options, function (err, player) {
-                                                                if (err) {
-                                                                    throw new Error(err);
-            } else {
-                                                                    window.player = player;
-                                                                    window.player.setValue('divide2', 'a', @Model.AantalPositieve);
-                                                                    window.player.setValue('divide2', 'b', @Model.AantalPosts);
-                                                                    window.player.setValue('textPath5', 'text', @Model.AantalNegatieve);
-                                                                    window.player.setValue('textPath4', 'text', @Model.AantalPositieve);
-                                                                }
-                                                            });
-                                                </script>
-
-                                            </div>
                                         </p>
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="settings" role="tabpanel">
+                                    @Styles.Render("~/Content/TagMarkup.css")
                                     <div class="card-body">
-                                        <h2>Biografie</h2>
-                                        <p>
-                                            De Wever behaalde een licentiaat in de geschiedenis aan de KU Leuven en UFSIA en het aggregaat aan de KU Leuven. Hij heeft eerst twee jaar rechten geprobeerd, maar zonder succes.[4][5]
+                                        <div class="card-columns">
+                                            <h2>
+                                                Aantal Vermeldingen:
+                                                @Html.DisplayFor(m => m.AantalMentions, new { @class = "control-label col-md-6" })
+                                            </h2>
+                                        </div>
+                                        <br />
+                                        <div>
+                                            <div>
+                                                <h2>10 Meest gebruikte woorden:</h2>
 
-                                            Bart De Wever stamt uit een Vlaams-nationalistische familie. Zijn grootvader was lid van de Vlaams-nationalistische partij VNV.[6] Als middelbaar scholier liep hij school in het Onze-Lieve-Vrouw-van-Lourdescollege in Edegem[7] en was hij lid van het Vlaams Nationaal Jeugdverbond (VNJ) waar zijn vader een kaderfunctie vervulde.[8][9] Tot 1980 woonde hij in Kontich, waarna hij verhuisde naar Mortsel [10].De Wever studeerde eerst rechten aan de universiteit van Antwerpen, maar haakte af om vervolgens geschiedenis te studeren aan de universiteit van Leuven. Als student was Bart De Wever lid van het Liberaal Vlaams Studentenverbond (LVSV), KVHV Antwerpen en KVHV Leuven en hij is oud-hoofdredacteur van Tegenstroom en Ons Leven. Hij was een tijd verbonden aan de K.U.Leuven als wetenschappelijk medewerker en werkte daar mee aan de Nieuwe Encyclopedie van de Vlaamse Beweging. Hij schreef toen ook als doctorandus een bijdrage over de controversiële politieke figuur Joris Van Severen voor het in 2001 uitgegeven jaarboek van de Stichting Joris Van Severen. Aan de K.U.Leuven was hij begonnen aan een proefschrift over de naoorlogse Vlaams-nationale partijvorming, toen hij besloot zich volledig aan de politiek te wijden. Na zijn studies vestigde hij zich in Antwerpen (Berchem) waar hij voor het eerst politiek verkozen geraakte als districtsraadslid.
-                                        </p>
-                                        <h2>Politieke carrière</h2>
-                                        <p>
-                                            De Wever werd lid van de Volksunie (VU). Voor deze partij nam hij deel aan de gemeenteraadsverkiezingen te Antwerpen in 1994 en stond op de kartellijst Antwerpen 94 van CVP en VU. Na het uiteenvallen van de VU ging De Wever naar de N-VA, waarvan hij een van de medeoprichters was.
-                                        </p>
+                                                @foreach (var item in Model.TopWords)
+    {<span class="tag tag-info">
+                                                <h6>@item</h6></span>
+                                                }
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                         </div>
                     </div>
                     <!-- Column -->
