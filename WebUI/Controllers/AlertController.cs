@@ -48,16 +48,7 @@ namespace WebUI.Controllers
             return PartialView("~/Views/Shared/Dashboard/_DashboardAlerts.cshtml", webalerts.AsEnumerable());
         }
 
-        public ActionResult ReadAlert(int id)
-        {
-            AccountManager mgr = new AccountManager();
-            mgr.UpdateAlert(id);
-            List<Alert> alerts = mgr.getAlleAlerts();
-            IEnumerable<Alert> newalerts = alerts.Where(x => x.Account.IdentityId == User.Identity.GetUserId());
-            return RedirectToAction("UpdateAlerts", "Manage");
-
-
-        }
+        
 
     }
 }

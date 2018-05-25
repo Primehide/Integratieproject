@@ -16,6 +16,7 @@ namespace BL
         void addUser(Account account);
         void genereerAlerts();
         List<Alert> getAlleAlerts();
+        List<Alert> GetUserAlerts(string accountID);
         Alert GetAlert(int alertid);
         void UpdateAlert(Alert alert);
         void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail);

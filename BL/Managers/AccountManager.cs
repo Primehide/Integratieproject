@@ -293,6 +293,10 @@ namespace BL
             initNonExistingRepo();
             return accountRepository.getAlleAlerts();
         }
+       public List<Alert> GetUserAlerts(string userId)
+        {
+            return getAlleAlerts().Where(x => x.Account.IdentityId == userId).ToList();
+        }
 
         public void initNonExistingRepo(bool withUnitOfWork = false)
         {

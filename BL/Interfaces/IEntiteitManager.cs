@@ -52,6 +52,7 @@ namespace BL
 
         void BerekenVasteGrafiekenAlleEntiteiten();
         List<Entiteit> getAlleEntiteiten(bool IncludePosts);
+        Dictionary<Entiteit, string> FillEntiteiten();
 
     }
 }
