@@ -12,6 +12,8 @@ using Domain.Post;
 using Domain.Entiteit;
 using System.Globalization;
 using System.IO;
+using BL.Managers;
+using DAL.Repositories;
 
 namespace BL
 {
@@ -299,7 +301,7 @@ namespace BL
 
             //linkt de juist entiteit en voegt nieuwe posts toe.
             //postRepository.AddPosts(PostsToAdd);
-            entiteitManager.updateEntiteit(entiteit);
+            entiteitManager.UpdateEntiteit(entiteit);
             uowManager.Save();
         }
 
@@ -387,12 +389,12 @@ namespace BL
             {
                 GrafiekWaarde waarde = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedSentiment.ElementAt(i).Key).Naam,
                     Waarde = orderedSentiment.ElementAt(i).Value
                 };
                 GrafiekWaarde waardePop = new GrafiekWaarde()
                 {
-                    Naam = entiteitManager.getEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
+                    Naam = entiteitManager.GetEntiteit(orderedPopulariteit.ElementAt(i).Key).Naam,
                     Waarde = orderedPopulariteit.ElementAt(i).Value
                 };
 

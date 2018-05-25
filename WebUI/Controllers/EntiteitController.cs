@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BL.Managers;
 using WebUI.Models;
 
 namespace WebUI.Controllers
@@ -44,7 +45,7 @@ namespace WebUI.Controllers
         public ActionResult AddEntiteit(Entiteit entiteit)
         {
             var entiteitManager = new EntiteitManager();
-            entiteitManager.addEntiteit(entiteit);
+            entiteitManager.AddEntiteit(entiteit);
             return RedirectToAction("AdminBeheerEntiteiten", "Account");
         }
 
@@ -308,7 +309,7 @@ namespace WebUI.Controllers
             persoonToUpdate.Organisations.Clear();
             persoonToUpdate.Organisations.Add(organisatie);
             persoonToUpdate.Organisation = organisatie.Naam;
-            entiteitManager.updateEntiteit(persoonToUpdate);
+            entiteitManager.UpdateEntiteit(persoonToUpdate);
             return RedirectToAction("AdminCp", "Account");
         }
 
@@ -443,7 +444,7 @@ namespace WebUI.Controllers
             IEntiteitManager entiteitManager = new EntiteitManager();
             Organisatie organisatieToUpdate = entiteitManager.GetOrganisatie(organisatie.EntiteitId);
             organisatieToUpdate.Naam = organisatie.Naam;
-            entiteitManager.updateEntiteit(organisatieToUpdate);
+            entiteitManager.UpdateEntiteit(organisatieToUpdate);
             return RedirectToAction("AdminCp", "Account");
         }
 
@@ -675,7 +676,7 @@ namespace WebUI.Controllers
             Dictionary<Entiteit, string> naamType = new Dictionary<Entiteit, string>();
 
             var entiteitManager = new EntiteitManager();
-            var entiteits = entiteitManager.getAlleEntiteiten();
+            var entiteits = entiteitManager.GetAlleEntiteiten();
             if (naamType.Count == 0)
             {
                 foreach (var entiteit in entiteits)
