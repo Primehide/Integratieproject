@@ -223,7 +223,7 @@ namespace DAL
         public void UpdateLocatie(int blokId, int locatie)
         {
             var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.DashboardLocatie = locatie;
+            if(dashBlok != null) dashBlok.DashboardLocatie = locatie;
             ctx.SaveChanges();
         }
 
@@ -259,7 +259,7 @@ namespace DAL
         public void SetPublic(int dashboardId, bool shared)
         {
             var dashboard = ctx.Dashboards.Find(dashboardId);
-            dashboard.IsPublic = shared;
+            if (dashboard != null) dashboard.IsPublic = shared;
             ctx.SaveChanges();
         }
 

@@ -79,6 +79,7 @@ namespace WebUI.Controllers
 
             WebUI.Models.DashboardModel model = new DashboardModel()
             {
+                DashboardId = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.DashboardId,
                 Configuratie = accountManager.getAccount(User.Identity.GetUserId()).Dashboard.Configuratie,
                 GrafiekLabels = new Dictionary<string, string>(),
                 GrafiekDataSets = new Dictionary<string, string>(),
