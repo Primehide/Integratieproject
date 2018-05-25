@@ -266,7 +266,7 @@ namespace DAL
         public void UpdateLocatie(int blokId, int locatie)
         {
             var dashBlok = ctx.DashboardBloks.Find(blokId);
-            dashBlok.DashboardLocatie = locatie;
+            if(dashBlok != null) dashBlok.DashboardLocatie = locatie;
             ctx.SaveChanges();
         }
 
