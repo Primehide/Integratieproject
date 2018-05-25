@@ -67,7 +67,7 @@ namespace WebUI.Controllers
             PlatformAdminModel model = new PlatformAdminModel()
             {
                 Deelplatform = platformManager.GetDeelplatform(id),
-                Users = userstore.Users.Where(x => x.TenantId == id).ToList()
+                //Users = userstore.
             };
             return View(model);
         }
