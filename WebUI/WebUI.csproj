@@ -5875,13 +5875,9 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Entiteit\Index.cshtml" />
-    <Content Include="Views\Entiteit\AddPerson.cshtml" />
     <Content Include="Views\Entiteit\DisplayPerson.cshtml" />
     <Content Include="Views\Entiteit\UpdatePerson.cshtml" />
-    <Content Include="Views\Entiteit\DeletePerson.cshtml" />
-    <Content Include="Views\Entiteit\AddOrganisation.cshtml" />
     <Content Include="Views\Entiteit\DisplayOrganisation.cshtml" />
-    <Content Include="Views\Entiteit\DeleteOrganisation.cshtml" />
     <Content Include="Views\Entiteit\UpdateOrganisation.cshtml" />
     <Content Include="Views\Entiteit\Test.cshtml" />
     <Content Include="Views\Entiteit\View.cshtml" />
@@ -5905,8 +5901,6 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Entiteit\IndexThema.cshtml" />
-    <Content Include="Views\Entiteit\CreateThema.cshtml" />
-    <Content Include="Views\Entiteit\DeleteThema.cshtml" />
     <Content Include="Views\Entiteit\EditThema.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Sleutelwoord.cshtml" />
     <Content Include="Views\Entiteit\DeleteThemaSleutelwoord.cshtml" />
@@ -5917,7 +5911,6 @@
     <Content Include="Views\Manage\Sandbox.cshtml" />
     <Content Include="Views\Platform\CreatePlatform.cshtml" />
     <Content Include="Views\Platform\Index.cshtml" />
-    <Content Include="Views\Platform\ChangePlatform.cshtml" />
     <Content Include="Views\Platform\DisplayPlatform.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Themas.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

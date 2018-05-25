@@ -13,30 +13,44 @@ namespace BL
 {
     public class PlatformManager : IPlatformManager
     {
-        private PlatformRepository platformRepository;
-        private UnitOfWorkManager uowManager;
+        private PlatformRepository _platformRepository;
+        private UnitOfWorkManager _uowManager;
 
         public PlatformManager()
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
         }
 
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
 
-            uowManager = uofMgr;
+            _uowManager = uofMgr;
         }
 
-        public void AddDeelplatform(Deelplatform newPlatform)
+        public void AddDeelplatform(Deelplatform newPlatform, HttpPostedFileBase imgLogo)
         {
-            initNonExistingRepo();
-            platformRepository.CreateDeelplatform(newPlatform);
+            InitNonExistingRepo();
+
+            if (imgLogo != null)
+            {
+                BinaryReader reader = new BinaryReader(imgLogo.InputStream);
+                var imageBytes = reader.ReadBytes(imgLogo.ContentLength);
+                newPlatform.Logo = imageBytes;
+            }
+            else
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes("C:/Users/WaffleDealer/Desktop/IP/Integratieproject/WebUI/Controllers/default.png");
+                newPlatform.Logo = imageBytes;
+            }
+
+
+            _platformRepository.CreateDeelplatform(newPlatform);
         }
 
         public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             Deelplatform deelplatformToUpdate = GetDeelplatform(changedDeelplatform.DeelplatformId);
             if (imgLogo != null)
             {
@@ -48,45 +62,45 @@ namespace BL
             deelplatformToUpdate.Tagline = changedDeelplatform.Tagline;
             deelplatformToUpdate.ColorCode1 = changedDeelplatform.ColorCode1;
             deelplatformToUpdate.ColorCode2 = changedDeelplatform.ColorCode2;
-            return platformRepository.UpdateDeelplatform(changedDeelplatform);
+            return _platformRepository.UpdateDeelplatform(changedDeelplatform);
         }
 
         public Deelplatform GetDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            return platformRepository.ReadDeelplatform(platformId);
+            InitNonExistingRepo();
+            return _platformRepository.ReadDeelplatform(platformId);
         }
 
         public void RemoveDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            platformRepository.DeleteDeelplatform(platformId);
+            InitNonExistingRepo();
+            _platformRepository.DeleteDeelplatform(platformId);
         }
 
         public IEnumerable<Deelplatform> GetAllDeelplatformen()
         {
-            initNonExistingRepo();
-            return platformRepository.ReadAllDeelplatformen();
+            InitNonExistingRepo();
+            return _platformRepository.ReadAllDeelplatformen();
         }
 
         #region
-        public void initNonExistingRepo(bool withUnitOfWork = false)
+        public void InitNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
             // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
 
             if (withUnitOfWork)
             {
-                if (uowManager == null)
+                if (_uowManager == null)
                 {
-                    uowManager = new UnitOfWorkManager();
-                    platformRepository = new PlatformRepository(uowManager.UnitOfWork);
+                    _uowManager = new UnitOfWorkManager();
+                    _platformRepository = new PlatformRepository(_uowManager.UnitOfWork);
                 }
             }
             // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
             else
             {
-                platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
+                _platformRepository = (_platformRepository == null) ? new PlatformRepository() : _platformRepository;
             }
         }
 
@@ -97,7 +111,7 @@ namespace BL
       
         public StringBuilder ConvertToCsv(List<Account> accounts)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             var lstData = accounts;
             var sb = new StringBuilder();
             foreach (var data in lstData)

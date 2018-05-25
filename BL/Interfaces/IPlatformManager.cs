@@ -12,7 +12,7 @@ namespace BL
 {
     public interface IPlatformManager
     {
-        void AddDeelplatform(Deelplatform newPlatform);
+        void AddDeelplatform(Deelplatform newPlatform, HttpPostedFileBase imgLogo); 
         Deelplatform GetDeelplatform(int platformId);
         Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo);
         IEnumerable<Deelplatform> GetAllDeelplatformen();
