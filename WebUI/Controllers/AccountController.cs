@@ -21,6 +21,7 @@ using System.Collections;
 using System.Configuration;
 using System.Web.Configuration;
 using Domain.Post;
+using EmailAddress = SendGrid.Helpers.Mail.EmailAddress;
 
 namespace WebUI.Controllers
 {
@@ -112,7 +113,7 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerFaq()
         {
             AccountManager accountManager = new AccountManager();
-            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(faqs);
         }
 
@@ -124,7 +125,7 @@ namespace WebUI.Controllers
 
 
 
-            IEnumerable<Faq> faqs = accountManager.getAlleFaqs();
+            IEnumerable<Faq> faqs = accountManager.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
 
             return View("AdminBeheerFaq", faqs);
         }
@@ -132,10 +133,11 @@ namespace WebUI.Controllers
         public ActionResult AdminBeheerGebruikers()
         {
             AccountManager accountManager = new AccountManager();
+            
             AdminViewModel model =
                 new AdminViewModel()
                 {
-                    Users = accountManager.GetAccounts()
+                    Users = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"])
                 };
             return View(model);
         }
@@ -145,9 +147,29 @@ namespace WebUI.Controllers
         {
             fillOrganisaties();
             EntiteitManager entiteitManager = new EntiteitManager();
+
+            List<SelectListItem> listBoxItems = new List<SelectListItem>();
+
+            List<Persoon> AllPeople = entiteitManager.GetAllPeople((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            foreach (Persoon p in AllPeople)
+            {
+                SelectListItem Person = new SelectListItem()
+                {
+                    Text = p.Naam,
+                    Value = p.EntiteitId.ToString(),
+                    
+                };
+                listBoxItems.Add(Person);
+            }
+
             AdminViewModel model = new AdminViewModel()
             {
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+                platId = (int)System.Web.HttpContext.Current.Session["PlatformID"],
+                AlleEntiteiten = entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]),
+                PeopleChecks = new SelectedPeopleVM()
+                {
+                    People = listBoxItems
+                }
             };
             return View(model);
         }
@@ -155,6 +177,7 @@ namespace WebUI.Controllers
         public ActionResult AddFaq(Faq f)
         {
             AccountManager acm = new AccountManager();
+            f.PlatformId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
             acm.addFaq(f);
             return RedirectToAction("AdminBeheerFaq", "Account");
         }
@@ -193,12 +216,14 @@ namespace WebUI.Controllers
 
         public async Task<bool> CheckIfAdminAsync(LoginViewModel model)
         {
-            int oldplat = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+
+            int oldplat = (int?)System.Web.HttpContext.Current.Session["PlatformID"] ?? 0;
 
             System.Web.HttpContext.Current.Session["PlatformID"] = 0;
             var adminUM = makeUserManager();
             var user = await adminUM.FindByEmailAsync(model.Email);
             System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
+
             if (user != null)
             {
                 return true;
@@ -220,6 +245,28 @@ namespace WebUI.Controllers
             };
         }
         */
+        public async Task<ViewResult> SetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = true;
+            am.updateUser(a);
+            await um.AddToRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+
+        }
+
+        public async Task<ViewResult> UnsetAdmin(string accountId)
+        {
+            var um = makeUserManager();
+            AccountManager am = new AccountManager();
+            Account a = am.getAccount(accountId);
+            a.IsAdmin = false;
+            am.updateUser(a);
+            await um.RemoveFromRoleAsync(accountId, "Admin");
+            return View("EditUserAdmin", am.getAccount(accountId));
+        }
 
         //
         // POST: /Account/Login
@@ -234,9 +281,17 @@ namespace WebUI.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-
-            var user = await UserManager.FindByEmailAsync(model.Email);
-            var superadmin = UserManager.Users.Single(x => x.Email == model.Email);
+            if (await CheckIfAdminAsync(model))
+            {
+                int oldplat = (int)System.Web.HttpContext.Current.Session["PlatformID"];
+                System.Web.HttpContext.Current.Session["PlatformID"] = 0;
+                ApplicationSignInManager asm = makeSignInManager();
+                result = await asm.PasswordSignInAsync(model.Email, model.Password, false, true);
+                System.Web.HttpContext.Current.Session["PlatformID"] = oldplat;
+            }
+            else
+            {
+                var user = await UserManager.FindByEmailAsync(model.Email);
 
             if (user != null)
             {
@@ -251,11 +306,13 @@ namespace WebUI.Controllers
             // In case of Admin trying to login
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            if (superadmin != null)
-            {
-                HttpContext.Session["PlatformID"] = superadmin.TenantId;
+            //if (superadmin != null)
+            //{
+            //    HttpContext.Session["PlatformID"] = superadmin.TenantId;
+            //}
+            
+                result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
             }
-            result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: true);
 
             switch (result)
             {
@@ -346,7 +403,7 @@ namespace WebUI.Controllers
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var userstore = new ApplicationUserStore<ApplicationUser>(context) { TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
             UserManager = new ApplicationUserManager(userstore);
-            return View();
+            return View();  
         }
 
         //
@@ -359,7 +416,7 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -628,7 +685,7 @@ namespace WebUI.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
 
                 var result = await UserManager.CreateAsync(user);
-                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
+                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -759,7 +816,7 @@ namespace WebUI.Controllers
         }
 
         //gaat identity user linken aan een account uit ons domein.
-        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
+        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum,int platformId)
         {
             BL.AccountManager accountManager = new BL.AccountManager();
             Domain.Account.Account domainAccount = new Domain.Account.Account()
@@ -769,6 +826,7 @@ namespace WebUI.Controllers
                 Voornaam = voornaam,
                 Achternaam = achternaam,
                 GeboorteDatum = geboorteDatum,
+                PlatId = platformId,
                 Dashboard = new Dashboard()
             };
             domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
@@ -779,7 +837,7 @@ namespace WebUI.Controllers
         public ActionResult IndexUsers()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
+            List<Account> accounts = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(accounts);
         }
 
@@ -910,7 +968,7 @@ namespace WebUI.Controllers
         {
             var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
             await UserManager.CreateAsync(user, model.Password);
-            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum, (int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return RedirectToAction("IndexUsers");
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -978,7 +1036,7 @@ namespace WebUI.Controllers
             ArrayList organisaties = new ArrayList();
             List<Entiteit> entiteits = new List<Entiteit>();
             EntiteitManager mgr = new EntiteitManager();
-            entiteits = mgr.getAlleEntiteiten();
+            entiteits = mgr.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             if (NaamType.Count == 0)
             {
                 foreach (Entiteit entiteit in entiteits)

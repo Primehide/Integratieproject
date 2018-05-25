@@ -6,10 +6,8 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -90,10 +88,19 @@ namespace WebUI.Controllers
         public ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase ImgLogo)
         {
             //I have to be able to create a SubPlatform
-            byte[] imageBytes = null;
-            BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
-            imageBytes = reader.ReadBytes((int)ImgLogo.ContentLength);
-            dp.Logo = imageBytes;
+            if (ImgLogo != null)
+            {
+                byte[] imageBytes = null;
+                BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
+                imageBytes = reader.ReadBytes((int) ImgLogo.ContentLength);
+                dp.Logo = imageBytes;
+            }
+            else
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes("C:/Users/WaffleDealer/Desktop/IP/Integratieproject/WebUI/Controllers/default.png");
+                dp.Logo = imageBytes;
+            }
+
             pM.AddDeelplatform(dp);
             EntiteitManager entiteitManager = new EntiteitManager();
             if (Request.Files.Count > 0)
@@ -250,7 +257,9 @@ namespace WebUI.Controllers
         public ActionResult ExportUsers()
         {
             IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
+
+            List<Account> accounts = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);         
+
             return View(accounts);
         }
         [Authorize(Roles = "SuperAdmin, Admin")]
@@ -258,7 +267,7 @@ namespace WebUI.Controllers
         {
             IPlatformManager platformManager = new PlatformManager();
             IAccountManager accountManager = new AccountManager();
-            List<Account> list = accountManager.GetAccounts();
+            List<Account> list = accountManager.GetAccounts((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             StringBuilder sb = platformManager.ConvertToCSV(list);
             return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "export.csv");
         }

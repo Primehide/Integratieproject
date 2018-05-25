@@ -5,6 +5,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using DAL;
 using Domain.Account;
@@ -63,10 +64,10 @@ namespace BL
             return repo.ReadAccount(ID);
         }
 
-        public List<Account> GetAccounts()
+        public List<Account> GetAccounts(int platId)
         {
             initNonExistingRepo();
-            return accountRepository.readAccounts();
+            return accountRepository.readAccounts().FindAll(x => x.PlatId == platId); ;
         }
    
         public void genereerAlerts()
@@ -460,10 +461,10 @@ namespace BL
             accountRepository.DeleteFaq(faqID);
 
         }
-        public List<Faq> getAlleFaqs()
+        public List<Faq> getAlleFaqs(int id)
         {
             initNonExistingRepo();
-            return accountRepository.getAlleFaqs();
+            return accountRepository.getAlleFaqs().Where(x => x.PlatformId == id).ToList();
         }
         public void UpdateAlert(int id)
         {
