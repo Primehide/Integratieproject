@@ -18,6 +18,7 @@ using Microsoft.Owin.Security.Jwt;
 using System.Configuration;
 using Microsoft.Owin.Security;
 using System.Web.Configuration;
+using BL;
 
 namespace WebUI
 {
@@ -145,6 +146,8 @@ namespace WebUI
         private async void createSuperAdmin()
         {
             var user = new ApplicationUser { UserName = "admin@admin.com", Email = "admin@admin.com", TenantId = 0, EmailConfirmed = true };
+            IAccountManager accountManager = new AccountManager();
+            accountManager.CreateDomainUser(user.Id,user.Email,"Super","Admin",DateTime.Today);
             ApplicationDbContext<ApplicationUser> context = new ApplicationDbContext<ApplicationUser>();
             ApplicationUserStore<ApplicationUser> userStore = new ApplicationUserStore<ApplicationUser>(context);
 
@@ -163,7 +166,6 @@ namespace WebUI
                 var result = await aUM.CreateAsync(user, "Admin123");
                 await aUM.AddToRoleAsync(user.Id.ToString(), "Admin");
                 await aUM.AddToRoleAsync(user.Id.ToString(), "SuperAdmin");
-
             }
         }
     }

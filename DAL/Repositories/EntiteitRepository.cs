@@ -213,7 +213,11 @@ namespace DAL
 
         public void CreateThema(Thema thema, HttpPostedFileBase ImageFile)
         {
-            thema.Image = ConvertToBytes(ImageFile);
+            if(ImageFile != null)
+            {
+                thema.Image = ConvertToBytes(ImageFile);
+            }
+      
             ctx.Themas.Add(thema);
             ctx.SaveChanges();
         }

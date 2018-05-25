@@ -32,9 +32,12 @@
     <Use64BitIISExpress>
     </Use64BitIISExpress>
     <IISExpressSSLPort>44365</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -5880,7 +5883,6 @@
     <Content Include="Views\Entiteit\DisplayOrganisation.cshtml" />
     <Content Include="Views\Entiteit\DeleteOrganisation.cshtml" />
     <Content Include="Views\Entiteit\UpdateOrganisation.cshtml" />
-    <Content Include="Views\Entiteit\Test.cshtml" />
     <Content Include="Views\Entiteit\View.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Organisations.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\People.cshtml" />

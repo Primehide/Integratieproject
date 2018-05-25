@@ -753,7 +753,6 @@ namespace BL
             }
         }
      
-
         public Dictionary<Entiteit, string> FillEntiteiten()
         {
             Dictionary<Entiteit, string> NaamType = new Dictionary<Entiteit, string>();
@@ -788,6 +787,5 @@ namespace BL
             //ViewBag.Namen = namen;
             return NaamType;
         }
-
     }
 }

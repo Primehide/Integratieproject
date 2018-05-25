@@ -456,8 +456,8 @@ namespace WebUI.Controllers
         // GET
         public ActionResult UpdateAlerts()
         {
-            IEntiteitManager entiteitManager = new EntiteitManager();
-           entiteitManager.FillEntiteiten();
+        
+           FillEntiteiten();
             IAccountManager accountManager = new AccountManager();
             List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
             return View("UpdateAlerts", newAlerts);
@@ -466,8 +466,8 @@ namespace WebUI.Controllers
         //POST: Delete Alert
         public ActionResult DeleteAlert(int id)
         {
-            IEntiteitManager entiteitManager = new EntiteitManager();
-            entiteitManager.FillEntiteiten();
+       
+            FillEntiteiten();
             IAccountManager accountManager = new AccountManager();
             accountManager.DeleteAlert(id);
             List<Alert> newAlerts = accountManager.GetUserAlerts(User.Identity.GetUserId());
@@ -477,8 +477,8 @@ namespace WebUI.Controllers
         //GET: Edit Alert
         public ActionResult EditAlert(int id)
         {
-            IEntiteitManager entiteitManager = new EntiteitManager();
-            entiteitManager.FillEntiteiten();
+  
+            FillEntiteiten();
 
             IAccountManager accountManager = new AccountManager();
             Alert alert = accountManager.GetAlert(id);
@@ -496,10 +496,10 @@ namespace WebUI.Controllers
             if (ModelState.IsValid)
             {
                 //change
-                IEntiteitManager entiteitManager = new EntiteitManager();
+
              
                 Entiteit entiteit = new Entiteit();
-                entiteit = entiteitManager.FillEntiteiten().Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
+                entiteit = FillEntiteiten().Keys.Where(x => x.Naam == modelalert.type).FirstOrDefault();
                 modelalert.alert.Entiteit = entiteit;
                 modelalert. alert.AlertId = id;
                 accountManager.UpdateAlert(modelalert.alert);
@@ -516,10 +516,9 @@ namespace WebUI.Controllers
         [HttpPost]
         public ActionResult AddAlert(AlertViewModel model)
         {
-            IEntiteitManager entiteitManager = new EntiteitManager();
             AccountManager accountManager = new AccountManager();
             //entiteit ID ophalen
-            int entiteitId = entiteitManager.FillEntiteiten().Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
+            int entiteitId = FillEntiteiten().Keys.Where(x => x.Naam == model.type).FirstOrDefault().EntiteitId;
   
 
             //Account 

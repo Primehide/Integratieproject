@@ -17,7 +17,8 @@ namespace WebUI.Controllers
     {
         // Index Page for all Entities.
         public virtual ActionResult Index()
-        {
+        { 
+            //OverviewVM overview = new OverviewVM
             var entiteitManager = new EntiteitManager();
             var platformId = (int) System.Web.HttpContext.Current.Session["PlatformID"];
             var overview = new OverviewVM
@@ -53,16 +54,10 @@ namespace WebUI.Controllers
         public ActionResult AddPersoon(Persoon p, string organisatie, HttpPostedFileBase uploadFile)
         {
             FillOrganisaties();
-           
-            var entiteitManager = new EntiteitManager();
-            var NaamType = new Dictionary<Entiteit, string>();
-            var organisationId = NaamType
-                .Keys
-                .Where(x => x.Naam == organisatie)
-                .FirstOrDefault()
-                .EntiteitId;
-
-            p.Organisations = new List<Organisatie> {entiteitManager.GetOrganisatie(organisationId)};
+            EntiteitManager entiteitManager = new EntiteitManager();
+            p.Organisations = new List<Organisatie>();
+            int organisationId = FillOrganisaties().Keys.Where(x => x.Naam == organisatie).FirstOrDefault().EntiteitId;
+            p.Organisations.Add(entiteitManager.GetOrganisatie(organisationId));
             p.PlatformId = (int)System.Web.HttpContext.Current.Session["PlatformID"];
             entiteitManager.AddPerson(p,uploadFile);
 
@@ -73,11 +68,11 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddOrganisatie(Organisatie o, HttpPostedFileBase uploadFile, IEnumerable<string> selectedPeople)
         {
-            var entiteitManager = new EntiteitManager();
+            EntiteitManager entiteitManager = new EntiteitManager();
             if (selectedPeople != null)
             {
                 o.Leden = new List<Persoon>();
-                foreach (var pId in selectedPeople)
+                foreach (string pId in selectedPeople)
                 {
                     o.Leden.Add(entiteitManager.GetPerson(int.Parse(pId)));
                 }
@@ -363,7 +358,6 @@ namespace WebUI.Controllers
 
             return cover != null ? File(cover, "image/jpg") : null;
         }
-
         // move content
         // This region will add a newly created Organisatie object to the database and persist
         #region
@@ -674,10 +668,9 @@ namespace WebUI.Controllers
             return View(zoekModel);
         }
 
-        // move content
-        private void FillOrganisaties()
-        {
 
+        private Dictionary<Entiteit,string>  FillOrganisaties()
+        {
             ArrayList organisaties = new ArrayList();
             Dictionary<Entiteit, string> naamType = new Dictionary<Entiteit, string>();
 
@@ -697,6 +690,7 @@ namespace WebUI.Controllers
             }
             naamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
             ViewBag.Organisaties = organisaties;
+            return naamType;
         }
    
     }
