@@ -66,7 +66,7 @@ namespace WebUI.Controllers
             Models.DashboardModel model = new DashboardModel()
             {
                 GevolgdeItems = accountManager.getAccount(User.Identity.GetUserId()).Items.ToList(),
-                AlleEntiteiten = entiteitManager.getAlleEntiteiten()
+                AlleEntiteiten = entiteitManager.GetAlleEntiteiten()
             };
             return View(model);
         }
