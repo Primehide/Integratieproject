@@ -101,18 +101,19 @@ namespace WebUI.Controllers
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerFaq()
         {
-            AccountManager accountManager = new AccountManager();
-            IEnumerable<Faq> faqs = accountManager.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            IPlatformManager platformManager = new PlatformManager();
+            IEnumerable<Faq> faqs = platformManager.GetAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(faqs);
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult DeleteFaq(int id)
         {
-            AccountManager accountManager = new AccountManager();
-            accountManager.deleteFaq(id);
+            IPlatformManager platformManager = new PlatformManager();
+            platformManager.DeleteFaq(id);
             return View("AdminBeheerFaq");
         }
+
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AdminBeheerGebruikers()
         {
@@ -143,7 +144,7 @@ namespace WebUI.Controllers
             EntiteitManager entiteitManager = new EntiteitManager();
             AdminViewModel model = new AdminViewModel()
             {
-                platId = (int)System.Web.HttpContext.Current.Session["PlatformID"],
+                PlatId = (int)System.Web.HttpContext.Current.Session["PlatformID"],
                 AlleEntiteiten = entiteitManager.GetEntiteitenVanDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]),
             };
             return View(model);
@@ -353,7 +354,8 @@ namespace WebUI.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
+                    IAccountManager accountManager = new AccountManager();
+                    accountManager.CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
                     //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -397,15 +399,7 @@ namespace WebUI.Controllers
         public ActionResult CreateGrafiek(GrafiekModel model)
         {
             IAccountManager accountManager = new AccountManager();
-            List<CijferOpties> opties = new List<CijferOpties>();
-            foreach (var optie in model.CijferOpties)
-            {
-                CijferOpties o = new CijferOpties()
-                {
-                    optie = optie
-                };
-                opties.Add(o);
-            }
+            List<CijferOpties> opties = accountManager.CreateCijferOpties(model.CijferOpties);
             accountManager.AddUserGrafiek(opties, model.EntiteitIds, model.TypeGrafiek, (int)System.Web.HttpContext.Current.Session["PlatformID"], User.Identity.GetUserId(), model.Naam, model.GrafiekSoort);
             return RedirectToAction("Index", "Manage");
         }
@@ -607,7 +601,8 @@ namespace WebUI.Controllers
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
 
                 var result = await UserManager.CreateAsync(user);
-                CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
+                IAccountManager accountManager = new AccountManager();
+                accountManager.CreateDomainUser(user.Id, user.Email, "Voornaam", "Achternaam", DateTime.Now);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -736,31 +731,7 @@ namespace WebUI.Controllers
 
             return callbackUrl;
         }
-
-        //gaat identity user linken aan een account uit ons domein.
-        private void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
-        {
-            BL.AccountManager accountManager = new BL.AccountManager();
-            Domain.Account.Account domainAccount = new Domain.Account.Account()
-            {
-                IdentityId = identityId,
-                Email = email,
-                Voornaam = voornaam,
-                Achternaam = achternaam,
-                GeboorteDatum = geboorteDatum,
-                Dashboard = new Dashboard()
-            };
-            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
-            accountManager.addUser(domainAccount);
-        }
         #endregion
-
-        public ActionResult IndexUsers()
-        {
-            IAccountManager accountManager = new AccountManager();
-            List<Account> accounts = accountManager.GetAccounts();
-            return View(accounts);
-        }
 
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult EditUserAdmin(string id)
@@ -820,31 +791,11 @@ namespace WebUI.Controllers
         public ActionResult EditUserAdmin(Domain.Account.Account model)
         {
             AccountManager accountManager = new AccountManager();
-            Account accountToUpdate = accountManager.getAccount(model.IdentityId);
-            accountToUpdate.Achternaam = model.Achternaam;
-            accountToUpdate.Voornaam = model.Voornaam;
-            accountToUpdate.Email = model.Email;
-            //accountToUpdate.GeboorteDatum = model.GeboorteDatum.Date;
-            accountManager.updateUser(accountToUpdate);
+            accountManager.updateUser(model);
             return RedirectToAction("AdminBeheerGebruikers");
         }
 
-        //Aanmaken van een user door admin
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult CreateUser()
-        {
-            return View();
-        }
 
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public async Task<ActionResult> CreateUser(RegisterViewModel model)
-        {
-            var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
-            await UserManager.CreateAsync(user, model.Password);
-            CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
-            return RedirectToAction("IndexUsers");
-        }
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult DeleteUser(string id)
         {
@@ -852,23 +803,6 @@ namespace WebUI.Controllers
             accountManager.DeleteUser(id);
             UserManager.Delete(UserManager.FindById(id));
             return RedirectToAction("Index", "Home");
-        }
-
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult EditUser(string id)
-        {
-            IAccountManager accountManager = new AccountManager();
-            return View(accountManager.getAccount(id));
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "SuperAdmin, Admin")]
-        public ActionResult EditUser(Account account)
-        {
-
-            IAccountManager accountManager = new AccountManager();
-            accountManager.UpdateUser(account);
-            return RedirectToAction("IndexUsers");
         }
 
         //push notifications
@@ -883,15 +817,11 @@ namespace WebUI.Controllers
             return Json(NotificaionService.GetNotification(), JsonRequestBehavior.AllowGet);
         }
 
-
-
         public ActionResult FollowEntiteit(int id)
         {
             string entityId = User.Identity.GetUserId();
             IAccountManager accountManager = new AccountManager();
-
             accountManager.FollowEntity(entityId, id);
-
             return RedirectToAction("VolgItems", "Manage");
         }
 
@@ -920,9 +850,6 @@ namespace WebUI.Controllers
                     {
                         NaamType.Add(entiteit, "Organisatie");
                     }
-
-
-
                 }
             }
             NaamType.ToList().ForEach(x => organisaties.Add(x.Key.Naam));
@@ -979,7 +906,4 @@ namespace WebUI.Controllers
             return new EmptyResult();
         }
     }
-
-
-
 }

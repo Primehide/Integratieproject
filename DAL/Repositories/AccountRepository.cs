@@ -89,16 +89,11 @@ namespace DAL
 
         public void updateUser(Account account)
         {
-            Account updated = ctx.Accounts.Find(account.AccountId);
-            updated.Voornaam = account.Voornaam;
-            updated.Achternaam = account.Achternaam;
-            updated.GeboorteDatum = account.GeboorteDatum;
-            updated.Email = account.Email;
-            updated.IsAdmin = account.IsAdmin;
-            updated.ReviewEntiteiten = account.ReviewEntiteiten;
-
+            ctx.Entry(account).State = EntityState.Modified;
+            //Account updated = ctx.Accounts.Find(account.AccountId);
             ctx.SaveChanges();
 
+            /*
             updated.Dashboard = account.Dashboard;
             foreach (DashboardBlok b in updated.Dashboard.Configuratie.DashboardBlokken)
             {
@@ -110,8 +105,8 @@ namespace DAL
                     }
                 }
             }
-           
                 ctx.SaveChanges();
+                */
         }
 
         public Account ReadAccount(string ID)

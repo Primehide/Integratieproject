@@ -441,7 +441,15 @@ namespace BL
         public void updateUser(Account account)
         {
             initNonExistingRepo();
-            accountRepository.updateUser(account);
+            Account accountToUpdate = accountRepository.ReadAccount(account.IdentityId);
+            accountToUpdate.Achternaam = account.Achternaam;
+            accountToUpdate.Voornaam = account.Voornaam;
+            accountToUpdate.Email = account.Email;
+            if (account.ReviewEntiteiten != null)
+            {
+                accountToUpdate.ReviewEntiteiten = account.ReviewEntiteiten;
+            }
+            accountRepository.updateUser(accountToUpdate);
         }
 
         public void DeleteGrafiekWaardes(int grafiekID)
@@ -574,6 +582,37 @@ namespace BL
         {
             initNonExistingRepo(false);
             repo.UpdateConfiguratieTitle(configuratieId, title);
+        }
+
+        public List<CijferOpties> CreateCijferOpties(List<string> stringOpties)
+        {
+            List<CijferOpties> opties = new List<CijferOpties>();
+            foreach (var optie in stringOpties)
+            {
+                CijferOpties o = new CijferOpties()
+                {
+                    optie = optie
+                };
+                opties.Add(o);
+            }
+
+            return opties;
+        }
+
+        public void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
+        {
+            initNonExistingRepo();
+            Domain.Account.Account domainAccount = new Domain.Account.Account()
+            {
+                IdentityId = identityId,
+                Email = email,
+                Voornaam = voornaam,
+                Achternaam = achternaam,
+                GeboorteDatum = geboorteDatum,
+                Dashboard = new Dashboard()
+            };
+            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
+            accountRepository.addUser(domainAccount);
         }
     }
 }

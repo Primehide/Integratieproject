@@ -22,7 +22,6 @@ namespace BL
         void DeleteAlert(int alertID);
         Account getAccount(string ID);
         Account getAccount(int ID);
-        void updateUser(Account account);
         void DeleteGrafiekWaardes(int grafiekID);
         void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string vergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort);
         List<Account> GetAccounts();
@@ -40,5 +39,11 @@ namespace BL
         Dashboard GetPublicDashboard(int id);
         void UpdateConfiguratieTitle(int configuratieId, String titel);
         void SetPublic(int dashboardId, bool shared);
+
+        //refactor sander
+        List<CijferOpties> CreateCijferOpties(List<string> stringOpties);
+        void CreateDomainUser(string identityId, string email, string voornaam, string achternaam,
+            DateTime geboorteDatum);
+        void updateUser(Account account);
     }
 }
