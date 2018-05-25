@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DAL;
 using Domain.Platform;
 using Domain.Account;
@@ -11,69 +13,94 @@ namespace BL
 {
     public class PlatformManager : IPlatformManager
     {
-        private PlatformRepository platformRepository;
-        private UnitOfWorkManager uowManager;
+        private PlatformRepository _platformRepository;
+        private UnitOfWorkManager _uowManager;
 
         public PlatformManager()
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
         }
 
         public PlatformManager(UnitOfWorkManager uofMgr)
         {
-            platformRepository = new PlatformRepository();
+            _platformRepository = new PlatformRepository();
 
-            uowManager = uofMgr;
+            _uowManager = uofMgr;
         }
 
-        public void AddDeelplatform(Deelplatform newPlatform)
+        public void AddDeelplatform(Deelplatform newPlatform, HttpPostedFileBase imgLogo)
         {
-            initNonExistingRepo();
-            platformRepository.CreateDeelplatform(newPlatform);
+            InitNonExistingRepo();
+
+            if (imgLogo != null)
+            {
+                BinaryReader reader = new BinaryReader(imgLogo.InputStream);
+                var imageBytes = reader.ReadBytes(imgLogo.ContentLength);
+                newPlatform.Logo = imageBytes;
+            }
+            else
+            {
+                byte[] imageBytes = System.IO.File.ReadAllBytes("C:/Users/WaffleDealer/Desktop/IP/Integratieproject/WebUI/Controllers/default.png");
+                newPlatform.Logo = imageBytes;
+            }
+
+
+            _platformRepository.CreateDeelplatform(newPlatform);
         }
 
-        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
+        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo)
         {
-            initNonExistingRepo();
-            return platformRepository.UpdateDeelplatform(changedDeelplatform);
+            InitNonExistingRepo();
+            Deelplatform deelplatformToUpdate = GetDeelplatform(changedDeelplatform.DeelplatformId);
+            if (imgLogo != null)
+            {
+                BinaryReader reader = new BinaryReader(imgLogo.InputStream);
+                var imageBytes = reader.ReadBytes(imgLogo.ContentLength);
+                deelplatformToUpdate.Logo = imageBytes;
+            }
+            deelplatformToUpdate.Naam = changedDeelplatform.Naam;
+            deelplatformToUpdate.Tagline = changedDeelplatform.Tagline;
+            deelplatformToUpdate.ColorCode1 = changedDeelplatform.ColorCode1;
+            deelplatformToUpdate.ColorCode2 = changedDeelplatform.ColorCode2;
+            return _platformRepository.UpdateDeelplatform(changedDeelplatform);
         }
 
         public Deelplatform GetDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            return platformRepository.ReadDeelplatform(platformId);
+            InitNonExistingRepo();
+            return _platformRepository.ReadDeelplatform(platformId);
         }
 
         public void RemoveDeelplatform(int platformId)
         {
-            initNonExistingRepo();
-            platformRepository.DeleteDeelplatform(platformId);
+            InitNonExistingRepo();
+            _platformRepository.DeleteDeelplatform(platformId);
         }
 
         public IEnumerable<Deelplatform> GetAllDeelplatformen()
         {
-            initNonExistingRepo();
-            return platformRepository.ReadAllDeelplatformen();
+            InitNonExistingRepo();
+            return _platformRepository.ReadAllDeelplatformen();
         }
 
         #region
-        public void initNonExistingRepo(bool withUnitOfWork = false)
+        public void InitNonExistingRepo(bool withUnitOfWork = false)
         {
             // Als we een repo met UoW willen gebruiken en als er nog geen uowManager bestaat:
             // Dan maken we de uowManager aan en gebruiken we de context daaruit om de repo aan te maken.
 
             if (withUnitOfWork)
             {
-                if (uowManager == null)
+                if (_uowManager == null)
                 {
-                    uowManager = new UnitOfWorkManager();
-                    platformRepository = new PlatformRepository(uowManager.UnitOfWork);
+                    _uowManager = new UnitOfWorkManager();
+                    _platformRepository = new PlatformRepository(_uowManager.UnitOfWork);
                 }
             }
             // Als we niet met UoW willen werken, dan maken we een repo aan als die nog niet bestaat.
             else
             {
-                platformRepository = (platformRepository == null) ? new PlatformRepository() : platformRepository;
+                _platformRepository = (_platformRepository == null) ? new PlatformRepository() : _platformRepository;
             }
         }
 
@@ -84,7 +111,7 @@ namespace BL
       
         public StringBuilder ConvertToCSV(List<Account> accounts)
         {
-            initNonExistingRepo();
+            InitNonExistingRepo();
             var lstData = accounts;
             var sb = new StringBuilder();
             foreach (var data in lstData)
@@ -92,6 +119,32 @@ namespace BL
                 sb.AppendLine(data.AccountId + "," + data.Voornaam + "," + data.Achternaam + ", " + data.Email + ", " + data.GeboorteDatum);
             }
             return sb;
+        }
+
+        //refactor sander
+        public void AddFaq(Faq faq, int platId)
+        {
+            InitNonExistingRepo();
+            faq.PlatformId = platId;
+            _platformRepository.AddFaq(faq);
+        }
+
+        public void UpdateFaq(Faq faq)
+        {
+            InitNonExistingRepo();
+            _platformRepository.UpdateFaq(faq);
+
+        }
+        public void DeleteFaq(int faqID)
+        {
+            InitNonExistingRepo();
+            _platformRepository.DeleteFaq(faqID);
+
+        }
+        public List<Faq> GetAlleFaqs(int PlatId)
+        {
+            InitNonExistingRepo();
+            return _platformRepository.GetAlleFaqs(PlatId);
         }
     }
 }

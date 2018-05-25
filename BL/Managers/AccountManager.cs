@@ -45,6 +45,7 @@ namespace BL
             // uowManager.Save();
 
         }
+
         public void UpdateUser(Account account)
         {
 
@@ -56,6 +57,11 @@ namespace BL
 
 
             accountRepository.updateUser(account);
+        }
+
+        public DashboardBlok[] GetDashboardBloks(string userId)
+        {
+            return getAccount(userId).Dashboard.Configuratie.DashboardBlokken.ToArray();
         }
 
         public Account getAccount(string ID)
@@ -217,17 +223,16 @@ namespace BL
 
         }
 
-
         public void addDeviceId(string userId,string device)
         {
             repo.addDeviceId(userId, device);
         }
 
-
         public Alert GetAlert(int alertID)
         {
             return repo.ReadAlert(alertID);
         }
+
         public void AddAlert(Alert alert, int entiteitId, bool web, bool android, bool mail)
         {
             initNonExistingRepo(true);
@@ -267,7 +272,6 @@ namespace BL
              uowManager.Save();
         }
         
-
         public void UpdateAlert(Alert alert)
         {
 
@@ -276,11 +280,13 @@ namespace BL
             
 
         }
+
         public void DeleteAlert(int alertID)
         {
             initNonExistingRepo();
             accountRepository.DeleteAlert(alertID);
         }
+
         public void addUser(Alert alert)
         {
             initNonExistingRepo();
@@ -314,7 +320,6 @@ namespace BL
             }
         }
 
-
         public void DeleteUser(string accountId)
         {
             initNonExistingRepo();
@@ -328,15 +333,11 @@ namespace BL
             accountRepository.FollowEntiteit(identityID, entiteitID);
         }
 
-
-
         public void UnfollowEntity(string identityID, int entiteitID)
         {
             initNonExistingRepo();
             accountRepository.UnFollowEntiteit(identityID, entiteitID);
         }
-
-
 
         public void grafiekAanGebruikerToevoegen(string IdentityId, Domain.Enum.GrafiekType TypeGrafiek, List<int> entiteitInts, List<string> CijferOpties, string VergelijkOptie, Domain.Enum.GrafiekSoort grafiekSoort)
         {
@@ -441,7 +442,15 @@ namespace BL
         public void updateUser(Account account)
         {
             initNonExistingRepo();
-            accountRepository.updateUser(account);
+            Account accountToUpdate = accountRepository.ReadAccount(account.IdentityId);
+            accountToUpdate.Achternaam = account.Achternaam;
+            accountToUpdate.Voornaam = account.Voornaam;
+            accountToUpdate.Email = account.Email;
+            if (account.ReviewEntiteiten != null)
+            {
+                accountToUpdate.ReviewEntiteiten = account.ReviewEntiteiten;
+            }
+            accountRepository.updateUser(accountToUpdate);
         }
 
         public void DeleteGrafiekWaardes(int grafiekID)
@@ -449,29 +458,6 @@ namespace BL
             accountRepository.DeleteGrafiekWaardes(grafiekID);
         }
 
-        public void addFaq(Faq faq)
-        {
-            initNonExistingRepo();
-            accountRepository.addFaq(faq);
-
-        }
-        public void updateFaq(Faq faq)
-        {
-            initNonExistingRepo();
-            repo.UpdateFaq(faq); 
-
-        }
-        public void deleteFaq(int faqID)
-        {
-            initNonExistingRepo();
-            accountRepository.DeleteFaq(faqID);
-
-        }
-        public List<Faq> getAlleFaqs(int id)
-        {
-            initNonExistingRepo();
-            return accountRepository.getAlleFaqs().Where(x => x.PlatformId == id).ToList();
-        }
         public void UpdateAlert(int id)
         {
             initNonExistingRepo();
@@ -597,6 +583,37 @@ namespace BL
         {
             initNonExistingRepo(false);
             repo.UpdateConfiguratieTitle(configuratieId, title);
+        }
+
+        public List<CijferOpties> CreateCijferOpties(List<string> stringOpties)
+        {
+            List<CijferOpties> opties = new List<CijferOpties>();
+            foreach (var optie in stringOpties)
+            {
+                CijferOpties o = new CijferOpties()
+                {
+                    optie = optie
+                };
+                opties.Add(o);
+            }
+
+            return opties;
+        }
+
+        public void CreateDomainUser(string identityId, string email, string voornaam, string achternaam, DateTime geboorteDatum)
+        {
+            initNonExistingRepo();
+            Domain.Account.Account domainAccount = new Domain.Account.Account()
+            {
+                IdentityId = identityId,
+                Email = email,
+                Voornaam = voornaam,
+                Achternaam = achternaam,
+                GeboorteDatum = geboorteDatum,
+                Dashboard = new Dashboard()
+            };
+            domainAccount.Dashboard.Configuratie = new Domain.Account.DashboardConfiguratie();
+            accountRepository.addUser(domainAccount);
         }
     }
 }

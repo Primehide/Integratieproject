@@ -13,8 +13,8 @@ namespace WebUI.Controllers
     {
         public ActionResult Faq()
         {
-            AccountManager mgr = new AccountManager();
-            IEnumerable<Domain.Account.Faq> faqs = mgr.getAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
+            IPlatformManager platoManager = new PlatformManager();
+            IEnumerable<Domain.Platform.Faq> faqs = platoManager.GetAlleFaqs((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             return View(faqs);
         }
 

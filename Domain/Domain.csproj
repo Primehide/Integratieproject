@@ -118,7 +118,7 @@
     <Compile Include="Account\Alert.cs" />
     <Compile Include="Account\DashboardBlok.cs" />
     <Compile Include="Account\DashboardConfiguratie.cs" />
-    <Compile Include="Account\Faq.cs" />
+    <Compile Include="Platform\Faq.cs" />
     <Compile Include="Entiteit\Entiteit.cs" />
     <Compile Include="Entiteit\Item.cs" />
     <Compile Include="Entiteit\Organisatie.cs" />

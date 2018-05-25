@@ -13,6 +13,8 @@ using Domain.Account;
 
 using Domain.TextGain;
 using System.Collections;
+using System.IO;
+using Newtonsoft.Json;
 
 
 namespace BL
@@ -675,6 +677,20 @@ namespace BL
                 }
             }
             return gevondeEntiteiten;
+        }
+
+        public void FileToJson(HttpPostedFileBase file, int platId)
+        {
+            if (file != null && file.ContentLength > 0)
+            {
+                string str = (new StreamReader(file.InputStream)).ReadToEnd();
+                List<Persoon> jsonEntiteiten = JsonConvert.DeserializeObject<List<Persoon>>(str);
+                foreach (var p in jsonEntiteiten)
+                {
+                    p.PlatformId = platId;
+                }
+                ConvertJsonToEntiteit(jsonEntiteiten);
+            }
         }
 
         public void ConvertJsonToEntiteit(List<Persoon> jsonEntiteiten)

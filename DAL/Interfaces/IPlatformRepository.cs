@@ -16,6 +16,10 @@ namespace DAL
         Deelplatform UpdateDeelplatform(Deelplatform uDeelplatform);
         void DeleteDeelplatform(int id);
 
-
+        //refactor sander
+        void AddFaq(Faq faq);
+        void UpdateFaq(Faq faq);
+        void DeleteFaq(int FaqId);
+        List<Faq> GetAlleFaqs(int PlatId);
     }
 }

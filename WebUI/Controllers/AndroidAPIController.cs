@@ -1,47 +1,39 @@
 ﻿using BL;
 using Domain.Account;
 using Domain.Platform;
-using Microsoft.Owin.Security.OAuth;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Web.Http;
-using WebUI.Providers;
 
 namespace WebUI.Controllers
 {
-    public class AndroidAPIController : ApiController
+    //De API controller die zal aangesproken worden door de Android App
+    public class AndroidApiController : ApiController
     {
-        PlatformManager pM;
-        AccountManager aM;
+        PlatformManager _pM;
+        AccountManager _aM;
 
-        //Get all deelplatformen for android app
+        //Vraagt alle aangemaakte deeplatformen op voor de Android app
         [Route("api/deelplatformen")]
         [HttpGet]
         public Deelplatform[] GetDeelplatformen()
         {
-            pM = new PlatformManager();
-            return pM.GetAllDeelplatformen().ToArray();
+            _pM = new PlatformManager();
+            return _pM.GetAllDeelplatformen().ToArray();
 
         }
-        //Get all DashboardBlokken (from specific user) for android app
+
+        //Neemt de request van een ingelogde user, en zal deze gebruiken om een dashboard terug te sturen
+        //Dit dashboard zal worden getekend op de app zelf
         [Route("api/Blokken")]
         [HttpGet]
         [Authorize]
         public DashboardBlok[] Get()
         {
             ClaimsPrincipal principal = Request.GetRequestContext().Principal as ClaimsPrincipal;
-
-            string userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-
-            aM = new AccountManager();
-
-            var acc = aM.getAccount(userId);
-            DashboardBlok[] dbs = acc.Dashboard.Configuratie.DashboardBlokken.ToArray();
-            return dbs;
+            _aM = new AccountManager();
+            return _aM.GetDashboardBloks(principal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value);
         }
     }
 }
