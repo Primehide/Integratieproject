@@ -11,7 +11,10 @@ using Microsoft.Owin.Security;
 using WebUI.Models;
 using Domain.Entiteit;
 using System.Collections;
+<<<<<<< HEAD
 using BL.Interfaces;
+=======
+>>>>>>> master
 using BL.Managers;
 using Domain.Post;
 using Domain.Enum;

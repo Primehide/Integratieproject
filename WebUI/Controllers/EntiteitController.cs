@@ -6,7 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+<<<<<<< HEAD
 using BL.Interfaces;
+=======
+>>>>>>> master
 using BL.Managers;
 using WebUI.Models;
 

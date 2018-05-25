@@ -10,7 +10,10 @@ using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+<<<<<<< HEAD
 using BL.Interfaces;
+=======
+>>>>>>> master
 using BL.Managers;
 using WebUI.Models;
 
