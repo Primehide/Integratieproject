@@ -213,7 +213,7 @@ namespace BL
         {
             initNonExistingRepo(true);
             EntiteitManager entiteitManager = new EntiteitManager(uowManager);
-            Entiteit entiteit = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
+            Entiteit entiteit = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteitId);
             List<Post> PostsToAdd = new List<Post>();
             foreach (var post in response)
             {
@@ -312,7 +312,7 @@ namespace BL
             switch (grafiekType)
             {
                 case Domain.Enum.GrafiekType.CIJFERS:
-                    Entiteit e1 = entiteitManager.getAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
+                    Entiteit e1 = entiteitManager.GetAlleEntiteiten().Single(x => x.EntiteitId == entiteiten.First().EntiteitId);
                     List<Post> postsEerste = e1.Posts;
                     int aantalPosts = postsEerste.Count;
                     int retweets = postsEerste.Where(x => x.retweet == true).Count();
