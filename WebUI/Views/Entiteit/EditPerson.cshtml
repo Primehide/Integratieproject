@@ -1,4 +1,5 @@
-﻿@model Domain.Entiteit.Organisatie
+﻿@model WebUI.Models.EditPersonViewModel
+@{
     Layout = null;
 }
 
@@ -15,7 +16,7 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h3 class="text-themecolor">Wijzig Organisatie</h3>
+                        <h3 class="text-themecolor">Starter kit</h3>
                     </div>
                     <div class="col-md-7 align-self-center">
                         <ol class="breadcrumb">
@@ -42,15 +43,25 @@
                             <h3 class="box-title m-b-0"><span class="lstick"></span>Persoon aanmaken</h3>
                             <div class="row">
                                 <div class="col-sm-12 col-xs-12">
-                                    @using (Html.BeginForm("EditOrganisation", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    @using (Html.BeginForm("EditPerson", "Entiteit", FormMethod.Post, new { enctype = "multipart/form-data" }))
                                     {
-                                        <input type="hidden" value="@Model.EntiteitId" name="EntiteitId" />
+                                        <input type="hidden" value="@Model.Persoon.EntiteitId" name="EntiteitId" />
                                         <div class="form-group">
-                                            <input type="text" class="form-control" placeholder="@Model.Naam" name="Naam" value="@Model.Naam">
+                                            <input type="text" class="form-control" placeholder="FirstName" name="Naam" value="@Model.Persoon.Naam">
                                         </div>
                                         <label>Afbeelding</label>
                                         <div class="form-group">
                                             <input type="file" name="uploadFile" , class="btn waves-effect waves-light btn-secondary" />
+                                        </div>
+                                        <div class="form-group">
+                                            <h5 class="box-title">Soort Grafiek:</h5>
+                                            <select class="selectpicker" name="Organisation" data-style="form-control btn-secondary">
+                                                <option value="@Model.Organisaties.First()">--Selecteer organisatie--</option>
+                                                @foreach (var o in Model.Organisaties)
+                                                {
+                                                    <option value="@o.EntiteitId">@o.Naam</option>
+                                                }
+                                            </select>
                                         </div>
                                         <button type="submit" class="btn btn-success waves-effect waves-light m-r-10">Submit</button>
                                     }
