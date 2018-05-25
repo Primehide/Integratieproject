@@ -416,13 +416,13 @@ namespace WebUI.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, TenantId = (int)System.Web.HttpContext.Current.Session["PlatformID"] };
                 var result = await UserManager.CreateAsync(user, model.Password);
-                CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                 if (result.Succeeded)
                 {
                     //await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
+                    CreateDomainUser(user.Id, user.Email, model.voornaam, model.achternaam, model.geboortedatum);
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account");
                     //await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
