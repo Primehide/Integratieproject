@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using DAL;
 using Domain.Platform;
 using Domain.Account;
@@ -32,9 +34,20 @@ namespace BL
             platformRepository.CreateDeelplatform(newPlatform);
         }
 
-        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform)
+        public Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo)
         {
             initNonExistingRepo();
+            Deelplatform deelplatformToUpdate = GetDeelplatform(changedDeelplatform.DeelplatformId);
+            if (imgLogo != null)
+            {
+                BinaryReader reader = new BinaryReader(imgLogo.InputStream);
+                var imageBytes = reader.ReadBytes(imgLogo.ContentLength);
+                deelplatformToUpdate.Logo = imageBytes;
+            }
+            deelplatformToUpdate.Naam = changedDeelplatform.Naam;
+            deelplatformToUpdate.Tagline = changedDeelplatform.Tagline;
+            deelplatformToUpdate.ColorCode1 = changedDeelplatform.ColorCode1;
+            deelplatformToUpdate.ColorCode2 = changedDeelplatform.ColorCode2;
             return platformRepository.UpdateDeelplatform(changedDeelplatform);
         }
 
@@ -82,7 +95,7 @@ namespace BL
 
 
       
-        public StringBuilder ConvertToCSV(List<Account> accounts)
+        public StringBuilder ConvertToCsv(List<Account> accounts)
         {
             initNonExistingRepo();
             var lstData = accounts;

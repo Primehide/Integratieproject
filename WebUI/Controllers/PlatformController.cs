@@ -15,20 +15,20 @@ using WebUI.Models;
 
 namespace WebUI.Controllers
 {
-    //TODO: REDIRECTS NAAR CHANGED PAGINA
 
     public class PlatformController : Controller
     {
-        PlatformManager pM = new PlatformManager();
-        EntiteitManager eM = new EntiteitManager();
+        readonly PlatformManager _pM = new PlatformManager();
+        readonly EntiteitManager _eM = new EntiteitManager();
 
 
         // GET: Platform
         public ActionResult Index()
         {
             //I have to be able to see a list of created SubPlatforms
-            return View(pM.GetAllDeelplatformen());
+            return View(_pM.GetAllDeelplatformen());
         }
+
         //Creation of a SubPlatform (SuperAdmin)
         #region
         [Authorize(Roles = "SuperAdmin")]
@@ -38,22 +38,22 @@ namespace WebUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult PromoteAdmin(string IdentityId)
+        public ActionResult PromoteAdmin(string identityId)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var store = new UserStore<ApplicationUser>(context);
             var manager = new ApplicationUserManager(store);
-            manager.AddToRole(IdentityId, "Admin");
+            manager.AddToRole(identityId, "Admin");
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
         [HttpPost]
-        public ActionResult DemoteAdmin(string IdentityId)
+        public ActionResult DemoteAdmin(string identityId)
         {
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var store = new UserStore<ApplicationUser>(context);
             var manager = new ApplicationUserManager(store);
-            manager.RemoveFromRole(IdentityId, "Admin");
+            manager.RemoveFromRole(identityId, "Admin");
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
@@ -64,55 +64,42 @@ namespace WebUI.Controllers
             IPlatformManager platformManager = new PlatformManager();
             var context = HttpContext.GetOwinContext().Get<ApplicationDbContext<ApplicationUser>>();
             var userstore = new ApplicationUserStore<ApplicationUser>(context);
-            var AllIdentity = new List<ApplicationUser>();
+            var allIdentity = new List<ApplicationUser>();
 
             foreach (var item in userstore.GetAllUser())
             {
                 if(item.TenantId == id)
                 {
-                    AllIdentity.Add(item);
+                    allIdentity.Add(item);
                 }
             }
 
             PlatformAdminModel model = new PlatformAdminModel()
             {
                 Deelplatform = platformManager.GetDeelplatform(id),
-                Users = AllIdentity
+                Users = allIdentity
             };
             return View(model);
         }
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin")]
-        public ActionResult EditPlatform(Deelplatform deelplatform, HttpPostedFileBase ImgLogo)
+        public ActionResult EditPlatform(Deelplatform deelplatform, HttpPostedFileBase imgLogo)
         {
             IPlatformManager platformManager = new PlatformManager();
-            Deelplatform deelplatformToUpdate = platformManager.GetDeelplatform(deelplatform.DeelplatformId);
-            if (ImgLogo != null)
-            {
-                byte[] imageBytes = null;
-                BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
-                imageBytes = reader.ReadBytes((int)ImgLogo.ContentLength);
-                deelplatformToUpdate.Logo = imageBytes;
-            }
-            deelplatformToUpdate.Naam = deelplatform.Naam;
-            deelplatformToUpdate.Tagline = deelplatform.Tagline;
-            deelplatformToUpdate.ColorCode1 = deelplatform.ColorCode1;
-            deelplatformToUpdate.ColorCode2 = deelplatform.ColorCode2;
-            platformManager.ChangeDeelplatform(deelplatformToUpdate);
+            platformManager.ChangeDeelplatform(deelplatform,imgLogo);
             return RedirectToAction("SuperAdminCp", "Account");
         }
 
         [HttpPost]
         [Authorize(Roles = "SuperAdmin")]
-        public ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase ImgLogo)
+        public ActionResult CreatePlatform(Deelplatform dp, HttpPostedFileBase imgLogo)
         {
             //I have to be able to create a SubPlatform
-            if (ImgLogo != null)
+            if (imgLogo != null)
             {
-                byte[] imageBytes = null;
-                BinaryReader reader = new BinaryReader(ImgLogo.InputStream);
-                imageBytes = reader.ReadBytes((int) ImgLogo.ContentLength);
+                BinaryReader reader = new BinaryReader(imgLogo.InputStream);
+                var imageBytes = reader.ReadBytes(imgLogo.ContentLength);
                 dp.Logo = imageBytes;
             }
             else
@@ -121,7 +108,7 @@ namespace WebUI.Controllers
                 dp.Logo = imageBytes;
             }
 
-            pM.AddDeelplatform(dp);
+            _pM.AddDeelplatform(dp);
             EntiteitManager entiteitManager = new EntiteitManager();
             if (Request.Files.Count > 0)
             {
@@ -130,12 +117,12 @@ namespace WebUI.Controllers
                 if (file != null && file.ContentLength > 0)
                 {
                     string str = (new StreamReader(file.InputStream)).ReadToEnd();
-                    List<Domain.Entiteit.Persoon> JsonEntiteiten = JsonConvert.DeserializeObject<List<Domain.Entiteit.Persoon>>(str);
-                    foreach (var p in JsonEntiteiten)
+                    List<Persoon> jsonEntiteiten = JsonConvert.DeserializeObject<List<Persoon>>(str);
+                    foreach (var p in jsonEntiteiten)
                     {
                         p.PlatformId = dp.DeelplatformId;
                     }
-                    entiteitManager.ConvertJsonToEntiteit(JsonEntiteiten);
+                    entiteitManager.ConvertJsonToEntiteit(jsonEntiteiten);
                 }
             }
             return RedirectToAction("Index");
@@ -151,50 +138,52 @@ namespace WebUI.Controllers
             List<Organisatie> deelplatformOrganisaties = new List<Organisatie>();
             List<Thema> deelplatformThemas = new List<Thema>();
 
-            List<Entiteit> Alleents = eM.GetEntiteitenVanDeelplatform(id);
-
-            foreach (Entiteit e in eM.GetEntiteitenVanDeelplatform(id))
+            
+            foreach (Entiteit e in _eM.GetEntiteitenVanDeelplatform(id))
             {
-                if (e is Persoon)
+                if (e is Persoon persoon)
                 {
-                    deelplatformPersonen.Add((Persoon)e);
+                    deelplatformPersonen.Add(persoon);
                 }
                 else
-                if (e is Organisatie)
+                if (e is Organisatie organisatie)
                 {
-                    deelplatformOrganisaties.Add((Organisatie)e);
+                    deelplatformOrganisaties.Add(organisatie);
                 }
                 else
-                if (e is Thema)
+                if (e is Thema thema)
                 {
-                    deelplatformThemas.Add((Thema)e);
+                    deelplatformThemas.Add(thema);
                 }
 
             }
 
-            ChangePlatformViewModel CPVM = new ChangePlatformViewModel
+            ChangePlatformViewModel cpvm = new ChangePlatformViewModel
             {
-                requestedDeelplatform = pM.GetDeelplatform(id),
+                requestedDeelplatform = _pM.GetDeelplatform(id),
                 personen = deelplatformPersonen,
                 themas = deelplatformThemas,
                 organisaties = deelplatformOrganisaties
             };
 
-            return View(CPVM);
+            return View(cpvm);
 
         }
+
         [Authorize(Roles = "SuperAdmin")]
         [HttpPost]
         public ActionResult ChangePlatform(ChangePlatformViewModel dp)
         {
             //I have to be able to make new Entities that are related to the currently selected SubPlatform
-            pM.ChangeDeelplatform(dp.requestedDeelplatform);
+            _pM.ChangeDeelplatform(dp.requestedDeelplatform);
             return RedirectToAction("Index");
 
         }
+
         #endregion
         //Display of a SubPlatform (Gebruiker)
         #region
+
         public ActionResult DisplayPlatform(int id)
         {
             //I have to be able to see the Entities that are related to the selected SubPlatform (Testing)
@@ -236,7 +225,7 @@ namespace WebUI.Controllers
 
             System.Web.HttpContext.Current.Session["PlatformID"] = id;
             HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            Deelplatform p = pM.GetDeelplatform(id);
+            Deelplatform p = _pM.GetDeelplatform(id);
             return RedirectToAction("Index", "Home", new { gekozenplatform = p.Naam, tagline = p.Tagline });
 
             #endregion
@@ -257,21 +246,17 @@ namespace WebUI.Controllers
 
         //Deletion of a SubPlatform
         #region
-        public ActionResult DeletePlatform()
-        {
-            return View();
-
-        }
 
         [HttpPost]
         public ActionResult DeletePlatform(Deelplatform dp)
         {
             //All the entities that are related to the SubPlatform and the SubPlatform itself get deleted.
-            eM.DeleteEntiteitenVanDeelplatform(dp.DeelplatformId);
-            pM.RemoveDeelplatform(dp.DeelplatformId);
+            _eM.DeleteEntiteitenVanDeelplatform(dp.DeelplatformId);
+            _pM.RemoveDeelplatform(dp.DeelplatformId);
             return RedirectToAction("Index");
 
         }
+
         #endregion
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult ExportUsers()
@@ -280,13 +265,14 @@ namespace WebUI.Controllers
             List<Account> accounts = accountManager.GetAccounts();
             return View(accounts);
         }
+
         [Authorize(Roles = "SuperAdmin, Admin")]
         public FileResult DownloadReport()
         {
             IPlatformManager platformManager = new PlatformManager();
             IAccountManager accountManager = new AccountManager();
             List<Account> list = accountManager.GetAccounts();
-            StringBuilder sb = platformManager.ConvertToCSV(list);
+            StringBuilder sb = platformManager.ConvertToCsv(list);
             return File(new UTF8Encoding().GetBytes(sb.ToString()), "text/csv", "export.csv");
         }
     }

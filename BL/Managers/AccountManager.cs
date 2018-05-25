@@ -58,6 +58,11 @@ namespace BL
             accountRepository.updateUser(account);
         }
 
+        public DashboardBlok[] GetDashboardBloks(string userId)
+        {
+            return getAccount(userId).Dashboard.Configuratie.DashboardBlokken.ToArray();
+        }
+
         public Account getAccount(string ID)
         {
             initNonExistingRepo();

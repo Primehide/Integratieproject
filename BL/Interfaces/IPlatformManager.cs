@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BL
 {
@@ -13,9 +14,9 @@ namespace BL
     {
         void AddDeelplatform(Deelplatform newPlatform);
         Deelplatform GetDeelplatform(int platformId);
-        Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform);
+        Deelplatform ChangeDeelplatform(Deelplatform changedDeelplatform, HttpPostedFileBase imgLogo);
         IEnumerable<Deelplatform> GetAllDeelplatformen();
         void RemoveDeelplatform(int platformId);
-        StringBuilder ConvertToCSV(List<Account> accounts);
+        StringBuilder ConvertToCsv(List<Account> accounts);
     }
 }
