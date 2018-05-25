@@ -56,13 +56,74 @@ namespace BL
             initNonExistingRepo();
             postRepository.AddPost(post);
         }
+        public List<String> getTopPersonWords(Persoon person)
+        {
+            EntiteitRepository erepo = new EntiteitRepository();
+        Entiteit entiteit =    erepo.ReadEntiteit(person.EntiteitId);
+            initNonExistingRepo();
+            List<Post> posts = person.Posts;
+            List<Word> persoonWords = new List<Word>();
+           foreach(Post post in posts)
+            {
+               persoonWords.AddRange( postRepository.GetAllWordsFromPost(post));
+            }
+
+            Dictionary<string, int> WordCountDic = new Dictionary<string, int>();
+            foreach (Word item in persoonWords)
+            {
+                if (!WordCountDic.ContainsKey(item.word))
+                {
+                    WordCountDic.Add(item.word, 1);
+                }
+                else
+                {
+                    int count = 0;
+                    WordCountDic.TryGetValue(item.word, out count);
+                    WordCountDic.Remove(item.word);
+                    WordCountDic.Add(item.word, count + 1);
+                }
+            }
+
+
+            var sortedDict = WordCountDic.OrderByDescending(entry => entry.Value)
+                   .Take(10)
+                   .ToDictionary(pair => pair.Key, pair => pair.Value);
+            var values = sortedDict.Keys.ToList();
+
+
+
+            return values;
+         
+
+
+        }
+
+
+
 
         public List<Post> getAllPosts()
         {
             initNonExistingRepo();
             return postRepository.getAllPosts();
         }
+        public List<Mention> getAllMentions()
+        {
+            initNonExistingRepo();
+            List<Mention> allMentions = new List<Mention>();
+            postRepository.getAllPosts().ForEach(x => allMentions.AddRange(x.Mentions));
+            return allMentions;
+        }
 
+
+        public int getAantalMentions(Persoon persoon)
+        {
+            string naam = persoon.Naam;
+           naam=  naam.Replace(" ", "");
+
+        
+            return getAllMentions().Where(x => x.mention.ToLower() == naam.ToLower()).Count();
+
+        }
         public async Task SyncDataAsync(int platformid)
         {
             initNonExistingRepo(true);
@@ -98,7 +159,7 @@ namespace BL
                     {
                        // ConvertAndSaveToDb(posts);
 
-                        System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
+                      //  System.IO.File.WriteAllText(@"C:\Users\Zeger\source\repos\Integratieproject\WebUI\Controllers\DataTextGain.json", result);
                     }
                 }
                 catch (Newtonsoft.Json.JsonReaderException)

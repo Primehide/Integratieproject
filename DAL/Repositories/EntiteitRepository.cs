@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.IO;
+using Domain.Post;
 
 namespace DAL
 {
@@ -173,7 +174,7 @@ namespace DAL
             ctx.Entiteiten.Add(entiteit);
             ctx.SaveChanges();
         }
-
+     
         public List<Entiteit> getAlleEntiteiten()
         {
             return ctx.Entiteiten
