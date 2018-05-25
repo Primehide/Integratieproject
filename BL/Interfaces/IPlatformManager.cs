@@ -17,5 +17,10 @@ namespace BL
         IEnumerable<Deelplatform> GetAllDeelplatformen();
         void RemoveDeelplatform(int platformId);
         StringBuilder ConvertToCSV(List<Account> accounts);
+
+        //refactor sander
+        void AddFaq(Domain.Platform.Faq faq, int platId);
+        void DeleteFaq(int id);
+        List<Faq> GetAlleFaqs(int PlatId);
     }
 }
