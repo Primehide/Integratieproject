@@ -107,8 +107,6 @@ namespace BL
             {
                 sendAndroidAlerts(androidalerts);
             }
-        
-            throw new NotImplementedException();
         }
 
         // Android alerts verzenden

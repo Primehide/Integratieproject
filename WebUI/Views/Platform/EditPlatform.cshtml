@@ -1,0 +1,128 @@
+﻿@model WebUI.Models.PlatformAdminModel
+@{
+    Layout = null;
+}
+
+@Html.Partial("~/Views/Shared/Dashboard/_DashboardHead.cshtml")
+
+<body class="fix-header card-no-border fix-sidebar mini-sidebar">
+    <div id="main-wrapper">
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardHeader.cshtml")
+        @Html.Partial("~/Views/Shared/Dashboard/_SuperAdminCpLeftBar.cshtml")
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <!-- ============================================================== -->
+                <!-- Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <div class="row page-titles">
+                    <div class="col-md-5 align-self-center">
+                        <h3 class="text-themecolor">SuperAdmin Control Panel</h3>
+                    </div>
+                    <div class="col-md-7 align-self-center">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                        </ol>
+                    </div>
+                    <div>
+                        <button class="right-side-toggle waves-effect waves-light btn-inverse btn btn-circle btn-sm pull-right m-l-10"><i class="ti-settings text-white"></i></button>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Bread crumb and right sidebar toggle -->
+                <!-- ============================================================== -->
+                <!-- ============================================================== -->
+                <!-- Start Page Content -->
+                <!-- Dit gedeelte eronder moogde aanpassen -->
+                <!-- ============================================================== -->
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">Platform aanmaken</h4>
+                                <form class="form-horizontal p-t-20" action="/Platform/EditPlatform" enctype="multipart/form-data" method="post">
+                                    <div class="form-group row">
+                                        <input type="hidden" name="DeelplatformId" value="@Model.Deelplatform.DeelplatformId" />
+                                        <label for="Naam" class="col-sm-3 control-label">Naam</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                                <input type="text" class="form-control" placeholder="@Model.Deelplatform.Naam" value="@Model.Deelplatform.Naam" name="Naam">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Tagline</label>
+                                        <div class="col-sm-9">
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                                <input type="text" class="form-control" placeholder="@Model.Deelplatform.Tagline" value="@Model.Deelplatform.Tagline" name="Tagline">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Kleur 1</label>
+                                        <div class="col-sd-9" style="margin-left:15px;">
+                                            <input type="text" class="colorpicker form-control" value="@Model.Deelplatform.ColorCode1" name="ColorCode1" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="Naam" class="col-sm-3 control-label">Kleur 2</label>
+                                        <div class="col-sd-9" style="margin-left:15px;">
+                                            <input type="text" class="colorpicker form-control" value="@Model.Deelplatform.ColorCode2" name="ColorCode2" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 control-label">Logo</label>
+                                        <input type="file" name="ImgLogo" class="btn waves-effect waves-light btn-secondary" />
+                                    </div>
+                                    <div class="form-group row m-b-0">
+                                        <div class="offset-sm-3 col-sm-9">
+                                            <button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">admins beheren</h4>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <form class="form-horizontal p-t-20" action="/Platform/PromoteAdmin" enctype="multipart/form-data" method="post">
+                                        <div class="form-group row">
+                                            <input type="hidden" name="IdentityId" value="@user.Id" />
+                                            <label for="Naam" class="col-sm-3 control-label">Voornaam</label>
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon"><i class="ti-user"></i></div>
+                                                    <input type="text" class="form-control" placeholder="@user.UserName" readonly value="" name="Naam">
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-success waves-effect waves-light">Make admin</button>
+                                        </div>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ============================================================== -->
+                <!-- End Page Content -->
+                <!-- ============================================================== -->
+            </div>
+            @Html.Partial("~/Views/Shared/Dashboard/_DashboardFooter.cshtml")
+        </div>
+        @Html.Partial("~/Views/Shared/Dashboard/_DashboardScripts.cshtml")
+    </div>
+</body>
+
+
+
+
+
+
+
