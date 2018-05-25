@@ -7,6 +7,7 @@ using Domain.Account;
 using Domain.Entiteit;
 using System.Data.Entity;
 using Domain.Post;
+using Domain.Enum;
 
 namespace DAL
 {
@@ -169,6 +170,19 @@ namespace DAL
             return account;
         }
 
+        public Account ReadAccount(int ID)
+        {
+            //Account account = ctx.Accounts.Include("Dashboard").Include("Alerts").Include("Items").Where(a => a.IdentityId == ID).First();
+            Account account = ctx.Accounts
+                .Include(x => x.Dashboard)
+                .Include(x => x.Dashboard.Configuratie)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken)
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Dashboard.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
+                .Where(a => a.AccountId == ID).First();
+            return account;
+        }
+
         public List<Account> readAccounts()
         {
            
@@ -235,6 +249,80 @@ namespace DAL
         {
             Grafiek teverwijderenwaardes = ctx.Grafieken.Where(o => o.GrafiekId == grafiekID).First();
             teverwijderenwaardes.Waardes = null;
+        }
+
+        public void DeleteDashboardBlok(Account account, int id)
+        {
+            var blok = ctx.DashboardBloks.Where(dashBlok => dashBlok.DashboardBlokId == id).Single();
+
+            if (blok != null)
+            {
+                ctx.DashboardBloks.Remove(blok);
+            }
+
+            ctx.SaveChanges();
+        }
+
+        public void UpdateLocatie(int blokId, int locatie)
+        {
+            var dashBlok = ctx.DashboardBloks.Find(blokId);
+            dashBlok.DashboardLocatie = locatie;
+            ctx.SaveChanges();
+        }
+
+        public void UpdateSize(int blokId, BlokGrootte blokGrootte)
+        {
+            var dashBlok = ctx.DashboardBloks.Find(blokId);
+            dashBlok.BlokGrootte = blokGrootte;
+            ctx.SaveChanges();
+        }
+
+        public void UpdateTitel(int blokId, String titel)
+        {
+            var dashBlok = ctx.DashboardBloks.Find(blokId);
+            dashBlok.Titel = titel;
+            ctx.SaveChanges();
+        }
+
+        public void UpdateSizeDimensions(int blokId, int x, int y)
+        {
+            var dashBlok = ctx.DashboardBloks.Find(blokId);
+            dashBlok.sizeX = x;
+            dashBlok.sizeY = y;
+            ctx.SaveChanges();
+        }
+
+        public void UpdateConfiguratieTitle(int configuratieId, String title)
+        {
+            var config = ctx.DashboardConfiguraties.Find(configuratieId);
+            config.ConfiguratieNaam = title;
+            ctx.SaveChanges();
+        }
+
+        public void SetPublic(int dashboardId, bool shared)
+        {
+            var dashboard = ctx.Dashboards.Find(dashboardId);
+            dashboard.IsPublic = shared;
+            ctx.SaveChanges();
+        }
+
+        public Dashboard GetPublicDashboard(int id)
+        {
+            Dashboard dashboard = ctx.Dashboards
+                .Include(x => x.Configuratie)
+                .Include(x => x.Configuratie.DashboardBlokken)
+                .Include(x => x.Configuratie.DashboardBlokken.Select(y => y.Grafiek))
+                .Include(x => x.Configuratie.DashboardBlokken.Select(y => y.Grafiek).Select(z => z.Waardes))
+                .Where(x => x.DashboardId == id).First();
+
+            if (dashboard.IsPublic)
+            {
+                return dashboard;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
