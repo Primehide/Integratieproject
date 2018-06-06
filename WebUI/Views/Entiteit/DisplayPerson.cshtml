@@ -52,9 +52,7 @@ else
                                 <img src="~/Content/Dashboard/assets/images/avatar.png" , width="150" , height="150" , class="img-circle" />
 }
 
-                                    <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>
-
-                                
+                                    <h4 class="card-title m-t-10">@Html.DisplayFor(m => m.Persoon.Naam, new { @class = "control-label col-md-6" })</h4>                              
                                 </center>
                             </div>
                             <a href="/Account/FollowEntiteit?id=@Model.Persoon.EntiteitId" class="btn waves-effect waves-light btn-success">Volgen</a>

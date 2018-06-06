@@ -9,16 +9,9 @@ using BL.Interfaces;
 using DAL.Interfaces;
 using DAL.Repositories;
 using Domain.Entiteit;
-<<<<<<< HEAD
 using Domain.Post;
 using Domain.TextGain;
 using Newtonsoft.Json;
-=======
-using System.Globalization;
-using System.IO;
-using BL.Managers;
-using DAL.Repositories;
->>>>>>> master
 
 namespace BL.Managers
 {
@@ -299,11 +292,7 @@ namespace BL.Managers
             //linkt de juist entiteit en voegt nieuwe posts toe.
             //postRepository.AddPosts(PostsToAdd);
             entiteitManager.UpdateEntiteit(entiteit);
-<<<<<<< HEAD
             _uowManager.Save();
-=======
-            uowManager.Save();
->>>>>>> master
         }
 
         public Dictionary<string, double> BerekenGrafiekWaarde(Domain.Enum.GrafiekType grafiekType, List<Entiteit> entiteiten)

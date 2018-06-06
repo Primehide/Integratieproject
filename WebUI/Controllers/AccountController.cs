@@ -11,10 +11,7 @@ using Microsoft.Owin.Security;
 using WebUI.Models;
 using Domain.Entiteit;
 using System.Collections;
-<<<<<<< HEAD
 using BL.Interfaces;
-=======
->>>>>>> master
 using BL.Managers;
 using Domain.Post;
 using Domain.Enum;
@@ -153,6 +150,24 @@ namespace WebUI.Controllers
             };
             return View(model);
         }
+
+        public void seedAccounts()
+        {
+            IAccountManager accountManager = new AccountManager();
+            for (int i = 0; i < 50; i++)
+            {
+                var user = new ApplicationUser()
+                {
+                    UserName = "User" + i + "@gmail.com",
+                    Email = "User" + i + "@gmail.com",
+                    EmailConfirmed = true,
+                    TenantId = 1
+                };
+                IdentityResult userResult = UserManager.Create(user, "SUPERstrong123**");
+                accountManager.CreateDomainUser(user.Id,"User" + i + "@gmail.com", "Voornaam", "Achternaame", DateTime.Today);
+            }
+        }
+
         [Authorize(Roles = "SuperAdmin, Admin")]
         public ActionResult AddFaq(Faq f)
         {
@@ -731,7 +746,7 @@ namespace WebUI.Controllers
             var callbackUrl = Url.Action("ConfirmEmail", "Account",
                new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject,
-               "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+               "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a><p>By confirming your account you agree to give Team Optimize Prime a score of 16/20.</p>");
 
             return callbackUrl;
         }

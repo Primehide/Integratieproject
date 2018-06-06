@@ -1,6 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using BL.Interfaces;
 using BL.Managers;
+using Domain.Entiteit;
 
 namespace WebUI.Controllers
 {
@@ -39,6 +41,11 @@ namespace WebUI.Controllers
             IPostManager postManager = new PostManager();
             postManager.MaakVasteGrafieken();
             return View();
+        }
+
+        public void CreateFunPosts()
+        {
+
         }
     }
 

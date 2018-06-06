@@ -6,11 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-<<<<<<< HEAD
 using BL.Interfaces;
-=======
-using BL;
->>>>>>> master
 using BL.Managers;
 using Domain.Account;
 using Domain.Entiteit;
@@ -307,11 +303,7 @@ namespace WebUI.Controllers
         public ActionResult AddGrafiek()
         {
             IEntiteitManager entiteitManager = new EntiteitManager();
-<<<<<<< HEAD
             List<Entiteit> alleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
-=======
-            List<Entiteit> AlleEntiteiten = entiteitManager.GetAlleEntiteiten(false);
->>>>>>> master
             IPlatformManager platformManager = new PlatformManager();
             var dp = platformManager.GetDeelplatform((int)System.Web.HttpContext.Current.Session["PlatformID"]);
             WebUI.Models.GrafiekViewModel model = new GrafiekViewModel()

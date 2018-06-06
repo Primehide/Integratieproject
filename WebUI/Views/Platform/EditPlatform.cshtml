@@ -93,7 +93,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h5>Non-admins</h5>
-                                        @foreach (var user in Model.Users.Where(x => x.Roles.SingleOrDefault(y => y.RoleId == "8f88c2f9-3dd7-4814-93a6-7fe44ba70ac1") == null ))
+                                        @foreach (var user in Model.Users.Where(x => x.Roles.SingleOrDefault(y => y.RoleId == "ffc9ef54-9f65-43ad-9483-cc65f5b2a212") == null ))
                                         {
                                             <form class="form-horizontal p-t-20" action="/Platform/PromoteAdmin" enctype="multipart/form-data" method="post">
                                                 <div class="form-group row">
@@ -112,7 +112,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <h5>Active admins</h5>
-                                        @foreach (var user in Model.Users.Where(x => x.Roles.SingleOrDefault(y => y.RoleId == "8f88c2f9-3dd7-4814-93a6-7fe44ba70ac1") != null))
+                                        @foreach (var user in Model.Users.Where(x => x.Roles.SingleOrDefault(y => y.RoleId == "ffc9ef54-9f65-43ad-9483-cc65f5b2a212") != null))
                                         {
                                             <form class="form-horizontal p-t-20" action="/Platform/DemoteAdmin" enctype="multipart/form-data" method="post">
                                                 <div class="form-group row">
